@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data cache & models
+data/raw/*.parquet
+data/raw/*.csv
+models/*.joblib
+reports/latest_summary.json
+
+# Environments & IDEs
+.env
+.venv
+env/
+venv/
+.vscode/
+.idea/
+
+# Streamlit & testing
+.pytest_cache/
+.streamlit/

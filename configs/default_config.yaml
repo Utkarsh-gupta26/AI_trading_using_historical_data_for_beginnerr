@@ -1,0 +1,80 @@
+# System Configuration for Trading Indicator ML Validator & Stress-Tester
+
+dataset:
+  primary_symbol: "GC=F" # Gold Futures by default (also supports ^NSEI, BTC-USD, AAPL, RELIANCE.NS)
+  symbols:
+    - "GC=F"      # Gold Futures
+    - "^NSEI"     # Nifty 50
+    - "^GSPC"     # S&P 500
+    - "BTC-USD"   # Bitcoin USD
+    - "RELIANCE.NS" # Reliance Industries
+    - "NVDA"      # Nvidia
+  timeframe: "1d" # Supported: 1m, 5m, 15m, 1h, 1d
+  start_date: "2018-01-01"
+  end_date: "2025-01-01"
+  provider: "yfinance" # yfinance, csv, parquet
+  cache_dir: "data/raw"
+
+indicator:
+  name: "CustomTrendMomentum" # or CustomPineScript
+  source_type: "python" # python, pine_csv, parquet, api
+  pine_csv_path: "data/external/pine_signals.csv"
+  params:
+    fast_period: 12
+    slow_period: 26
+    signal_period: 9
+    rsi_period: 14
+    rsi_overbought: 70
+    rsi_oversold: 30
+    adx_threshold: 20
+
+labeling:
+  type: "triple_barrier" # triple_barrier, fixed_horizon
+  tp_multiplier: 2.0      # In ATR units or fixed %
+  sl_multiplier: 1.0      # In ATR units or fixed %
+  use_atr_barriers: true  # If true, TP/SL are calculated using dynamic ATR
+  fixed_tp_pct: 0.02      # Used if use_atr_barriers = false
+  fixed_sl_pct: 0.01      # Used if use_atr_barriers = false
+  max_holding_bars: 20    # Vertical barrier
+  intra_bar_resolution: "conservative" # conservative, pessimistic, midpoint, optimistic
+
+features:
+  price_features: true
+  trend_features: true
+  momentum_features: true
+  volatility_features: true
+  volume_features: true
+  market_structure_features: true
+  regime_features: true
+  include_indicator_state: true
+
+models:
+  primary_model: "RandomForest" # LogisticRegression, RandomForest, GradientBoosting, HistGradientBoosting
+  probability_calibration: "isotonic" # isotonic, sigmoid (Platt), none
+  cv_splits: 5
+  purge_bars: 10
+  embargo_bars: 5
+  ml_threshold: 0.60 # Probability cutoff to accept indicator signal
+
+backtest:
+  initial_capital: 100000.0
+  position_sizing: "risk_percentage" # fixed_size, fixed_capital, risk_percentage, atr_volatility, kelly
+  risk_per_trade: 0.015 # 1.5% capital at risk per trade
+  max_position_pct: 0.20 # Maximum 20% of portfolio in single trade
+  execution_mode: "next_open" # next_open (zero look-ahead), conservative_intrabar
+  commission_pct: 0.0005 # 0.05% broker commission
+  slippage_pct: 0.0005   # 0.05% market impact/slippage
+  spread_pct: 0.0002     # 0.02% bid-ask spread
+
+monte_carlo:
+  num_simulations: 1000
+  confidence_levels: [5, 25, 50, 75, 95]
+  perturb_parameters: true
+  perturb_costs: true
+
+ai_advisor:
+  enabled: true
+  engine: "local" # local (Ollama/Qwen/LMStudio), openai_compatible, mock
+  endpoint: "http://localhost:11434/v1"
+  model_name: "qwen2.5:latest" # or qwen3.8-max
+  timeout_seconds: 2
