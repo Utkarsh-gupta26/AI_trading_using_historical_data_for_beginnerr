@@ -11,7 +11,11 @@ from .baseline import (
     LogisticRegressionModel,
     RandomForestModel,
     GradientBoostingModel,
-    HistGradientBoostingModel
+    HistGradientBoostingModel,
+    SVMModel,
+    AdaBoostModel,
+    NaiveBayesModel,
+    ExtraTreesModel
 )
 
 MODEL_REGISTRY: Dict[str, Type[BaseModel]] = {
@@ -25,6 +29,16 @@ MODEL_REGISTRY: Dict[str, Type[BaseModel]] = {
     "gradientboosting": GradientBoostingModel,
     "hist_gradient_boosting": HistGradientBoostingModel,
     "histgradientboosting": HistGradientBoostingModel,
+    "svm": SVMModel,
+    "svc": SVMModel,
+    "support_vector_machine": SVMModel,
+    "adaboost": AdaBoostModel,
+    "ada_boost": AdaBoostModel,
+    "naive_bayes": NaiveBayesModel,
+    "naivebayes": NaiveBayesModel,
+    "gaussian_nb": NaiveBayesModel,
+    "extra_trees": ExtraTreesModel,
+    "extratrees": ExtraTreesModel,
 }
 
 def get_model(name: str, config: Dict[str, Any] = None) -> BaseModel:

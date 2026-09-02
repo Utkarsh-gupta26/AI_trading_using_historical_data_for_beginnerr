@@ -8,6 +8,11 @@ import subprocess
 import yaml
 import json
 
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 # Add workspace to python path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
@@ -23,16 +28,20 @@ def main():
             "full-run", "ingest", "validate-data", "build-dataset",
             "train", "validate", "backtest", "walk-forward",
             "robustness", "monte-carlo", "ai-critique", "report",
-            "dashboard", "api"
+            "enhance-indicator", "dashboard", "api"
         ],
         help="Command to execute"
     )
     parser.add_argument("--config", default="configs/default_config.yaml", help="Path to YAML configuration")
-    parser.add_argument("--symbol", default=None, help="Override symbol (e.g. GC=F, ^NSEI, BTC-USD)")
+    parser.add_argument("--symbol", default=None, help="Override symbol (e.g. NIFTY, GC=F, ^NSEI, BTC-USD)")
     parser.add_argument("--port", default=8000, type=int, help="Port for API server")
     args = parser.parse_args()
 
-    if args.command in ["full-run", "ingest", "validate-data", "build-dataset", "train", "validate", "backtest", "walk-forward", "robustness", "monte-carlo", "ai-critique", "report"]:
+    if args.command == "enhance-indicator":
+        from scripts.enhance_indicator_ai import enhance_indicator
+        enhance_indicator(symbol=args.symbol or "NIFTY", config_path=args.config)
+
+    elif args.command in ["full-run", "ingest", "validate-data", "build-dataset", "train", "validate", "backtest", "walk-forward", "robustness", "monte-carlo", "ai-critique", "report"]:
         print(f"[*] Executing pipeline command: '{args.command}'...")
         summary = run_pipeline(config_path=args.config, symbol_override=args.symbol)
         print("\n" + "="*70)
@@ -41,6 +50,7 @@ def main():
             print(f"  {k:30s}: {v}")
         print("="*70)
         print(f"[*] Full report available in: reports/final_report.md")
+
 
     elif args.command == "dashboard":
         print("[*] Launching Streamlit Interactive Dashboard...")

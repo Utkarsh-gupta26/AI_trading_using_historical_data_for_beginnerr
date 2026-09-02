@@ -20,3 +20,4 @@ venv/
 # Streamlit & testing
 .pytest_cache/
 .streamlit/
+scratch/

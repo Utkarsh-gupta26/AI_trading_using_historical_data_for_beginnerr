@@ -25,13 +25,32 @@ class CSVDataProvider(BaseDataProvider):
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"CSV file not found for symbol: {symbol} in {self.csv_dir}")
         
-        df = pd.read_csv(file_path)
+        try:
+            df = pd.read_csv(file_path, sep=None, engine='python')
+        except Exception:
+            try:
+                df = pd.read_csv(file_path, sep=';')
+            except Exception:
+                df = pd.read_csv(file_path)
         df = self.standardize_schema(df)
-        if start_date:
-            df = df[df.index >= pd.to_datetime(start_date)]
-        if end_date:
-            df = df[df.index <= pd.to_datetime(end_date)]
+        if isinstance(df.index, pd.DatetimeIndex):
+            if start_date and end_date:
+                s_dt = pd.to_datetime(start_date)
+                e_dt = pd.to_datetime(end_date)
+                # Only slice if requested range overlaps with the dataset
+                if (df.index.max() >= s_dt) and (df.index.min() <= e_dt):
+                    df_sliced = df[(df.index >= s_dt) & (df.index <= e_dt)]
+                    if len(df_sliced) >= 30:
+                        df = df_sliced
+            elif start_date:
+                s_dt = pd.to_datetime(start_date)
+                if df.index.max() >= s_dt:
+                    df_sliced = df[df.index >= s_dt]
+                    if len(df_sliced) >= 30:
+                        df = df_sliced
+
         return df
+
 
 
 class ParquetDataProvider(BaseDataProvider):

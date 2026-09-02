@@ -14,6 +14,7 @@ from .volatility import compute_volatility_features
 from .volume import compute_volume_features
 from .market_structure import compute_market_structure_features
 from .regime import compute_regime_features
+from .technical_suite import TechnicalSuiteFeatureExtractor
 
 class FeatureEngine:
     """
@@ -22,6 +23,7 @@ class FeatureEngine:
     """
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
+        self.tech_suite = TechnicalSuiteFeatureExtractor(self.config)
 
     def extract_features(self, df: pd.DataFrame, signals_df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
         feature_blocks = []
@@ -34,6 +36,9 @@ class FeatureEngine:
         feature_blocks.append(compute_volume_features(df))
         feature_blocks.append(compute_market_structure_features(df))
         feature_blocks.append(compute_regime_features(df))
+        
+        # Advanced Multi-Indicator Suite (from ccroft6/finta analysis)
+        feature_blocks.append(self.tech_suite.extract_features(df))
         
         # 2. Indicator-Specific Features & Signal Context
         if signals_df is not None:
