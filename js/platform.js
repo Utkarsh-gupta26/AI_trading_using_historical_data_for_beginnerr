@@ -256,17 +256,17 @@ const TerminalPlatform = (() => {
       'NIKKEI': 'INDEX:NKY',
       'HANGSENG': 'INDEX:HSI',
 
-      // Indian Indices (Mapped to high-liquidity embeddable ETFs)
-      'NIFTY_50': 'AMEX:INDA',
-      'NIFTY': 'AMEX:INDA',
-      '^NSEI': 'AMEX:INDA',
+      // Indian Indices (Direct institutional India 50 CFD benchmark)
+      'NIFTY_50': 'STONEXTRADING:INDIA50CFD',
+      'NIFTY': 'STONEXTRADING:INDIA50CFD',
+      '^NSEI': 'STONEXTRADING:INDIA50CFD',
       'BANKNIFTY': 'BATS:EPI',
       '^NSEBANK': 'BATS:EPI',
-      'SENSEX': 'AMEX:INDA',
-      '^BSESN': 'AMEX:INDA',
-      'FINNIFTY': 'AMEX:INDA',
-      'MIDCPNIFTY': 'AMEX:INDA',
-      'GIFTI': 'AMEX:INDA',
+      'SENSEX': 'STONEXTRADING:INDIA50CFD',
+      '^BSESN': 'STONEXTRADING:INDIA50CFD',
+      'FINNIFTY': 'STONEXTRADING:INDIA50CFD',
+      'MIDCPNIFTY': 'STONEXTRADING:INDIA50CFD',
+      'GIFTI': 'STONEXTRADING:INDIA50CFD',
 
       // 🇺🇸 US Mega-Cap & Bluechips (100% native exchange embed)
       'AAPL': 'NASDAQ:AAPL',
@@ -299,39 +299,39 @@ const TerminalPlatform = (() => {
       'WIPRO': 'NYSE:WIT',
       'WIT': 'NYSE:WIT',
 
-      // Domestic NSE equities: embed-safe INDA preview + direct TV link
-      'RELIANCE': 'AMEX:INDA',
-      'TCS': 'AMEX:INDA',
-      'SBIN': 'AMEX:INDA',
-      'BHARTIARTL': 'AMEX:INDA',
-      'ITC': 'AMEX:INDA',
-      'LT': 'AMEX:INDA',
-      'TATAMOTORS': 'AMEX:INDA',
-      'AXISBANK': 'AMEX:INDA',
-      'MARUTI': 'AMEX:INDA',
-      'SUNPHARMA': 'AMEX:INDA',
-      'TITAN': 'AMEX:INDA',
-      'BAJFINANCE': 'AMEX:INDA',
-      'TATASTEEL': 'AMEX:INDA',
-      'HINDUNILVR': 'AMEX:INDA',
-      'ADANIENT': 'AMEX:INDA',
-      'ADANIPORTS': 'AMEX:INDA',
-      'ASIANPAINT': 'AMEX:INDA',
-      'HCLTECH': 'AMEX:INDA',
-      'KOTAKBANK': 'AMEX:INDA',
-      'NTPC': 'AMEX:INDA',
-      'POWERGRID': 'AMEX:INDA',
-      'COALINDIA': 'AMEX:INDA',
-      'ULTRACEMCO': 'AMEX:INDA',
-      'ONGC': 'AMEX:INDA',
+      // Domestic NSE equities: mapped to India 50 Index feed
+      'RELIANCE': 'STONEXTRADING:INDIA50CFD',
+      'TCS': 'STONEXTRADING:INDIA50CFD',
+      'SBIN': 'STONEXTRADING:INDIA50CFD',
+      'BHARTIARTL': 'STONEXTRADING:INDIA50CFD',
+      'ITC': 'STONEXTRADING:INDIA50CFD',
+      'LT': 'STONEXTRADING:INDIA50CFD',
+      'TATAMOTORS': 'STONEXTRADING:INDIA50CFD',
+      'AXISBANK': 'STONEXTRADING:INDIA50CFD',
+      'MARUTI': 'STONEXTRADING:INDIA50CFD',
+      'SUNPHARMA': 'STONEXTRADING:INDIA50CFD',
+      'TITAN': 'STONEXTRADING:INDIA50CFD',
+      'BAJFINANCE': 'STONEXTRADING:INDIA50CFD',
+      'TATASTEEL': 'STONEXTRADING:INDIA50CFD',
+      'HINDUNILVR': 'STONEXTRADING:INDIA50CFD',
+      'ADANIENT': 'STONEXTRADING:INDIA50CFD',
+      'ADANIPORTS': 'STONEXTRADING:INDIA50CFD',
+      'ASIANPAINT': 'STONEXTRADING:INDIA50CFD',
+      'HCLTECH': 'STONEXTRADING:INDIA50CFD',
+      'KOTAKBANK': 'STONEXTRADING:INDIA50CFD',
+      'NTPC': 'STONEXTRADING:INDIA50CFD',
+      'POWERGRID': 'STONEXTRADING:INDIA50CFD',
+      'COALINDIA': 'STONEXTRADING:INDIA50CFD',
+      'ULTRACEMCO': 'STONEXTRADING:INDIA50CFD',
+      'ONGC': 'STONEXTRADING:INDIA50CFD',
 
       // Crypto Perpetuals & Spot
-      'BTCUSD': 'BINANCE:BTCUSDT',
-      'BTC': 'BINANCE:BTCUSDT',
-      'ETHUSD': 'BINANCE:ETHUSDT',
-      'ETH': 'BINANCE:ETHUSDT',
-      'SOLUSD': 'BINANCE:SOLUSDT',
-      'SOL': 'BINANCE:SOLUSDT',
+      'BTCUSD': 'COINBASE:BTCUSD',
+      'BTC': 'COINBASE:BTCUSD',
+      'ETHUSD': 'COINBASE:ETHUSD',
+      'ETH': 'COINBASE:ETHUSD',
+      'SOLUSD': 'COINBASE:SOLUSD',
+      'SOL': 'COINBASE:SOLUSD',
       'XRPUSD': 'BINANCE:XRPUSDT',
       'DOGEUSD': 'BINANCE:DOGEUSDT',
       'ADAUSD': 'BINANCE:ADAUSDT',
@@ -362,26 +362,61 @@ const TerminalPlatform = (() => {
     const tvSymbol = tvMap[symbol] || (symbol.includes(':') ? symbol : (symbol.startsWith('^') ? 'AMEX:SPY' : (symbol === 'NASDAQ' ? 'NASDAQ:QQQ' : `NASDAQ:${symbol}`)));
     const officialTvSymbol = OFFICIAL_TV_TICKERS[symbol] || (symbol.includes(':') ? symbol : tvSymbol);
 
-    // Update Quick Header Asset Pill & External TradingView Launcher
-    const itemMeta = watchlist.find(w => w.symbol === symbol) || 
-                     CLIENT_SEARCH_CATALOG.find(c => c.symbol === symbol);
+    // Update Quick Header Asset Pill
+    const itemMeta = watchlist.find(w => w.symbol === symbol) || {};
     const symEl = document.getElementById('activeAssetSymbol');
     const nameEl = document.getElementById('activeAssetName');
     const badgeEl = document.getElementById('activeAssetBadge');
-    if (symEl) symEl.textContent = tvSymbol;
-    if (nameEl) nameEl.textContent = itemMeta ? itemMeta.name : symbol;
+
+    if (symEl) {
+      if (['NIFTY_50', 'NIFTY', '^NSEI'].includes(symbol)) {
+        symEl.textContent = 'NSE:NIFTY';
+      } else if (['BANKNIFTY', '^NSEBANK'].includes(symbol)) {
+        symEl.textContent = 'NSE:BANKNIFTY';
+      } else if (['SENSEX', '^BSESN'].includes(symbol)) {
+        symEl.textContent = 'BSE:SENSEX';
+      } else if (symbol === 'BTCUSD' || symbol === 'BTC') {
+        symEl.textContent = 'BTC/USD';
+      } else if (symbol === 'ETHUSD' || symbol === 'ETH') {
+        symEl.textContent = 'ETH/USD';
+      } else if (officialTvSymbol.startsWith('NSE:') || officialTvSymbol.startsWith('BSE:')) {
+        symEl.textContent = officialTvSymbol;
+      } else {
+        symEl.textContent = tvSymbol;
+      }
+    }
+
+    if (nameEl) {
+      if (['NIFTY_50', 'NIFTY', '^NSEI'].includes(symbol)) {
+        nameEl.textContent = 'NIFTY 50 Benchmark Index';
+      } else if (symbol === 'BTCUSD' || symbol === 'BTC') {
+        nameEl.textContent = 'Bitcoin Perpetual (BTCUSD)';
+      } else {
+        nameEl.textContent = itemMeta.name || symbol;
+      }
+    }
 
     if (badgeEl) {
-      if (officialTvSymbol.startsWith('NSE:') || officialTvSymbol.startsWith('BSE:')) {
-        if (tvSymbol.startsWith('NYSE:')) {
-          badgeEl.textContent = 'NYSE ADR';
-          badgeEl.className = 'symbol-badge badge-us';
-          badgeEl.title = 'Live US ADR on NYSE with direct interactive candlestick chart.';
-        } else {
-          badgeEl.textContent = 'INDA · NSE';
-          badgeEl.className = 'symbol-badge badge-nse-info';
-          badgeEl.title = 'NSE restricts direct 3rd-party widget embeds. Charting INDA benchmark.';
-        }
+      if (['NIFTY_50', 'NIFTY', '^NSEI'].includes(symbol)) {
+        badgeEl.textContent = 'NSE BENCHMARK';
+        badgeEl.className = 'symbol-badge badge-index';
+        badgeEl.title = 'NIFTY 50 Benchmark Index Feed';
+      } else if (['BANKNIFTY', '^NSEBANK'].includes(symbol)) {
+        badgeEl.textContent = 'BANK NIFTY';
+        badgeEl.className = 'symbol-badge badge-index';
+        badgeEl.title = 'NSE Bank Nifty Index';
+      } else if (['SENSEX', '^BSESN'].includes(symbol)) {
+        badgeEl.textContent = 'BSE SENSEX';
+        badgeEl.className = 'symbol-badge badge-index';
+        badgeEl.title = 'BSE Sensex 30 Benchmark';
+      } else if (officialTvSymbol.startsWith('NSE:') || officialTvSymbol.startsWith('BSE:')) {
+        badgeEl.textContent = 'NSE EQUITIES';
+        badgeEl.className = 'symbol-badge badge-nse-info';
+        badgeEl.title = 'Indian Equities Feed';
+      } else if (symbol === 'BTCUSD' || symbol === 'BTC') {
+        badgeEl.textContent = 'CRYPTO SPOT';
+        badgeEl.className = 'symbol-badge badge-crypto';
+        badgeEl.title = 'Bitcoin Spot / Perpetual';
       } else if (itemMeta && itemMeta.tab === 'us') {
         badgeEl.textContent = 'US TECH';
         badgeEl.className = 'symbol-badge badge-us';
@@ -1280,6 +1315,19 @@ const TerminalPlatform = (() => {
       const volStr = vol > 1e9 ? `${(vol / 1e9).toFixed(1)}B` : (vol > 1e6 ? `${(vol / 1e6).toFixed(1)}M` : `${vol.toLocaleString()}`);
       volEl.textContent = `${currPfx}${volStr}`;
     }
+
+    const previewEl = document.getElementById('heroChartPreview');
+    if (previewEl) {
+      previewEl.onclick = () => {
+        TerminalPlatform.loadSymbol(targetSym);
+        TerminalPlatform.switchWorkspace('chart');
+      };
+      previewEl.title = `Click to view interactive ${targetSym} chart terminal`;
+      const descEl = previewEl.querySelector('div[style*="font-weight:700"]');
+      if (descEl) {
+        descEl.textContent = `Launch ${targetSym} Chart Terminal`;
+      }
+    }
   }
 
   function selectOverviewSymbol(sym) {
@@ -1411,14 +1459,17 @@ const TerminalPlatform = (() => {
       const isSelected = item.sym.toUpperCase() === (overviewSelectedSymbol || 'BTCUSD').toUpperCase();
 
       return `
-        <div class="watchlist-row ${isSelected ? 'active-row' : ''}" style="background:${isSelected ? 'var(--aiot-100)' : 'rgba(13,9,8,0.02)'}; border:1px solid ${isSelected ? 'var(--aiot-950)' : 'rgba(216,210,207,0.6)'}; border-radius:8px; padding:7px 12px; cursor:pointer;" onclick="TerminalPlatform.selectOverviewSymbol('${item.sym}')">
+        <div class="watchlist-row ${isSelected ? 'active-row' : ''}" style="background:${isSelected ? 'var(--aiot-100)' : 'rgba(13,9,8,0.02)'}; border:1px solid ${isSelected ? 'var(--aiot-950)' : 'rgba(216,210,207,0.6)'}; border-radius:8px; padding:7px 12px; cursor:pointer;" onclick="TerminalPlatform.selectOverviewSymbol('${item.sym}')" ondblclick="TerminalPlatform.loadSymbol('${item.sym}'); TerminalPlatform.switchWorkspace('chart');">
           <div class="wl-left">
             <span class="wl-symbol" style="color:var(--aiot-950); font-weight:800; font-family:'IBM Plex Mono', monospace;">${item.sym}</span>
             <span class="wl-name" style="color:var(--aiot-600);">${item.name}</span>
           </div>
-          <div class="wl-right">
-            <span class="wl-price mono" style="color:var(--aiot-950); font-weight:800;">${formattedPrice}</span>
-            <span class="wl-chg mono ${isBull ? 'bull' : 'bear'}">${formattedChg}</span>
+          <div class="wl-right" style="display:flex; align-items:center; gap:8px;">
+            <div style="text-align:right;">
+              <span class="wl-price mono" style="color:var(--aiot-950); font-weight:800;">${formattedPrice}</span>
+              <span class="wl-chg mono ${isBull ? 'bull' : 'bear'}">${formattedChg}</span>
+            </div>
+            <button class="nova-quick-pill" style="padding:3px 8px; font-size:10px; font-weight:700; background:var(--aiot-950); color:#FFF; border-radius:6px; border:none; cursor:pointer;" onclick="event.stopPropagation(); TerminalPlatform.loadSymbol('${item.sym}'); TerminalPlatform.switchWorkspace('chart');" title="Open ${item.sym} chart directly">Chart ↗</button>
           </div>
         </div>
       `;

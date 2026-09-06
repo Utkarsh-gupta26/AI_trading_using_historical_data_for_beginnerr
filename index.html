@@ -247,7 +247,7 @@
                 </div>
 
                 <!-- Interactive Preview / Mini Candle Container -->
-                <div style="height:210px; position:relative; background:rgba(13,9,8,0.03); border-radius:10px; overflow:hidden; border:1px solid rgba(216,210,207,0.7); display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="TerminalPlatform.switchWorkspace('chart')">
+                <div id="heroChartPreview" style="height:210px; position:relative; background:rgba(13,9,8,0.03); border-radius:10px; overflow:hidden; border:1px solid rgba(216,210,207,0.7); display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="TerminalPlatform.loadSymbol(TerminalPlatform.getCurrentSymbol ? TerminalPlatform.getCurrentSymbol() : 'BTCUSD'); TerminalPlatform.switchWorkspace('chart');">
                   <div style="text-align:center;">
                     <div style="font-size:24px; color:var(--aiot-950); display:flex; justify-content:center; margin-bottom:8px;">
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
