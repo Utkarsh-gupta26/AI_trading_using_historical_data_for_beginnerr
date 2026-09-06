@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AIOT (All-in-One Trading App) — Institutional charting, risk management, trade journal, market regime detection, global market correlation, and AI market intelligence.">
+  <title>AIOT — All-in-One Trading App</title>
+  <link rel="stylesheet" href="styles.css?v=aiot_v7">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="js/icons.js?v=aiot_v7"></script>
+</head>
+<body style="margin:0; padding:0; background:#F5F5F4; overflow:hidden;">
+
+  <div class="workstation-container" id="workstationContainer">
+
+    <!-- ── 1. Left Workstation Navigation Rail ── -->
+    <aside class="nova-nav-rail" id="novaNavRail">
+      <!-- Brand Logo -->
+      <div class="nova-nav-brand" onclick="TerminalPlatform.switchWorkspace('markets')">
+        <div class="nova-logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FAFAF9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="nav-brand-group">
+          <span class="nav-brand-text">AIOT</span>
+          <span class="aiot-brand-subtitle">All-in-One Trading App</span>
+        </div>
+      </div>
+
+      <!-- Navigation List with Dedicated Buttons for Every Major Capability -->
+      <div class="nova-nav-list">
+        <div class="nav-section-title">Core Trading</div>
+        <button class="nova-nav-btn" data-ws="markets" onclick="TerminalPlatform.switchWorkspace('markets')" title="Markets Overview">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-6"/><circle cx="7" cy="16" r="1.5"/><circle cx="11" cy="12" r="1.5"/><circle cx="15" cy="16" r="1.5"/><circle cx="20" cy="10" r="1.5"/></svg></span>
+          <span class="nav-item-label">Markets</span>
+        </button>
+        <button class="nova-nav-btn active" data-ws="chart" onclick="TerminalPlatform.switchWorkspace('chart')" title="Interactive Chart">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="5" width="4" height="14" rx="1"/><path d="M5 2v3m0 14v3"/><rect x="10" y="8" width="4" height="8" rx="1"/><path d="M12 4v4m0 8v4"/><rect x="17" y="3" width="4" height="12" rx="1"/><path d="M19 1v2m0 12v4"/></svg></span>
+          <span class="nav-item-label">Chart</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="watchlist" onclick="TerminalPlatform.switchWorkspace('watchlist')" title="Watchlist">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+          <span class="nav-item-label">Watchlist</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="positions" onclick="TerminalPlatform.switchWorkspace('positions')" title="Open Positions">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/><path d="M12 12v3m-3-1.5h6"/></svg></span>
+          <span class="nav-item-label">Positions</span>
+        </button>
+
+        <div class="nav-section-title">Risk & Planning</div>
+        <button class="nova-nav-btn" data-ws="risk" onclick="TerminalPlatform.switchWorkspace('risk')" title="Risk Manager & Position Sizing">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 3v18m-9-6l9-3 9 3M5 18a4 4 0 0 0 6 0m4 0a4 4 0 0 0 6 0"/><circle cx="12" cy="3" r="1"/></svg></span>
+          <span class="nav-item-label">Risk Manager</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="planner" onclick="TerminalPlatform.switchWorkspace('planner')" title="Trade Plan & Checklist">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/><path d="M9 3v2m6-2v2"/></svg></span>
+          <span class="nav-item-label">Trade Plan</span>
+        </button>
+
+        <div class="nav-section-title">Execution History</div>
+        <button class="nova-nav-btn" data-ws="journal" onclick="TerminalPlatform.switchWorkspace('journal')" title="Trade Journal">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8m-8 4h6"/></svg></span>
+          <span class="nav-item-label">Trade Journal</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="logs" onclick="TerminalPlatform.switchWorkspace('logs')" title="Automated Trading Logs">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg></span>
+          <span class="nav-item-label">Trading Logs</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="analytics" onclick="TerminalPlatform.switchWorkspace('analytics')" title="Journal & Strategy Analytics">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
+          <span class="nav-item-label">Analytics</span>
+        </button>
+
+        <div class="nav-section-title">Market Intelligence</div>
+        <button class="nova-nav-btn" data-ws="global" onclick="TerminalPlatform.switchWorkspace('global')" title="Global Markets & Correlations">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+          <span class="nav-item-label">Global Markets</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="regime" onclick="TerminalPlatform.switchWorkspace('regime')" title="Market Regime Detection">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>
+          <span class="nav-item-label">Market Regime</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="calendar" onclick="TerminalPlatform.switchWorkspace('calendar')" title="Economic Calendar & Impact">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span class="nav-item-label">Economic Calendar</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="news" onclick="TerminalPlatform.switchWorkspace('news')" title="Market News & Events">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1m0 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m2 13H9"/><path d="M7 8h6m-6 4h6m-6 4h4"/></svg></span>
+          <span class="nav-item-label">News & Events</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="breadth" onclick="TerminalPlatform.switchWorkspace('breadth')" title="Market Breadth & Sector Rotation">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg></span>
+          <span class="nav-item-label">Sector Rotation</span>
+        </button>
+
+        <div class="nav-section-title">Strategy & Tools</div>
+        <button class="nova-nav-btn" data-ws="prediction" onclick="TerminalPlatform.openPredictionModal()" title="AI Future Candle & Target Predictor [Ctrl+P]">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg></span>
+          <span class="nav-item-label">AI Predictor</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="scanner" onclick="TerminalPlatform.switchWorkspace('scanner')" title="Stock & Crypto Scanner">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M5 12a10 10 0 0 1 14 0m-11 3a6 6 0 0 1 8 0m-5 3a2 2 0 0 1 2 0"/><line x1="12" y1="20" x2="12" y2="23"/><circle cx="12" cy="19" r="1"/></svg></span>
+          <span class="nav-item-label">Scanner</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="backtest" onclick="TerminalPlatform.switchWorkspace('backtest')" title="Quantitative Backtesting Studio">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 3h6m-4 0v6l-5 8a2 2 0 0 0 1.7 3h8.6a2 2 0 0 0 1.7-3l-5-8V3"/></svg></span>
+          <span class="nav-item-label">Backtesting</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="replay" onclick="TerminalPlatform.switchWorkspace('replay')" title="Bar Replay Studio">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg></span>
+          <span class="nav-item-label">Replay</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="ai" onclick="TerminalPlatform.switchWorkspace('ai')" title="AI Trading Assistant">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          <span class="nav-item-label">AI Assistant</span>
+        </button>
+        <button class="nova-nav-btn" data-ws="settings" onclick="TerminalPlatform.switchWorkspace('settings')" title="Workstation Settings">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+          <span class="nav-item-label">Settings</span>
+        </button>
+      </div>
+
+      <!-- Collapse / Expand Button -->
+      <button class="nav-collapse-btn" onclick="TerminalPlatform.toggleSidebar()" title="Toggle Sidebar [Ctrl+B]">
+        <span id="collapseIcon"><svg class="svg-icon sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></span>
+        <span class="nav-item-label" style="font-size:11px;">Collapse</span>
+      </button>
+    </aside>
+
+    <!-- ── 2. Master Workstation Stage ── -->
+    <main class="nova-main-stage">
+
+      <!-- Top Workstation Header Bar -->
+      <header class="nova-top-bar">
+        <div class="nova-top-left">
+          <!-- Active Symbol Trigger -->
+          <button class="symbol-selector-btn" id="symbolSelectorBtn" onclick="TerminalPlatform.openSearchModal()" style="background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.8); border-radius:var(--radius-pill); padding:6px 14px; cursor:pointer; box-shadow:0 2px 6px rgba(43,35,34,0.04); display:inline-flex; align-items:center; gap:8px;">
+            <svg class="svg-icon sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span id="headerActiveSymbol" style="font-weight:700; color:var(--aiot-950);">BTCUSD</span>
+            <span style="font-size:11px; color:var(--aiot-500); margin-left:4px;" id="headerActiveTf">1m</span>
+            <kbd class="mono" style="font-size:9.5px; background:var(--aiot-100); padding:2px 6px; border-radius:4px; color:var(--aiot-700); margin-left:6px; border:1px solid rgba(216, 210, 207, 0.7);">Ctrl+K</kbd>
+          </button>
+
+          <div class="mono" style="font-size:16px; font-weight:800; color:var(--aiot-950);" id="headerActivePrice">
+            --
+          </div>
+
+          <div class="header-ohlc-display" id="headerOhlcDisplay">
+            <div class="header-ohlc-item">O <span id="headerO">--</span></div>
+            <div class="header-ohlc-item">H <span id="headerH">--</span></div>
+            <div class="header-ohlc-item">L <span id="headerL">--</span></div>
+            <div class="header-ohlc-item">C <span id="headerC">--</span></div>
+          </div>
+        </div>
+
+        <div class="nova-top-right">
+
+          <!-- AI Predict Future Candle & Targets Trigger -->
+          <button class="predict-header-btn" id="headerPredictBtn" onclick="TerminalPlatform.openPredictionModal()" title="AI Predict Future Candle, Stop Loss & Targets [Ctrl+P]">
+            <svg class="svg-icon sm" viewBox="0 0 24 24" style="color:#FAFAF9;"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+            <span>Predict Candle & Target</span>
+            <kbd class="mono" style="font-size:9.5px; background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:4px; color:#FAFAF9; margin-left:4px; font-weight:800;">Ctrl+P</kbd>
+          </button>
+
+          <!-- AI Copilot Chat Trigger -->
+          <button class="nova-quick-pill" onclick="window.liveChatEngine.toggleChat()" id="headerChatBtn" title="AI Copilot Chat Assistant [Ctrl+J]" style="background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.8); border-radius:var(--radius-pill); padding:6px 14px; font-weight:700; color:var(--aiot-950); cursor:pointer; box-shadow:0 2px 6px rgba(43,35,34,0.04); display:inline-flex; align-items:center; gap:6px;">
+            <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>AI Chat</span>
+            <kbd class="mono" style="font-size:9.5px; background:var(--aiot-100); padding:2px 6px; border-radius:4px; color:var(--aiot-700); margin-left:4px; border:1px solid rgba(216, 210, 207, 0.7);">Ctrl+J</kbd>
+          </button>
+
+          <!-- Quick Chart View Trigger -->
+          <button class="nova-quick-pill" onclick="TerminalPlatform.switchWorkspace('chart')" style="background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.8); border-radius:var(--radius-pill); padding:6px 12px; font-weight:700; color:var(--aiot-950); cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <svg class="svg-icon sm" viewBox="0 0 24 24"><rect x="3" y="5" width="4" height="14" rx="1"/><path d="M5 2v3m0 14v3"/><rect x="10" y="8" width="4" height="8" rx="1"/><path d="M12 4v4m0 8v4"/><rect x="17" y="3" width="4" height="12" rx="1"/><path d="M19 1v2m0 12v4"/></svg>
+            <span>Chart</span>
+          </button>
+
+          <!-- Status badge -->
+          <span class="status-pill status-live" id="headerStatusBadge">LIVE</span>
+
+          <!-- Notifications Bell -->
+          <button class="header-tool-btn" onclick="TerminalPlatform.switchWorkspace('logs')" title="Trading Logs & Alerts" style="position:relative; background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.7); border-radius:var(--radius-pill); padding:6px 10px; cursor:pointer; box-shadow:0 2px 6px rgba(43,35,34,0.04); display:inline-flex; align-items:center; justify-content:center;">
+            <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span style="position:absolute; top:4px; right:4px; width:6px; height:6px; background:var(--color-bull); border-radius:50%;"></span>
+          </button>
+
+          <!-- User Profile Avatar -->
+          <div class="nova-profile-avatar" title="Account: Trader Pro" onclick="TerminalPlatform.switchWorkspace('settings')">
+            UG
+          </div>
+        </div>
+      </header>
+
+      <!-- Workspaces Container Host -->
+      <div class="nova-workspaces-host" id="workspacesHost">
+
+        <!-- ==================================================================
+             WORKSPACE 1: MARKETS OVERVIEW (NOVA TRADE REFERENCE UI)
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceMarkets">
+          <div class="nova-overview-grid">
+
+            <!-- Left Column: Watchlist + Portfolio Value Card -->
+            <div style="flex-direction:column; gap:16px;">
+              <!-- Watchlist Card -->
+              <div class="nova-card">
+                <div class="nova-card-header">
+                  <span class="nova-card-title">Watchlist</span>
+                  <span style="color:#787b86; font-size:14px; cursor:pointer;" onclick="TerminalPlatform.openSearchModal()">⭐</span>
+                </div>
+                <div id="overviewWatchlistRows" style="flex-direction:column; gap:8px;">
+                  <!-- Dynamically populated rows -->
+                </div>
+              </div>
+
+              <!-- Portfolio Value Card -->
+              <div class="nova-card portfolio-big-card">
+                <div style="font-size:11px; color:#787b86; text-transform:uppercase; letter-spacing:0.06em;">Paper Trading Balance</div>
+                <div class="portfolio-val-num" id="overviewPortfolioVal">₹1,00,000.00</div>
+                <div class="portfolio-sub-change" style="color:#94a3b8;">Initial Margin Capital · 0 Active Positions</div>
+              </div>
+            </div>
+
+            <!-- Center Column: Hero Ticker Card + Key Macro Metrics -->
+            <div style="flex-direction:column; gap:16px;">
+              <!-- Hero Ticker Card -->
+              <div class="nova-hero-card">
+                <div class="hero-ticker-row">
+                  <div class="hero-price-group">
+                    <span class="hero-symbol-title" id="heroSymbolTitle">BTC/USD</span>
+                    <span class="hero-big-price" id="heroBigPrice">$67,240.50</span>
+                    <span class="hero-pct-badge" id="heroPctBadge">+2.4%</span>
+                  </div>
+
+                  <!-- Timeframe Pills -->
+                  <div class="hero-tf-tabs">
+                    <button class="hero-tf-btn active" onclick="TerminalPlatform.setTimeframe('1D')">1D</button>
+                    <button class="hero-tf-btn" onclick="TerminalPlatform.setTimeframe('1W')">1W</button>
+                    <button class="hero-tf-btn" onclick="TerminalPlatform.setTimeframe('1M')">1M</button>
+                    <button class="hero-tf-btn" onclick="TerminalPlatform.setTimeframe('1Y')">1Y</button>
+                  </div>
+                </div>
+
+                <!-- Interactive Preview / Mini Candle Container -->
+                <div style="height:210px; position:relative; background:rgba(13,9,8,0.03); border-radius:10px; overflow:hidden; border:1px solid rgba(216,210,207,0.7); display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="TerminalPlatform.switchWorkspace('chart')">
+                  <div style="text-align:center;">
+                    <div style="font-size:24px; color:var(--aiot-950); display:flex; justify-content:center; margin-bottom:8px;">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                    </div>
+                    <div style="font-size:13px; color:var(--aiot-950); font-weight:700;">Launch Institutional Chart Terminal</div>
+                    <div style="font-size:11.5px; color:var(--aiot-600); margin-top:2px;">Click to view interactive multi-pane candlesticks & drawing tools</div>
+                  </div>
+                </div>
+
+                <!-- 24h Stats Row -->
+                <div class="hero-stats-row">
+                  <div class="hero-stat-box">
+                    <span class="hero-stat-label">24h High</span>
+                    <span class="hero-stat-val" id="hero24High">$68,120.00</span>
+                  </div>
+                  <div class="hero-stat-box">
+                    <span class="hero-stat-label">24h Low</span>
+                    <span class="hero-stat-val" id="hero24Low">$65,900.40</span>
+                  </div>
+                  <div class="hero-stat-box">
+                    <span class="hero-stat-label">24h Volume</span>
+                    <span class="hero-stat-val" id="hero24Vol">$2.1B</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Market Regime & AI Summary Banner -->
+              <div class="nova-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div>
+                  <div style="font-size:11px; color:var(--aiot-500); text-transform:uppercase; letter-spacing:0.06em; font-weight:700;">Current Market Regime</div>
+                  <div style="font-size:16px; font-weight:700; color:var(--aiot-950); margin-top:2px;" id="overviewRegimeState">Bull (Risk-On) · Low Volatility</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button class="nova-quick-pill" onclick="TerminalPlatform.switchWorkspace('regime')">View Evidence</button>
+                  <button class="nova-quick-pill" onclick="TerminalPlatform.switchWorkspace('risk')">Risk Calculator</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Institutional Market Pulse & Financial Intelligence -->
+            <div class="nova-chat-column" style="flex-direction:column; gap:16px;">
+              <!-- Quick Action Toggle Pill -->
+              <div style="display:flex; justify-content:flex-end;">
+                <button class="nova-quick-pill" onclick="TerminalPlatform.switchWorkspace('news')" style="border-radius:6px; font-size:11.5px; display:flex; align-items:center; gap:6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                  Market Wire · Full News Feed
+                </button>
+              </div>
+
+              <!-- Macroeconomic Pulse Card -->
+              <div class="nova-card">
+                <div class="nova-card-header">
+                  <span class="nova-card-title">Macro & Yield Drivers</span>
+                  <span class="status-pill status-live" style="font-size:9.5px; padding:1px 6px;">Live Stream</span>
+                </div>
+
+                <div style="flex-direction:column; gap:8px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--aiot-50); border-radius:8px; border:1px solid var(--aiot-300); margin-bottom:8px;">
+                    <div>
+                      <div style="font-weight:700; font-size:12px; color:var(--aiot-950);">US 10Y Benchmark Yield</div>
+                      <div style="font-size:10.5px; color:var(--aiot-600);">Treasury Note · ^TNX</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div class="mono" style="font-weight:700; font-size:12.5px; color:var(--aiot-950);">4.284%</div>
+                      <div style="font-size:10.5px; color:#059669; font-weight:700;">+0.012 (+0.28%)</div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--aiot-50); border-radius:8px; border:1px solid var(--aiot-300); margin-bottom:8px;">
+                    <div>
+                      <div style="font-weight:700; font-size:12px; color:var(--aiot-950);">US Dollar Index (DXY)</div>
+                      <div style="font-size:10.5px; color:var(--aiot-600);">Currency Basket · DX-Y.NYB</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div class="mono" style="font-weight:700; font-size:12.5px; color:var(--aiot-950);">104.22</div>
+                      <div style="font-size:10.5px; color:#DC2626; font-weight:700;">-0.18 (-0.17%)</div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--aiot-50); border-radius:8px; border:1px solid var(--aiot-300); margin-bottom:8px;">
+                    <div>
+                      <div style="font-weight:700; font-size:12px; color:var(--aiot-950);">CBOE Volatility Index</div>
+                      <div style="font-size:10.5px; color:var(--aiot-600);">Market Fear Gauge · ^VIX</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div class="mono" style="font-weight:700; font-size:12.5px; color:var(--aiot-950);">14.53</div>
+                      <div style="font-size:10.5px; color:#DC2626; font-weight:700;">-0.39 (-2.61%)</div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--aiot-50); border-radius:8px; border:1px solid var(--aiot-300); margin-bottom:8px;">
+                    <div>
+                      <div style="font-weight:700; font-size:12px; color:var(--aiot-950);">Gold Spot Perpetual</div>
+                      <div style="font-size:10.5px; color:var(--aiot-600);">Precious Metals · XAUUSD</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div class="mono" style="font-weight:700; font-size:12.5px; color:var(--aiot-950);">$2,718.40</div>
+                      <div style="font-size:10.5px; color:#059669; font-weight:700;">+$14.20 (+0.52%)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Market News Card -->
+              <div class="nova-card">
+                <div class="nova-card-header">
+                  <span class="nova-card-title">Market News</span>
+                  <span class="status-pill status-live" style="font-size:9.5px; padding:1px 6px;">Live</span>
+                </div>
+                <div style="flex-direction:column; gap:8px;" id="overviewNewsList">
+                  <div class="nova-news-item" onclick="TerminalPlatform.switchWorkspace('news')">
+                    <span class="news-pill fed">Fed</span>
+                    <span class="news-headline">Fed signals possible rate cut in Q3, markets rally</span>
+                    <span class="news-meta">Reuters · 12 min ago</span>
+                  </div>
+                  <div class="nova-news-item" onclick="TerminalPlatform.switchWorkspace('news')">
+                    <span class="news-pill crypto">Crypto</span>
+                    <span class="news-headline">Bitcoin breaks $67k resistance amid ETF inflows</span>
+                    <span class="news-meta">CoinDesk · 28 min ago</span>
+                  </div>
+                  <div class="nova-news-item" onclick="TerminalPlatform.switchWorkspace('news')">
+                    <span class="news-pill earnings">Earnings</span>
+                    <span class="news-headline">NVIDIA earnings beat expectations, stock volatile</span>
+                    <span class="news-meta">Bloomberg · 1 hr ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 2: FULL TRADINGVIEW-STYLE CHART TERMINAL
+             ================================================================== -->
+        <div class="workspace-panel active" id="workspaceChart" style="height:100%; width:100%; padding:0; margin:0; overflow:hidden; background:var(--aiot-100); flex-direction:column;">
+          <!-- Quick Asset Navigation Bar -->
+          <div class="chart-quick-bar" id="chartQuickBar">
+            <div class="chart-quick-left">
+              <div class="active-asset-pill" id="activeAssetPill" onclick="TerminalPlatform.openSearchModal()" title="Click to search any symbol">
+                <span class="pulse-dot"></span>
+                <span class="active-asset-symbol" id="activeAssetSymbol">NASDAQ:AAPL</span>
+                <span class="active-asset-name" id="activeAssetName">Apple Inc.</span>
+                <span class="symbol-badge badge-us" id="activeAssetBadge">US TECH</span>
+              </div>
+              <a class="tv-external-link-btn" id="tvExternalLinkBtn" href="https://www.tradingview.com/chart/?symbol=NASDAQ:AAPL" target="_blank" title="Open full chart directly on TradingView.com">
+                <span>Open on TV ↗</span>
+              </a>
+              <button class="search-trigger-btn" onclick="TerminalPlatform.openSearchModal()" title="Search all symbols (Ctrl+K)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Search Stocks & Indices... <span class="hotkey-hint">Ctrl+K</span>
+              </button>
+              <button class="chart-predict-btn" onclick="TerminalPlatform.openPredictionModal()" title="AI Predict future candle & targets for active symbol [Ctrl+P]">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                Predict Candle & Target
+              </button>
+            </div>
+            <div class="chart-quick-tabs">
+              <button class="quick-cat-btn active" data-qcat="indices" onclick="TerminalPlatform.switchQuickCategory('indices')">Indices</button>
+              <button class="quick-cat-btn" data-qcat="us" onclick="TerminalPlatform.switchQuickCategory('us')">US Tech</button>
+              <button class="quick-cat-btn" data-qcat="indian" onclick="TerminalPlatform.switchQuickCategory('indian')">Indian Equities</button>
+              <button class="quick-cat-btn" data-qcat="crypto" onclick="TerminalPlatform.switchQuickCategory('crypto')">Crypto & Commodities</button>
+            </div>
+            <div class="chart-quick-pills" id="chartQuickPills">
+              <!-- Dynamically populated pills -->
+            </div>
+          </div>
+
+          <div id="tvWidgetContainerHost" style="height:calc(100% - 46px); width:100%;">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container" style="height:100%;width:100%">
+              <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+              <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/" rel="noopener nofollow" target="_blank"><span class="blue-text">AAPL stock chart</span></a><span class="trademark"> by TradingView</span></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+              {
+              "allow_symbol_change": true,
+              "calendar": false,
+              "details": false,
+              "hide_side_toolbar": true,
+              "hide_top_toolbar": false,
+              "hide_legend": false,
+              "hide_volume": false,
+              "hotlist": false,
+              "interval": "D",
+              "locale": "en",
+              "save_image": true,
+              "style": "1",
+              "symbol": "NASDAQ:AAPL",
+              "theme": "light",
+              "timezone": "Etc/UTC",
+              "backgroundColor": "#FAFAF9",
+              "gridColor": "rgba(216, 210, 207, 0.4)",
+              "watchlist": [
+                "AMEX:SPY", "NASDAQ:QQQ", "AMEX:DIA", "AMEX:INDA", "NYSE:INFY", "NYSE:HDB",
+                "NASDAQ:AAPL", "NASDAQ:MSFT", "NASDAQ:NVDA", "NASDAQ:GOOGL", "NASDAQ:AMZN", "NASDAQ:META", "NASDAQ:TSLA", "NASDAQ:AMD",
+                "BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "BINANCE:SOLUSDT", "TVC:GOLD", "TVC:USOIL"
+              ],
+              "withdateranges": false,
+              "compareSymbols": [],
+              "support_host": "https://www.tradingview.com",
+              "studies": [],
+              "autosize": true
+            }
+              </script>
+            </div>
+            <!-- TradingView Widget END -->
+          </div>
+
+          <!-- Hidden fallback elements to ensure background modules continue running smoothly -->
+          <div id="mainChartContainer" style="display:none; width:0; height:0;"></div>
+          <div id="subPanesContainer" style="display:none; width:0; height:0;"></div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 3: WATCHLIST MANAGER
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceWatchlist">
+          <div class="ws-header-title">Institutional Watchlist & Asset Directory</div>
+          <div class="ws-subtitle">Categorized real-time quotes, benchmark indices, US mega-cap tech, Indian bluechips, and crypto commodities.</div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin:16px 0;">
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="hero-tf-btn active" id="wlTab_all" onclick="filterWatchlistView('all')">All Assets</button>
+              <button class="hero-tf-btn" id="wlTab_indices" onclick="filterWatchlistView('indices')">Indices</button>
+              <button class="hero-tf-btn" id="wlTab_us" onclick="filterWatchlistView('us')">US Stocks</button>
+              <button class="hero-tf-btn" id="wlTab_indian" onclick="filterWatchlistView('indian')">Indian Equities</button>
+              <button class="hero-tf-btn" id="wlTab_crypto" onclick="filterWatchlistView('crypto')">Crypto & Commodities</button>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="text" id="watchlistSearchInput" placeholder="Filter watchlist (e.g. AAPL, NIFTY, TCS)..." 
+                style="background:#FFFFFF; border:1px solid rgba(216,210,207,0.8); color:var(--aiot-950); font-size:12px; padding:6px 12px; border-radius:6px; outline:none; width:220px;"
+                oninput="TerminalPlatform.filterWatchlistInput(this.value)">
+              <button class="nova-quick-pill" onclick="TerminalPlatform.openSearchModal()">+ Add Symbol</button>
+            </div>
+          </div>
+
+          <div class="nova-card" style="padding:0; overflow:hidden;">
+            <table class="nova-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Change %</th>
+                  <th>Source</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="dedicatedWatchlistTbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 4: OPEN POSITIONS & PORTFOLIO
+             ================================================================== -->
+        <div class="workspace-panel" id="workspacePositions">
+          <div class="ws-header-title">Portfolio & Open Positions</div>
+          <div class="ws-subtitle">Real-time mark-to-market valuations, risk exposures, margin allocations, and position tracking.</div>
+
+          <!-- Position Summary Cards -->
+          <div class="ws-grid-4col">
+            <div class="nova-card">
+              <span class="hero-stat-label">Total Portfolio Exposure</span>
+              <div class="mono" style="font-size:18px; font-weight:700; color:#f0f3fa; margin-top:4px;">₹2,18,400</div>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">Total Unrealized P&L</span>
+              <div class="mono" style="font-size:18px; font-weight:700; color:#089981; margin-top:4px;">+₹4,240 (+1.94%)</div>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">Portfolio Risk at Stop</span>
+              <div class="mono" style="font-size:18px; font-weight:700; color:#f59e0b; margin-top:4px;">₹1,950 (1.95%)</div>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">Current Drawdown</span>
+              <div class="mono" style="font-size:18px; font-weight:700; color:#9098ae; margin-top:4px;">0.00% (At High)</div>
+            </div>
+          </div>
+
+          <!-- Positions Table -->
+          <div class="nova-card" style="padding:0; overflow-x:auto; margin-top:16px;">
+            <table class="nova-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Direction</th>
+                  <th>Quantity</th>
+                  <th>Entry Price</th>
+                  <th>Current Price</th>
+                  <th>Stop Loss</th>
+                  <th>Target</th>
+                  <th>Unrealized P&L</th>
+                  <th>P&L %</th>
+                  <th>Risk (₹)</th>
+                  <th>R:R</th>
+                  <th>Margin</th>
+                  <th>Holding Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="activePositionsTbody">
+                <tr>
+                  <td><strong>RELIANCE</strong></td>
+                  <td><span class="status-pill status-live" style="background:rgba(8,153,129,0.2); color:#089981;">LONG</span></td>
+                  <td class="mono">35</td>
+                  <td class="mono">₹2,940.00</td>
+                  <td class="mono">₹2,984.50</td>
+                  <td class="mono">₹2,910.00</td>
+                  <td class="mono">₹3,040.00</td>
+                  <td class="mono" style="color:#089981; font-weight:700;">+₹1,557.50</td>
+                  <td class="mono" style="color:#089981;">+1.51%</td>
+                  <td class="mono">₹1,050</td>
+                  <td class="mono">1:2.33</td>
+                  <td class="mono">₹1,02,900</td>
+                  <td>2h 15m</td>
+                  <td><button class="hero-tf-btn" style="background:#f23645; color:#fff;" onclick="closePositionMock('RELIANCE')">Close</button></td>
+                </tr>
+                <tr>
+                  <td><strong>BTCUSD</strong></td>
+                  <td><span class="status-pill status-live" style="background:rgba(8,153,129,0.2); color:#089981;">LONG</span></td>
+                  <td class="mono">0.15</td>
+                  <td class="mono">$64,200.00</td>
+                  <td class="mono">$67,240.50</td>
+                  <td class="mono">$63,500.00</td>
+                  <td class="mono">$68,500.00</td>
+                  <td class="mono" style="color:#089981; font-weight:700;">+$456.07</td>
+                  <td class="mono" style="color:#089981;">+4.73%</td>
+                  <td class="mono">$105</td>
+                  <td class="mono">1:4.14</td>
+                  <td class="mono">$963 (10x)</td>
+                  <td>5h 40m</td>
+                  <td><button class="hero-tf-btn" style="background:#f23645; color:#fff;" onclick="closePositionMock('BTCUSD')">Close</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 5: POSITION SIZE CALCULATOR & ADVANCED RISK MANAGER
+             ================================================================== -->
+        <!-- ==================================================================
+             WORKSPACE 5: POSITION SIZE CALCULATOR & ADVANCED RISK MANAGER
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceRisk">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+            <div>
+              <div class="ws-header-title">Institutional Position Size Calculator & Risk Manager</div>
+              <div class="ws-subtitle">Automated mathematical risk modeling, dynamic lot sizing, stop loss validation, and live asset synchronization.</div>
+            </div>
+            <!-- Active Asset Sync Toolbar -->
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#FFFFFF; padding:6px 12px; border-radius:var(--radius-pill); border:1px solid rgba(216,210,207,0.85); box-shadow:0 1px 4px rgba(43,35,34,0.03);">
+              <span style="font-size:11px; color:var(--aiot-500); font-weight:700; text-transform:uppercase;">Asset:</span>
+              <span id="riskActiveSymbolBadge" class="mono" style="font-weight:800; font-size:12.5px; color:var(--aiot-950);">NIFTY_50</span>
+              <span style="color:var(--aiot-300);">·</span>
+              <span style="font-size:11px; color:var(--aiot-500);">Live Mark:</span>
+              <span id="riskActivePriceBadge" class="mono" style="font-weight:800; font-size:12.5px; color:var(--aiot-950);">₹23,897.70</span>
+              <button class="nova-quick-pill" onclick="TerminalPlatform.syncRiskWithActiveAsset()" title="Pull current chart symbol and price into calculator" style="margin-left:6px; font-size:11px; padding:4px 10px; background:var(--aiot-950); color:#FAFAF9; border:none;">
+                Sync Current Symbol
+              </button>
+            </div>
+          </div>
+
+          <div class="ws-grid-2col">
+            <!-- Left: Inputs Form -->
+            <div class="nova-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <div class="nova-card-title">Setup Parameters</div>
+                <div style="display:flex; gap:4px;">
+                  <button class="nova-quick-pill" onclick="TerminalPlatform.setRiskRewardPreset(1.5)" style="font-size:10.5px; padding:3px 8px;">1:1.5 RR</button>
+                  <button class="nova-quick-pill" onclick="TerminalPlatform.setRiskRewardPreset(2.0)" style="font-size:10.5px; padding:3px 8px;">1:2.0 RR</button>
+                  <button class="nova-quick-pill" onclick="TerminalPlatform.setRiskRewardPreset(3.0)" style="font-size:10.5px; padding:3px 8px;">1:3.0 RR</button>
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                  <label class="hero-stat-label">Account Balance (<span class="risk-curr-sym">₹</span>)</label>
+                  <input type="number" id="calcAccountBalance" value="100000" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Risk Percentage (%)</label>
+                  <input type="number" step="0.1" id="calcRiskPercent" value="1.0" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Entry Price (<span class="risk-curr-sym">₹</span>)</label>
+                  <input type="number" step="any" id="calcEntryPrice" value="23897.70" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Stop-Loss Price (<span class="risk-curr-sym">₹</span>)</label>
+                  <input type="number" step="any" id="calcStopLoss" value="23550.00" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Target Price (<span class="risk-curr-sym">₹</span>)</label>
+                  <input type="number" step="any" id="calcTargetPrice" value="24590.00" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Instrument Type</label>
+                  <select id="calcInstrument" class="chat-input" style="width:100%; margin-top:4px;" onchange="recalcPositionSize()">
+                    <option value="Indices">Indices / Benchmarks</option>
+                    <option value="Stocks">Stocks / Equities</option>
+                    <option value="Crypto">Crypto Perpetual</option>
+                    <option value="Commodities">Commodities</option>
+                    <option value="Forex">Forex</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="hero-stat-label">Trade Direction</label>
+                  <select id="calcDirection" class="chat-input" style="width:100%; margin-top:4px;" onchange="recalcPositionSize()">
+                    <option value="LONG">LONG (Buy / Bullish)</option>
+                    <option value="SHORT">SHORT (Sell / Bearish)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="hero-stat-label">Leverage</label>
+                  <input type="number" id="calcLeverage" value="1" min="1" max="100" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Lot Size (Units/Lot)</label>
+                  <input type="number" id="calcLotSize" value="25" min="1" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Fees & Slippage (%)</label>
+                  <input type="number" step="0.01" id="calcFees" value="0.05" class="chat-input" style="width:100%; margin-top:4px;" oninput="recalcPositionSize()">
+                </div>
+              </div>
+
+              <!-- Direction auto-note -->
+              <div id="calcAutoCorrectNotice" style="display:none; margin-top:10px; font-size:11px; color:#d97706; background:rgba(217,119,6,0.08); padding:6px 10px; border-radius:6px; border:1px solid rgba(217,119,6,0.2);"></div>
+
+              <!-- Mathematical Formula Callout -->
+              <div style="background:rgba(13,9,8,0.03); border:1px solid rgba(216,210,207,0.7); border-radius:8px; padding:10px 12px; margin-top:16px;">
+                <div style="font-size:10.5px; color:var(--aiot-500); text-transform:uppercase; font-weight:700;">Active Institutional Sizing Formula</div>
+                <div class="mono" style="font-size:11.5px; color:var(--aiot-950); margin-top:4px; font-weight:600;" id="calcFormulaDisplay">
+                  Position Size = Risk Amount (₹1,000) ÷ |23897.70 - 23550| = 25 units
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Calculated Outputs & Risk Controls -->
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <!-- Outputs Card -->
+              <div class="nova-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <span class="nova-card-title">Calculated Execution Results</span>
+                  <span class="status-pill risk-low" id="calcRiskLevelBadge">LOW RISK</span>
+                </div>
+
+                <div class="ws-grid-2col" style="margin-top:0;">
+                  <div class="nova-card" style="background:rgba(13,9,8,0.02); border:1px solid rgba(216,210,207,0.6);">
+                    <span class="hero-stat-label">Maximum Quantity</span>
+                    <div class="mono" style="font-size:22px; font-weight:800; color:var(--aiot-950);" id="calcOutQty">25 units</div>
+                    <span style="font-size:11px; color:var(--aiot-500);" id="calcOutLots">1 lot (25 units/lot)</span>
+                  </div>
+                  <div class="nova-card" style="background:rgba(13,9,8,0.02); border:1px solid rgba(216,210,207,0.6);">
+                    <span class="hero-stat-label">Capital Required</span>
+                    <div class="mono" style="font-size:22px; font-weight:800; color:var(--aiot-950);" id="calcOutCapital">₹597,442.50</div>
+                    <span style="font-size:11px; color:var(--aiot-500);" id="calcOutMargin">Margin: ₹597,442.50</span>
+                  </div>
+                  <div class="nova-card" style="background:rgba(13,9,8,0.02); border:1px solid rgba(216,210,207,0.6);">
+                    <span class="hero-stat-label">Maximum Loss</span>
+                    <div class="mono" style="font-size:20px; font-weight:800; color:#dc2626;" id="calcOutLoss">₹1,000.00</div>
+                    <span style="font-size:11px; color:var(--aiot-500);" id="calcOutRiskPerUnit">Risk per share: ₹347.70</span>
+                  </div>
+                  <div class="nova-card" style="background:rgba(13,9,8,0.02); border:1px solid rgba(216,210,207,0.6);">
+                    <span class="hero-stat-label">Potential Profit</span>
+                    <div class="mono" style="font-size:20px; font-weight:800; color:#059669;" id="calcOutProfit">₹17,307.50</div>
+                    <span style="font-size:11px; color:var(--aiot-500);" id="calcOutTargetDist">Target Distance: ₹692.30</span>
+                  </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; padding-top:12px; margin-top:12px; border-top:1px solid rgba(216,210,207,0.7);">
+                  <div>
+                    <span class="hero-stat-label">Risk/Reward Ratio</span>
+                    <div class="mono" style="font-size:16px; font-weight:800; color:var(--aiot-950);" id="calcOutRR">1:2.00</div>
+                  </div>
+                  <div>
+                    <span class="hero-stat-label">Break-Even Win Rate</span>
+                    <div class="mono" style="font-size:16px; font-weight:800; color:var(--aiot-950);" id="calcOutBeRate">33.3%</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk Controls & Daily Limits -->
+              <div class="nova-card">
+                <div class="nova-card-title">Pre-Trade Risk Controls & Daily Limits</div>
+                <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                      <span>Daily Loss Limit: <strong id="calcDailyLossLimitVal">₹5,000</strong></span>
+                      <span style="color:#d97706;">Current Realized Loss: <strong id="calcCurrentLossVal">₹1,200</strong></span>
+                    </div>
+                    <div style="height:6px; background:rgba(13,9,8,0.08); border-radius:3px; overflow:hidden;">
+                      <div id="calcDailyLossProgress" style="width:24%; height:100%; background:#d97706; border-radius:3px;"></div>
+                    </div>
+                    <div style="font-size:11px; color:var(--aiot-500); margin-top:4px;">Remaining daily risk tolerance: <strong id="calcRemainingDailyVal">₹3,800</strong></div>
+                  </div>
+
+                  <div id="riskWarningContainer" style="background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.25); border-radius:8px; padding:10px 12px; font-size:11.5px; color:#059669;">
+                    <strong>LOW RISK:</strong> Trade risk (₹1,000.00) complies with institutional daily limits.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 6: TRADE JOURNAL & RECORDING
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceJournal">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <div class="ws-header-title">Professional Trade Journal</div>
+              <div class="ws-subtitle">Detailed trade logging, tagging (Breakout, Pullback, Reversal, Momentum), emotions, mistakes, and lessons learned.</div>
+            </div>
+            <button class="nova-quick-pill" onclick="openAddTradeModal()" style="background:#089981; border-color:#089981; color:#fff;">+ New Trade Entry</button>
+          </div>
+
+          <!-- Tag Filters -->
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin:16px 0;" id="journalTagFilters">
+            <button class="hero-tf-btn active" onclick="filterJournalByTag('ALL')">All Trades</button>
+            <button class="hero-tf-btn" onclick="filterJournalByTag('Breakout')">Breakout</button>
+            <button class="hero-tf-btn" onclick="filterJournalByTag('Pullback')">Pullback</button>
+            <button class="hero-tf-btn" onclick="filterJournalByTag('Trend')">Trend</button>
+            <button class="hero-tf-btn" onclick="filterJournalByTag('Reversal')">Reversal</button>
+            <button class="hero-tf-btn" onclick="filterJournalByTag('Momentum')">Momentum</button>
+            <button class="hero-tf-btn" onclick="filterJournalByTag('Scalp')">Scalp</button>
+            <button class="hero-tf-btn" onclick="filterJournalByTag('Swing')">Swing</button>
+          </div>
+
+          <!-- Journal Table -->
+          <div class="nova-card" style="padding:0; overflow-x:auto;">
+            <table class="nova-table">
+              <thead>
+                <tr>
+                  <th>Trade ID</th>
+                  <th>Date</th>
+                  <th>Symbol</th>
+                  <th>Dir</th>
+                  <th>Entry</th>
+                  <th>Stop</th>
+                  <th>Target</th>
+                  <th>Exit</th>
+                  <th>Qty</th>
+                  <th>R:R</th>
+                  <th>Strategy</th>
+                  <th>Result</th>
+                  <th>P&L</th>
+                  <th>Tags</th>
+                  <th>Notes & Lessons</th>
+                </tr>
+              </thead>
+              <tbody id="tradeJournalTbody">
+                <!-- Dynamically populated from window.journalService.trades -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 7: AUTOMATIC TRADE LOGGING
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceLogs">
+          <div class="ws-header-title">Automatic Trading Action Logs</div>
+          <div class="ws-subtitle">Immutable audit trail of every order created, modified, filled, stop adjusted, signal generated, and AI analysis run.</div>
+
+          <div class="nova-card" style="padding:0; overflow-x:auto; margin-top:16px;">
+            <table class="nova-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Symbol</th>
+                  <th>Action</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Order Type</th>
+                  <th>Reason / Context</th>
+                  <th>Source</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tradingLogsTbody">
+                <!-- Dynamically populated from window.journalService.logs -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 8: JOURNAL ANALYTICS & STRATEGY PERFORMANCE
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceAnalytics">
+          <div class="ws-header-title">Journal Analytics & Strategy Performance</div>
+          <div class="ws-subtitle">Institutional performance evaluation: Win rates, profit factors, Sharpe & Sortino ratios, and strategy grouping.</div>
+
+          <!-- Analytics Summary Cards -->
+          <div class="ws-grid-4col">
+            <div class="nova-card">
+              <span class="hero-stat-label">Win Rate</span>
+              <div class="mono" style="font-size:24px; font-weight:700; color:#059669;" id="anaWinRate">68.4%</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;" id="anaWinLossCount">13 Wins · 6 Losses</span>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">Profit Factor</span>
+              <div class="mono" style="font-size:24px; font-weight:700; color:#059669;" id="anaProfitFactor">1.94</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;">Expectancy: ₹840 / trade</span>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">Sharpe / Sortino</span>
+              <div class="mono" style="font-size:24px; font-weight:700; color:var(--aiot-950);" id="anaSharpe">1.82 / 2.45</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;">Annualized Risk-Adjusted</span>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">Max Drawdown</span>
+              <div class="mono" style="font-size:24px; font-weight:700; color:#D97706;" id="anaMaxDd">₹3,400 (3.4%)</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;">Recovery Factor: 3.24</span>
+            </div>
+          </div>
+
+          <!-- Strategy Performance Table -->
+          <div class="nova-card" style="margin-top:16px;">
+            <div class="nova-card-title">Performance Grouped by Strategy</div>
+            <table class="nova-table" style="margin-top:10px;">
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th>Trades</th>
+                  <th>Win Rate</th>
+                  <th>Avg R:R</th>
+                  <th>Profit Factor</th>
+                  <th>Net P&L</th>
+                </tr>
+              </thead>
+              <tbody id="strategyPerformanceTbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 9: GLOBAL MARKETS & CORRELATION ENGINE
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceGlobal">
+          <div class="ws-header-title">Global Markets Monitor & Cross-Asset Correlation</div>
+          <div class="ws-subtitle">Real-time cross-market feeds (US, Europe, Asia, India, Commodities, Currencies, Rates, Crypto) with statistical correlation matrices.</div>
+
+          <!-- Correlation Controls -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="hero-stat-label">Correlation Window:</span>
+              <button class="hero-tf-btn" onclick="updateCorrelationWindow('1D')">1D</button>
+              <button class="hero-tf-btn" onclick="updateCorrelationWindow('1W')">1W</button>
+              <button class="hero-tf-btn" onclick="updateCorrelationWindow('1M')">1M</button>
+              <button class="hero-tf-btn active" onclick="updateCorrelationWindow('3M')">3M</button>
+              <button class="hero-tf-btn" onclick="updateCorrelationWindow('6M')">6M</button>
+              <button class="hero-tf-btn" onclick="updateCorrelationWindow('1Y')">1Y</button>
+            </div>
+            <button class="nova-quick-pill" onclick="refreshGlobalMarketsData()">↻ Refresh Feeds</button>
+          </div>
+
+          <div class="ws-grid-2col">
+            <!-- Global Market Cards Grid -->
+            <div class="nova-card">
+              <div class="nova-card-title" style="margin-bottom:12px;">Global Indices & Macro Feeds</div>
+              <div style="flex-direction:column; gap:8px; max-height:450px; overflow-y:auto;" id="globalMarketsCardsList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Cross-Asset Correlation Matrix -->
+            <div class="nova-card">
+              <div class="nova-card-title" style="margin-bottom:12px;">Correlation with NIFTY 50</div>
+              <table class="nova-table">
+                <thead>
+                  <tr>
+                    <th>Macro Asset</th>
+                    <th>Window</th>
+                    <th>Coefficient</th>
+                    <th>Strength</th>
+                  </tr>
+                </thead>
+                <tbody id="correlationMatrixTbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 11: MARKET REGIME ENGINE
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceRegime">
+          <div class="ws-header-title">Quantitative Market Regime Detection</div>
+          <div class="ws-subtitle">Institutional multi-factor classification with transparent mathematical evidence (Trend, Volatility, Breadth, VIX, Momentum).</div>
+
+          <div class="ws-grid-2col" style="margin-top:16px;">
+            <div class="nova-card">
+              <div style="font-size:12px; color:#787b86;">Primary Regime State</div>
+              <div style="font-size:28px; font-weight:700; color:#089981; margin:6px 0;" id="regimeBigState">Strong Bull</div>
+              <div style="font-size:12.5px; color:#9098ae;" id="regimeSecondaryState">Secondary: Risk-On · Low Volatility</div>
+              <div style="margin-top:14px; font-size:11.5px; color:#787b86;" id="regimeRulesApplied">Rules Applied: 20/50 EMA Slope, ATR(14) expansion, VIX bounds, and Global Confirmation.</div>
+            </div>
+
+            <div class="nova-card">
+              <div class="nova-card-title" style="margin-bottom:12px;">Transparent Multi-Factor Evidence</div>
+              <div style="flex-direction:column; gap:8px;" id="regimeEvidenceList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 12: ECONOMIC CALENDAR & NEWS IMPACT
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceCalendar">
+          <div class="ws-header-title">Macroeconomic Calendar & News Impact Engine</div>
+          <div class="ws-subtitle">High, Medium, and Low impact releases with historical price reaction statistics across Indian equities and global assets.</div>
+
+          <div class="ws-grid-2col" style="margin-top:16px;">
+            <!-- Calendar List -->
+            <div class="nova-card">
+              <div class="nova-card-title" style="margin-bottom:12px;">Scheduled Macro Releases</div>
+              <div style="flex-direction:column; gap:8px; max-height:480px; overflow-y:auto;" id="economicCalendarList">
+                <!-- Dynamically populated from window.economicCalendarService -->
+              </div>
+            </div>
+
+            <!-- Historical Impact Engine -->
+            <div class="nova-card">
+              <div class="nova-card-title" style="margin-bottom:12px;">Historical Event Price Impact: US CPI</div>
+              <div style="font-size:12px; color:#9098ae; margin-bottom:14px;">Historical behavior of NIFTY and global indices across 18 previous announcements:</div>
+              <div style="flex-direction:column; gap:10px;" id="historicalImpactStatsList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 13: NEWS & EVENTS
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceNews">
+          <div class="ws-header-title">Institutional Market News & Events</div>
+          <div class="ws-subtitle">Categorized real-time financial news stream with clear separation of Fact, Market Reaction, and AI Interpretation.</div>
+
+          <div style="flex-direction:column; gap:12px; margin-top:16px;" id="dedicatedNewsFeedList">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 14: MARKET BREADTH & SECTOR ROTATION
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceBreadth">
+          <div class="ws-header-title">Market Breadth & Sector Rotation</div>
+          <div class="ws-subtitle">Advance/decline breadth, percentage of stocks above 20/50/200 EMA, and sector rotation momentum rankings across 1D–1Y.</div>
+
+          <!-- Breadth Summary Cards -->
+          <div class="ws-grid-4col">
+            <div class="nova-card">
+              <span class="hero-stat-label">Advances / Declines</span>
+              <div class="mono" style="font-size:22px; font-weight:700; color:#059669;">312 / 176</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;">A/D Ratio: 1.77 (Bullish)</span>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">% Above 20 EMA</span>
+              <div class="mono" style="font-size:22px; font-weight:700; color:#059669;">68.4%</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;">Short-term expansion</span>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">% Above 50 EMA</span>
+              <div class="mono" style="font-size:22px; font-weight:700; color:var(--aiot-950);">62.1%</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;">Intermediate strength</span>
+            </div>
+            <div class="nova-card">
+              <span class="hero-stat-label">52-Week Highs / Lows</span>
+              <div class="mono" style="font-size:22px; font-weight:700; color:#D97706;">41 / 6</div>
+              <span style="font-size:11.5px; color:var(--aiot-600); font-weight:500;">Net New Highs: +35</span>
+            </div>
+          </div>
+
+          <!-- Sector Rotation Table -->
+          <div class="nova-card" style="margin-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <span class="nova-card-title">Sector Rotation Rankings</span>
+              <div style="display:flex; gap:4px;">
+                <button class="hero-tf-btn" onclick="updateSectorRotationWindow('1D')">1D</button>
+                <button class="hero-tf-btn" onclick="updateSectorRotationWindow('1W')">1W</button>
+                <button class="hero-tf-btn active" onclick="updateSectorRotationWindow('1M')">1M</button>
+                <button class="hero-tf-btn" onclick="updateSectorRotationWindow('3M')">3M</button>
+                <button class="hero-tf-btn" onclick="updateSectorRotationWindow('1Y')">1Y</button>
+              </div>
+            </div>
+
+            <table class="nova-table">
+              <thead>
+                <tr>
+                  <th>Sector Index</th>
+                  <th>Category</th>
+                  <th>Return</th>
+                  <th>RSI(14)</th>
+                  <th>Relative Strength</th>
+                  <th>Volume Pace</th>
+                  <th>Trend Phase</th>
+                </tr>
+              </thead>
+              <tbody id="sectorRotationTbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 15: MARKET SCANNER
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceScanner">
+          <div class="ws-header-title">Advanced Technical Stock & Crypto Scanner</div>
+          <div class="ws-subtitle">Screen equities and crypto across Volume Spikes, RSI, Bollinger Breakouts, 52W Highs/Lows, and EMA Crossovers with 1-click chart loading.</div>
+
+          <!-- Scanner Presets Strip -->
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;">
+            <button class="hero-tf-btn active" onclick="runScannerPreset('Breakout')">Breakout</button>
+            <button class="hero-tf-btn" onclick="runScannerPreset('Momentum')">Momentum</button>
+            <button class="hero-tf-btn" onclick="runScannerPreset('Volume Spike')">Volume Spike (>1.75x)</button>
+            <button class="hero-tf-btn" onclick="runScannerPreset('Oversold')">RSI Oversold (<35)</button>
+            <button class="hero-tf-btn" onclick="runScannerPreset('Overbought')">RSI Overbought (>70)</button>
+            <button class="hero-tf-btn" onclick="runScannerPreset('Trend Following')">Trend Following</button>
+            <button class="hero-tf-btn" onclick="runScannerPreset('High Volatility')">High Volatility</button>
+          </div>
+
+          <div class="nova-card" style="padding:0; overflow-x:auto;">
+            <table class="nova-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Name</th>
+                  <th>Sector</th>
+                  <th>Price</th>
+                  <th>Change %</th>
+                  <th>RVOL</th>
+                  <th>RSI(14)</th>
+                  <th>Bollinger</th>
+                  <th>EMA Cross</th>
+                  <th>52W Dist</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="scannerResultsTbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 16: QUANTITATIVE BACKTESTING STUDIO
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceBacktest">
+          <div class="ws-header-title">Quantitative Strategy Backtesting Studio</div>
+          <div class="ws-subtitle">Rigorous historical strategy simulation with zero look-ahead bias, slippage modeling, commission costs, and Sharpe/Sortino metrics.</div>
+
+          <div class="ws-grid-2col" style="margin-top:16px;">
+            <!-- Setup Rules -->
+            <div class="nova-card">
+              <div class="nova-card-title" style="margin-bottom:12px;">Strategy Parameters</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div style="grid-column: span 2;">
+                  <label class="hero-stat-label">Strategy Model</label>
+                  <select id="btStrategySelect" class="chat-input" style="width:100%; margin-top:4px;">
+                    <option value="rsi_pullback">RSI Pullback & 20 EMA Bounce</option>
+                    <option value="breakout_vol">Range Breakout with Volume Expansion</option>
+                    <option value="macd_cross">MACD Zero-Line Momentum Cross</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="hero-stat-label">Initial Capital</label>
+                  <input type="number" id="btCapital" value="100000" class="chat-input" style="width:100%; margin-top:4px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Risk Per Trade (%)</label>
+                  <input type="number" step="0.1" id="btRiskPct" value="1.0" class="chat-input" style="width:100%; margin-top:4px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Take Profit Multiple</label>
+                  <input type="number" step="0.1" id="btTp" value="2.0" class="chat-input" style="width:100%; margin-top:4px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Stop Loss Multiple</label>
+                  <input type="number" step="0.1" id="btSl" value="1.0" class="chat-input" style="width:100%; margin-top:4px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Commission (%)</label>
+                  <input type="number" step="0.01" id="btComm" value="0.03" class="chat-input" style="width:100%; margin-top:4px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Slippage (%)</label>
+                  <input type="number" step="0.01" id="btSlip" value="0.02" class="chat-input" style="width:100%; margin-top:4px;">
+                </div>
+              </div>
+
+              <button class="nova-quick-pill" onclick="executeBacktest()" style="width:100%; justify-content:center; margin-top:16px; background:#00f2fe; color:#000; font-weight:700;">
+                ▶ Run Quantitative Backtest
+              </button>
+            </div>
+
+            <!-- Backtest Results -->
+            <div class="nova-card">
+              <div class="nova-card-title" style="margin-bottom:12px;">Simulation Results</div>
+              <div class="ws-grid-2col" style="margin-top:0;">
+                <div class="nova-card" style="background:var(--aiot-50); border:1px solid var(--aiot-300);">
+                  <span class="hero-stat-label">Net Profit</span>
+                  <div class="mono" style="font-size:22px; font-weight:700; color:#059669;" id="btNetProfit">+₹24,850 (+24.8%)</div>
+                </div>
+                <div class="nova-card" style="background:var(--aiot-50); border:1px solid var(--aiot-300);">
+                  <span class="hero-stat-label">Win Rate</span>
+                  <div class="mono" style="font-size:22px; font-weight:700; color:#059669;" id="btWinRate">61.5%</div>
+                </div>
+                <div class="nova-card" style="background:var(--aiot-50); border:1px solid var(--aiot-300);">
+                  <span class="hero-stat-label">Profit Factor</span>
+                  <div class="mono" style="font-size:20px; font-weight:700; color:var(--aiot-950);" id="btProfitFactor">1.84</div>
+                </div>
+                <div class="nova-card" style="background:var(--aiot-50); border:1px solid var(--aiot-300);">
+                  <span class="hero-stat-label">Max Drawdown</span>
+                  <div class="mono" style="font-size:20px; font-weight:700; color:#D97706;" id="btMaxDd">4.2%</div>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:14px; padding-top:12px; border-top:1px solid rgba(216, 210, 207, 0.7);">
+                <div>
+                  <span class="hero-stat-label">Sharpe Ratio</span>
+                  <div class="mono" style="font-size:16px; font-weight:700; color:var(--aiot-950);" id="btSharpe">1.76</div>
+                </div>
+                <div>
+                  <span class="hero-stat-label">Sortino Ratio</span>
+                  <div class="mono" style="font-size:16px; font-weight:700; color:var(--aiot-950);" id="btSortino">2.34</div>
+                </div>
+                <div>
+                  <span class="hero-stat-label">Total Trades</span>
+                  <div class="mono" style="font-size:16px; font-weight:700; color:var(--aiot-950);" id="btTotalTrades">42</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 17: AI TRADING ASSISTANT COPILOT
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceAi">
+          <div class="ws-header-title">Conversational AI Trading Assistant</div>
+          <div class="ws-subtitle">Direct platform dataset queries with institutional transparency tags: Live Data, Historical Data, User Trading Data, News, and Statistical Models.</div>
+
+          <!-- Suggested Query Pills -->
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin:16px 0;">
+            <button class="hero-tf-btn" onclick="askAiCopilot('What is the current market regime?')">What is the current market regime?</button>
+            <button class="hero-tf-btn" onclick="askAiCopilot('What position size keeps my risk below 1%?')">What position size keeps risk below 1%?</button>
+            <button class="hero-tf-btn" onclick="askAiCopilot('Show my best-performing strategy.')">Show my best strategy</button>
+            <button class="hero-tf-btn" onclick="askAiCopilot('What are the key resistance levels?')">Key resistance levels</button>
+            <button class="hero-tf-btn" onclick="askAiCopilot('How does crude oil affect this stock?')">How does crude oil affect this stock?</button>
+            <button class="hero-tf-btn" onclick="askAiCopilot('Summarize today\\'s market.')">Summarize today's market</button>
+          </div>
+
+          <!-- Chat Dialog Container -->
+          <div class="nova-card" style="flex:1; display:flex; flex-direction:column; min-height:560px; height:calc(100vh - 190px); background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.75); border-radius:24px; padding:20px 24px; box-shadow:0 8px 30px rgba(43,35,34,0.05);">
+            <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:16px; padding-right:8px;" id="aiChatFeed">
+              <div class="chat-bubble" style="background:var(--aiot-50); border:1px solid var(--aiot-300); border-radius:16px; border-top-left-radius:4px; padding:16px 20px; max-width:88%; box-shadow:0 2px 8px rgba(43,35,34,0.03);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; border-radius:50%; background:var(--aiot-950); display:flex; align-items:center; justify-content:center; color:#FAFAF9; font-size:11px; font-weight:800;">AI</div>
+                    <span class="chat-author" style="font-weight:800; font-size:13px; color:var(--aiot-950);">Nova AI Assistant</span>
+                  </div>
+                  <span class="status-pill status-live" style="font-size:9.5px; font-weight:700;">Attributed Feeds</span>
+                </div>
+                <div class="chat-text" style="color:var(--aiot-900); font-weight:500; font-size:13px; line-height:1.6; margin-top:6px;">
+                  Hello Trader. I have access to your live quotes, historical technical indicators, trade journal, risk management models, and global macroeconomic matrices. Ask me anything about risk management, market regimes, or setup expectations.
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-row" style="margin-top:16px; padding-top:14px; border-top:1px solid rgba(216, 210, 207, 0.65); display:flex; gap:10px; align-items:center;">
+              <input type="text" class="chat-input" placeholder="Ask AI Copilot (e.g. regime, risk %, strategy stats)..." id="aiCopilotInput" onkeydown="if(event.key==='Enter') submitAiCopilotQuery()" style="flex:1; background:#FFFFFF; border:1.5px solid var(--aiot-300); border-radius:9999px; padding:12px 20px; font-size:13px; color:var(--aiot-950); font-weight:500; outline:none; box-shadow:0 2px 8px rgba(43,35,34,0.04);">
+              <button class="chat-send-btn" onclick="submitAiCopilotQuery()" style="width:44px; height:44px; border-radius:50%; background:var(--aiot-950); border:none; color:#FAFAF9; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 12px rgba(13,9,8,0.2);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FAFAF9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 18: TRADE PLANNER & PRE-TRADE CHECKLIST
+             ================================================================== -->
+        <div class="workspace-panel" id="workspacePlanner">
+          <div class="ws-header-title">Trade Plan & Pre-Trade Readiness Checklist</div>
+          <div class="ws-subtitle">Strict checklist gating, parameter formulation, and locked trade plans to enforce behavioral discipline before risk deployment.</div>
+
+          <div class="ws-grid-2col" style="margin-top:16px;">
+            <!-- Pre-Trade Checklist -->
+            <div class="nova-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span class="nova-card-title">Pre-Trade Discipline Checklist</span>
+                <span class="status-pill status-delayed" id="checklistReadinessBadge">GATED (30% READY)</span>
+              </div>
+
+              <div style="flex-direction:column; gap:8px;" id="checklistItemsContainer">
+                <!-- Dynamically populated from window.tradePlannerService.checklistItems -->
+              </div>
+            </div>
+
+            <!-- Formulate & Lock Trade Plan -->
+            <div class="nova-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span class="nova-card-title">Formulate Trade Plan</span>
+                <button class="nova-quick-pill" id="lockTradePlanBtn" onclick="lockCurrentTradePlan()" style="background:#f59e0b; color:#000; font-weight:700;">
+                  Lock Trade Plan
+                </button>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                  <label class="hero-stat-label">Symbol</label>
+                  <input type="text" id="planSymbol" value="RELIANCE" class="chat-input" style="width:100%; margin-top:2px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Direction</label>
+                  <select id="planDirection" class="chat-input" style="width:100%; margin-top:2px;">
+                    <option value="LONG">LONG</option>
+                    <option value="SHORT">SHORT</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="hero-stat-label">Planned Entry</label>
+                  <input type="number" step="any" id="planEntry" value="2980" class="chat-input" style="width:100%; margin-top:2px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Protective Stop</label>
+                  <input type="number" step="any" id="planStop" value="2940" class="chat-input" style="width:100%; margin-top:2px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Target</label>
+                  <input type="number" step="any" id="planTarget" value="3060" class="chat-input" style="width:100%; margin-top:2px;">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Position Size</label>
+                  <input type="number" id="planSize" value="25" class="chat-input" style="width:100%; margin-top:2px;">
+                </div>
+                <div style="grid-column: span 2;">
+                  <label class="hero-stat-label">Entry Setup & Reason</label>
+                  <input type="text" id="planReason" value="Consolidation breakout above 20 EMA on 15m" class="chat-input" style="width:100%; margin-top:2px;">
+                </div>
+                <div style="grid-column: span 2;">
+                  <label class="hero-stat-label">Structural Invalidation Level</label>
+                  <input type="text" id="planInvalidation" value="Break below 2935 swing low" class="chat-input" style="width:100%; margin-top:2px;">
+                </div>
+              </div>
+
+              <div style="margin-top:14px; font-size:11px; color:var(--aiot-600); display:flex; align-items:center; gap:6px;">
+                <svg style="width:13px; height:13px; flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span>Once locked, any subsequent modification to Stop or Size is recorded in the Audit Logs to prevent emotional slippage.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             WORKSPACE 19: SETTINGS
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceSettings">
+          <div class="ws-header-title">Workstation Configuration & Settings</div>
+          <div class="ws-subtitle">Manage risk limits, account parameters, audio chimes, theme appearance, and live exchange credentials.</div>
+
+          <div class="ws-grid-2col" style="margin-top:16px;">
+            <div class="nova-card">
+              <div class="nova-card-title">Risk Enforcement Thresholds</div>
+              <div style="flex-direction:column; gap:12px; margin-top:12px;">
+                <div>
+                  <label class="hero-stat-label">Daily Loss Limit (₹)</label>
+                  <input type="number" value="5000" class="chat-input" style="width:100%; margin-top:4px;" onchange="window.riskManager.dailyLossLimit = Number(this.value); window.riskManager.saveState();">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Weekly Loss Limit (₹)</label>
+                  <input type="number" value="15000" class="chat-input" style="width:100%; margin-top:4px;" onchange="window.riskManager.weeklyLossLimit = Number(this.value); window.riskManager.saveState();">
+                </div>
+                <div>
+                  <label class="hero-stat-label">Max Risk Per Trade (%)</label>
+                  <input type="number" step="0.1" value="1.0" class="chat-input" style="width:100%; margin-top:4px;" onchange="window.riskManager.riskPercent = Number(this.value); window.riskManager.saveState();">
+                </div>
+              </div>
+            </div>
+
+            <div class="nova-card">
+              <div class="nova-card-title">Feeds & Sound Alerts</div>
+              <div style="flex-direction:column; gap:12px; margin-top:12px;">
+                <div>
+                  <label class="hero-stat-label">Delta Exchange WebSocket Feed</label>
+                  <div style="font-size:12.5px; color:#089981; font-weight:600; margin-top:4px;">wss://public-socket.india.delta.exchange (Active)</div>
+                </div>
+                <div>
+                  <label class="hero-stat-label">Audio Chime Notifications</label>
+                  <button class="nova-quick-pill" onclick="alertEngine.playChime()" style="margin-top:4px;">Test Web Audio Chime</button>
+                </div>
+                <div>
+                  <label class="hero-stat-label">Workstation Theme</label>
+                  <div style="font-size:12.5px; color:#00f2fe; margin-top:4px;">Nova Dark Obsidian (Neon Accent)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ── 3. Modals ── -->
+
+  <!-- Search Modal (Ctrl+K) -->
+  <div class="modal-backdrop" id="searchModalBackdrop" onclick="TerminalPlatform.closeSearchModal()">
+    <div class="terminal-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title" style="color:var(--aiot-950); font-weight:700;">Search Stocks, Indices, Crypto & Commodities</div>
+        <button class="modal-close-btn" onclick="TerminalPlatform.closeSearchModal()">✕</button>
+      </div>
+      <div style="padding:12px 16px 10px 16px; border-bottom:1px solid var(--aiot-200); background:#FFFFFF;">
+        <input type="text" id="globalSearchInput" placeholder="Search symbol (e.g. AAPL, NVDA, NIFTY, RELIANCE, BTC, GOLD)..."
+          style="width:100%; background:#FFFFFF; border:1.5px solid var(--aiot-300); color:var(--aiot-950); font-size:13px; font-weight:500; padding:10px 14px; border-radius:8px; outline:none;"
+          oninput="TerminalPlatform.handleSearchQuery(this.value)">
+      </div>
+      <div style="display:flex; gap:6px; padding:10px 16px; border-bottom:1px solid var(--aiot-200); overflow-x:auto; background:var(--aiot-50);">
+        <button class="search-cat-pill active" data-cat="all" onclick="TerminalPlatform.setSearchCategory('all')">All</button>
+        <button class="search-cat-pill" data-cat="indices" onclick="TerminalPlatform.setSearchCategory('indices')">Indices</button>
+        <button class="search-cat-pill" data-cat="us_stocks" onclick="TerminalPlatform.setSearchCategory('us_stocks')">US Stocks</button>
+        <button class="search-cat-pill" data-cat="indian_stocks" onclick="TerminalPlatform.setSearchCategory('indian_stocks')">Indian Equities</button>
+        <button class="search-cat-pill" data-cat="crypto" onclick="TerminalPlatform.setSearchCategory('crypto')">Crypto</button>
+        <button class="search-cat-pill" data-cat="commodities" onclick="TerminalPlatform.setSearchCategory('commodities')">Commodities & FX</button>
+      </div>
+      <div class="modal-body" id="searchResultsList"></div>
+    </div>
+  </div>
+
+  <!-- Technical Indicators Modal -->
+  <div class="modal-backdrop" id="indicatorsModalBackdrop" onclick="closeIndicatorsModal()">
+    <div class="terminal-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">ƒx Technical Indicators & Overlays</div>
+        <button class="modal-close-btn" onclick="closeIndicatorsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="panel-section-title">Main Chart Overlays</div>
+        <div style="flex-direction:column; gap:6px;">
+          <button class="watchlist-row" style="background:#131722;" onclick="TerminalPlatform.toggleOverlay('ema20', 'EMA 20', 'ema', 20, '#00f2fe'); closeIndicatorsModal();">
+            <span>EMA 20 (Exponential Moving Average)</span>
+            <span style="color:#00f2fe; font-weight:700;">Add / Toggle</span>
+          </button>
+          <button class="watchlist-row" style="background:#131722;" onclick="TerminalPlatform.toggleOverlay('ema50', 'EMA 50', 'ema', 50, '#ff9800'); closeIndicatorsModal();">
+            <span>EMA 50 (Trend Filter)</span>
+            <span style="color:#ff9800; font-weight:700;">Add / Toggle</span>
+          </button>
+          <button class="watchlist-row" style="background:#131722;" onclick="TerminalPlatform.toggleOverlay('sma200', 'SMA 200', 'sma', 200, '#e5b955'); closeIndicatorsModal();">
+            <span>SMA 200 (Institutional Benchmark)</span>
+            <span style="color:#e5b955; font-weight:700;">Add / Toggle</span>
+          </button>
+          <button class="watchlist-row" style="background:#131722;" onclick="TerminalPlatform.toggleOverlay('vwap', 'VWAP', 'vwap', 0, '#089981'); closeIndicatorsModal();">
+            <span>VWAP (Volume-Weighted Average Price)</span>
+            <span style="color:#089981; font-weight:700;">Add / Toggle</span>
+          </button>
+        </div>
+
+        <div class="panel-section-title" style="margin-top:16px;">Separate Indicator Sub-Panes</div>
+        <div style="flex-direction:column; gap:6px;">
+          <button class="watchlist-row" style="background:#131722;" onclick="TerminalPlatform.toggleSubPane('rsi', 'RSI (14)'); closeIndicatorsModal();">
+            <span>RSI (Relative Strength Index · 14)</span>
+            <span style="color:#b388ff; font-weight:700;">Open Pane</span>
+          </button>
+          <button class="watchlist-row" style="background:#131722;" onclick="TerminalPlatform.toggleSubPane('macd', 'MACD (12, 26, 9)'); closeIndicatorsModal();">
+            <span>MACD (Moving Average Convergence Divergence)</span>
+            <span style="color:#00f2fe; font-weight:700;">Open Pane</span>
+          </button>
+          <button class="watchlist-row" style="background:#131722;" onclick="TerminalPlatform.toggleSubPane('stoch', 'Stochastic (14, 3)'); closeIndicatorsModal();">
+            <span>Stochastic Oscillator (14, 3)</span>
+            <span style="color:#ff9800; font-weight:700;">Open Pane</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Creation Modal -->
+  <div class="modal-backdrop" id="alertModalBackdrop" onclick="closeAlertModal()">
+    <div class="terminal-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Create Price Alert</div>
+        <button class="modal-close-btn" onclick="closeAlertModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:12px;">
+          <label style="font-size:11px; color:#787b86; display:block; margin-bottom:4px;">Condition</label>
+          <select id="alertConditionSelect" style="width:100%; background:#131722; border:1px solid #363a45; color:#f0f3fa; padding:8px; border-radius:4px;">
+            <option value="crossing_above">Price Crossing Above</option>
+            <option value="crossing_below">Price Crossing Below</option>
+            <option value="greater_than">Price Greater Than</option>
+            <option value="less_than">Price Less Than</option>
+          </select>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="font-size:11px; color:#787b86; display:block; margin-bottom:4px;">Target Price</label>
+          <input type="number" step="any" id="alertTargetPriceInput" style="width:100%; background:#131722; border:1px solid #363a45; color:#f0f3fa; padding:8px; border-radius:4px;">
+        </div>
+        <button onclick="submitNewAlert()" style="width:100%; background:#00f2fe; border:none; color:#000; font-weight:700; padding:10px; border-radius:4px; cursor:pointer;">
+          Create Alert & Activate Chime
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Trade Modal (For Journal) -->
+  <div class="modal-backdrop" id="addTradeModalBackdrop" onclick="closeAddTradeModal()">
+    <div class="terminal-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Record Trade in Journal</div>
+        <button class="modal-close-btn" onclick="closeAddTradeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label class="hero-stat-label">Symbol</label>
+            <input type="text" id="jSymbol" value="RELIANCE" class="chat-input" style="width:100%; margin-top:2px;">
+          </div>
+          <div>
+            <label class="hero-stat-label">Direction</label>
+            <select id="jDirection" class="chat-input" style="width:100%; margin-top:2px;">
+              <option value="LONG">LONG</option>
+              <option value="SHORT">SHORT</option>
+            </select>
+          </div>
+          <div>
+            <label class="hero-stat-label">Entry Price</label>
+            <input type="number" step="any" id="jEntry" value="2980" class="chat-input" style="width:100%; margin-top:2px;">
+          </div>
+          <div>
+            <label class="hero-stat-label">Exit Price</label>
+            <input type="number" step="any" id="jExit" value="3040" class="chat-input" style="width:100%; margin-top:2px;">
+          </div>
+          <div>
+            <label class="hero-stat-label">Quantity</label>
+            <input type="number" id="jQty" value="25" class="chat-input" style="width:100%; margin-top:2px;">
+          </div>
+          <div>
+            <label class="hero-stat-label">Strategy Tag</label>
+            <select id="jStrategy" class="chat-input" style="width:100%; margin-top:2px;">
+              <option value="Breakout">Breakout</option>
+              <option value="Pullback">Pullback</option>
+              <option value="Trend">Trend Following</option>
+              <option value="Reversal">Reversal</option>
+              <option value="Momentum">Momentum</option>
+              <option value="Scalp">Scalp</option>
+              <option value="Swing">Swing</option>
+            </select>
+          </div>
+          <div style="grid-column: span 2;">
+            <label class="hero-stat-label">Notes & Lessons Learned</label>
+            <input type="text" id="jNotes" placeholder="What went well? Any mistakes made?" class="chat-input" style="width:100%; margin-top:2px;">
+          </div>
+        </div>
+        <button onclick="submitNewTradeEntry()" style="width:100%; background:#089981; border:none; color:#fff; font-weight:700; padding:10px; border-radius:4px; margin-top:14px; cursor:pointer;">
+          Save to Journal & Log
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================================
+       AI Quantitative Future Candle & Target Prediction Modal
+       ================================================================== -->
+  <div class="modal-backdrop" id="predictionModalBackdrop" onclick="TerminalPlatform.closePredictionModal()">
+    <div class="terminal-modal prediction-modal-container" onclick="event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="modal-header" style="background:#FAFAF9; border-bottom:1px solid rgba(216,210,207,0.7); padding:14px 20px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="display:flex; align-items:center; color:var(--aiot-950);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg></div>
+          <div>
+            <div class="modal-title" style="color:var(--aiot-950); font-size:16px; font-weight:800; letter-spacing:-0.01em;">AI Quantitative Prediction Terminal</div>
+            <div style="font-size:11px; color:var(--aiot-500); display:flex; align-items:center; gap:8px; margin-top:2px;">
+              <span id="predHeaderSymbol" class="mono font-bold" style="color:var(--aiot-950); font-size:12px;">BTCUSD</span>
+              <span>·</span>
+              <span id="predHeaderTf" class="mono font-bold" style="color:var(--aiot-700); font-size:11.5px;">1m</span>
+              <span>·</span>
+              <span style="color:var(--aiot-500);">Live Mark: <strong id="predHeaderPrice" class="mono" style="color:var(--aiot-950);">--</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <!-- Active Asset Picker Dropdown -->
+          <div style="display:flex; align-items:center; gap:6px; background:#FFFFFF; padding:4px 10px; border-radius:var(--radius-pill); border:1px solid rgba(216,210,207,0.85); box-shadow:0 1px 3px rgba(43,35,34,0.03);">
+            <span style="font-size:10.5px; color:var(--aiot-500); font-weight:700; text-transform:uppercase;">Asset:</span>
+            <select id="predSymbolSelect" onchange="TerminalPlatform.switchPredictionSymbol(this.value)" style="background:transparent; border:none; color:var(--aiot-950); font-weight:700; font-family:'IBM Plex Mono', monospace; font-size:11.5px; cursor:pointer; outline:none;">
+              <optgroup label="Global Indices">
+                <option value="NDX">NDX (NASDAQ 100)</option>
+                <option value="SPX">SPX (S&P 500)</option>
+                <option value="DJI">DJI (Dow Jones)</option>
+                <option value="DAX">DAX 40 (Germany)</option>
+                <option value="NIFTY_50">NIFTY 50 (NSE)</option>
+                <option value="BANKNIFTY">BANK NIFTY (NSE)</option>
+                <option value="SENSEX">SENSEX (BSE)</option>
+              </optgroup>
+              <optgroup label="Crypto & Commodities">
+                <option value="BTCUSD">BTCUSD (Bitcoin)</option>
+                <option value="ETHUSD">ETHUSD (Ethereum)</option>
+                <option value="SOLUSD">SOLUSD (Solana)</option>
+                <option value="XAUUSD">XAUUSD (Gold)</option>
+                <option value="USOIL">USOIL (Crude Oil)</option>
+              </optgroup>
+              <optgroup label="US Tech Leaders">
+                <option value="AAPL">AAPL (Apple)</option>
+                <option value="NVDA">NVDA (NVIDIA)</option>
+                <option value="MSFT">MSFT (Microsoft)</option>
+                <option value="TSLA">TSLA (Tesla)</option>
+                <option value="AMZN">AMZN (Amazon)</option>
+                <option value="GOOGL">GOOGL (Alphabet)</option>
+                <option value="META">META (Meta)</option>
+                <option value="AMD">AMD</option>
+                <option value="PLTR">PLTR (Palantir)</option>
+              </optgroup>
+              <optgroup label="Indian Bluechips">
+                <option value="RELIANCE">RELIANCE (NSE)</option>
+                <option value="TCS">TCS (NSE)</option>
+                <option value="HDFCBANK">HDFCBANK (NSE)</option>
+                <option value="INFY">INFY (NSE)</option>
+                <option value="ICICIBANK">ICICIBANK (NSE)</option>
+                <option value="SBIN">SBIN (NSE)</option>
+                <option value="TATAMOTORS">TATAMOTORS (NSE)</option>
+                <option value="BHARTIARTL">BHARTIARTL (NSE)</option>
+                <option value="LT">LT (NSE)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Horizon Selector -->
+          <div style="display:flex; align-items:center; gap:4px; background:#FFFFFF; padding:3px; border-radius:var(--radius-pill); border:1px solid rgba(216,210,207,0.85); box-shadow:0 1px 3px rgba(43,35,34,0.03);">
+            <span style="font-size:10px; color:var(--aiot-500); padding:0 6px; text-transform:uppercase; font-weight:700;">Horizon:</span>
+            <button class="horizon-pill-btn active" data-horizon="1" onclick="TerminalPlatform.setPredictionHorizon(1)">1 Bar</button>
+            <button class="horizon-pill-btn" data-horizon="2" onclick="TerminalPlatform.setPredictionHorizon(2)">2 Bars</button>
+            <button class="horizon-pill-btn" data-horizon="3" onclick="TerminalPlatform.setPredictionHorizon(3)">3 Bars</button>
+            <button class="horizon-pill-btn" data-horizon="5" onclick="TerminalPlatform.setPredictionHorizon(5)">5 Bars</button>
+          </div>
+          <button class="modal-close-btn" onclick="TerminalPlatform.closePredictionModal()" title="Close [Esc]">✕</button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body" style="padding:16px 20px; max-height:78vh; overflow-y:auto; background:#FFFFFF;">
+
+        <!-- Active Asset Study Indicator -->
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#FAFAF9; border:1px solid rgba(216,210,207,0.75); border-radius:14px; padding:9px 14px; margin-bottom:14px; font-size:11.5px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="pulse-dot"></span>
+            <span style="color:var(--aiot-800);">Studying Real Chart & Market Data: <strong id="predStudiedAssetTitle" style="color:var(--aiot-950);">NDX (NASDAQ 100)</strong></span>
+          </div>
+          <div style="color:var(--aiot-500); font-size:11px;" id="predDataPointsStudied">
+            157 Historical Bars Analyzed
+          </div>
+        </div>
+
+        <!-- Top Consensus & Model Status Banner -->
+        <div class="pred-top-banner">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div class="pred-signal-pill buy" id="predSignalBadge">
+              <span id="predSignalIcon" style="display:inline-flex; align-items:center;">▲</span>
+              <span id="predSignalText">STRONG BUY</span>
+            </div>
+            <div>
+              <div style="font-size:14px; font-weight:800; color:var(--aiot-950);" id="predConfidenceText">85% Model Confidence</div>
+              <div style="font-size:11px; color:var(--aiot-500);" id="predModelVer">Institutional Bayesian Consensus v2</div>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:10px; color:var(--aiot-500); text-transform:uppercase; letter-spacing:0.04em;">Market Regime</div>
+              <div style="font-size:12px; font-weight:700; color:var(--aiot-950);" id="predRegimeBadge">Bull (Risk-On)</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:10px; color:var(--aiot-500); text-transform:uppercase; letter-spacing:0.04em;">Expected Drift & Vol</div>
+              <div style="font-size:13px; font-weight:800; color:var(--aiot-950);" class="mono" id="predExpectedReturn">+1.45% drift · ±0.62%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Prediction Grid -->
+        <div class="pred-grid-2col">
+
+          <!-- Left Column: Future Candlestick Forecast -->
+          <div class="pred-subcard">
+            <div class="pred-card-title">
+              <span>Future Candlestick Projection</span>
+              <span id="predCandleDirectionPill" class="status-pill status-live" style="font-size:9.5px;">BULLISH</span>
+            </div>
+
+            <!-- Candlestick Visual Graphic Box -->
+            <div class="future-candle-box">
+              <div class="candle-graphic-container" id="candleGraphicContainer">
+                <div class="cg-wick" id="cgWick" style="top:5px; height:85px;"></div>
+                <div class="cg-body bullish" id="cgBody" style="top:25px; height:45px;"></div>
+              </div>
+
+              <div class="candle-meta-list" style="flex:1; margin-left:14px;">
+                <div class="candle-meta-row">
+                  <span class="candle-meta-label">Projected High:</span>
+                  <span class="candle-meta-val" id="predCandleHigh" style="color:#059669;">--</span>
+                </div>
+                <div class="candle-meta-row">
+                  <span class="candle-meta-label">Projected Close:</span>
+                  <span class="candle-meta-val" id="predCandleClose" style="color:var(--aiot-950); font-size:13.5px;">--</span>
+                </div>
+                <div class="candle-meta-row">
+                  <span class="candle-meta-label">Baseline Open:</span>
+                  <span class="candle-meta-val" id="predCandleOpen">--</span>
+                </div>
+                <div class="candle-meta-row">
+                  <span class="candle-meta-label">Projected Low:</span>
+                  <span class="candle-meta-val" id="predCandleLow" style="color:#dc2626;">--</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size:11px; color:var(--aiot-500); display:flex; justify-content:space-between; margin-top:3px;">
+              <span>80% Quantile Band:</span>
+              <span class="mono" id="predQuantileBand" style="color:var(--aiot-950); font-weight:700;">[-- — --]</span>
+            </div>
+            <div style="font-size:10.5px; color:var(--aiot-500); margin-top:4px; display:flex; justify-content:space-between;">
+              <span>Target Horizon Time:</span>
+              <span class="mono" id="predTargetTime">--</span>
+            </div>
+          </div>
+
+          <!-- Right Column: Consensus Targets & Invalidation -->
+          <div class="pred-subcard">
+            <div class="pred-card-title">
+              <span>Consensus Profit Targets & SL</span>
+              <span class="mono" id="predRRBadge" style="color:var(--aiot-700); font-size:10.5px; font-weight:700;">R:R 1:2.4</span>
+            </div>
+
+            <!-- Target 3 (Runner) -->
+            <div class="target-step-row tp3">
+              <span style="color:var(--aiot-700); font-weight:600;">TP3 (Runner)</span>
+              <span class="mono font-bold" id="predTP3Val">--</span>
+              <span class="status-pill" id="predTP3Pct" style="background:rgba(80,71,64,0.1); color:var(--aiot-700); font-size:10px;">+3.5%</span>
+            </div>
+
+            <!-- Target 2 (Extended) -->
+            <div class="target-step-row tp2">
+              <span style="color:var(--aiot-600); font-weight:600;">TP2 (Secondary)</span>
+              <span class="mono font-bold" id="predTP2Val">--</span>
+              <span class="status-pill" id="predTP2Pct" style="background:rgba(91,83,75,0.1); color:var(--aiot-600); font-size:10px;">+2.0%</span>
+            </div>
+
+            <!-- Target 1 (Primary Target) -->
+            <div class="target-step-row tp1">
+              <span style="color:#059669; font-weight:700;">TP1 (Primary Target)</span>
+              <span class="mono font-bold" id="predTP1Val" style="color:#059669;">--</span>
+              <span class="status-pill" id="predTP1Pct" style="background:rgba(5,150,105,0.12); color:#059669; font-size:10px;">+1.2%</span>
+            </div>
+
+            <!-- Protective Stop Loss -->
+            <div class="target-step-row sl">
+              <span style="color:#dc2626; font-weight:700;">Stop Loss (Invalidation)</span>
+              <span class="mono font-bold" id="predSLVal" style="color:#dc2626;">--</span>
+              <span class="status-pill" id="predSLPct" style="background:rgba(220,38,38,0.12); color:#dc2626; font-size:10px;">-0.8%</span>
+            </div>
+
+            <!-- Barrier Probabilities -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; font-size:11px; background:#FFFFFF; border:1px solid rgba(216,210,207,0.7); padding:6px 12px; border-radius:10px;">
+              <span style="color:var(--aiot-500);">Barrier Probabilities:</span>
+              <span>
+                <strong style="color:#059669;" id="predBarrierTarget">P(TP1): 68%</strong>
+                <span style="color:var(--aiot-400); margin:0 4px;">vs</span>
+                <strong style="color:#dc2626;" id="predBarrierStop">P(SL): 32%</strong>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Directional Probability Distribution Bar -->
+        <div class="pred-subcard" style="margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+            <span style="font-weight:700; color:var(--aiot-500); text-transform:uppercase;">Multi-Target Directional Probabilities</span>
+            <span style="color:var(--aiot-500); font-size:10.5px;">Recommended Kelly Risk: <strong id="predKellyVal" style="color:var(--aiot-950); font-family:'IBM Plex Mono', monospace;">12.5%</strong></span>
+          </div>
+
+          <div class="prob-dist-bar">
+            <div class="prob-seg-up" id="probSegUp" style="width:62%;" title="P(UP)"></div>
+            <div class="prob-seg-flat" id="probSegFlat" style="width:16%;" title="P(SIDEWAYS)"></div>
+            <div class="prob-seg-down" id="probSegDown" style="width:22%;" title="P(DOWN)"></div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; font-size:11px;" class="mono">
+            <span style="color:#059669;">▲ P(UP): <strong id="predPUp">62%</strong></span>
+            <span style="color:var(--aiot-500);">▬ P(SIDEWAYS): <strong id="predPFlat">16%</strong></span>
+            <span style="color:#dc2626;">▼ P(DOWN): <strong id="predPDown">22%</strong></span>
+          </div>
+        </div>
+
+        <!-- 10 Strategy Consensus Matrix -->
+        <div class="pred-subcard" style="margin-bottom:14px;">
+          <div class="pred-card-title">
+            <span>10-Strategy Institutional Consensus</span>
+            <span style="color:var(--aiot-500); font-size:10.5px;" id="predConsensusVoteCount">7 BUY · 1 SELL · 2 HOLD</span>
+          </div>
+          <div class="strat-chip-grid" id="predStratChipsGrid">
+            <!-- Dynamically populated from calibrated strategies -->
+          </div>
+        </div>
+
+        <!-- Attribution Factors -->
+        <div class="pred-subcard" style="margin-bottom:16px;">
+          <div class="pred-card-title">
+            <span>Model Explainability & Key Drivers</span>
+            <span style="color:var(--aiot-600); font-size:10.5px; font-weight:700;">SHAP Confluence</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:11px;">
+            <div>
+              <div style="color:var(--aiot-950); font-weight:700; margin-bottom:4px;">Positive Catalysts</div>
+              <ul id="predPosFactorsList" style="margin:0; padding-left:16px; color:var(--aiot-800); line-height:1.45;">
+                <!-- Populated -->
+              </ul>
+            </div>
+            <div>
+              <div style="color:var(--aiot-950); font-weight:700; margin-bottom:4px;">Risks & Headwinds</div>
+              <ul id="predRisksList" style="margin:0; padding-left:16px; color:var(--aiot-800); line-height:1.45;">
+                <!-- Populated -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons Bar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid rgba(216,210,207,0.7); padding-top:14px;">
+          <button onclick="TerminalPlatform.executePrediction()" style="background:var(--aiot-950); color:#FAFAF9; font-weight:700; border:none; border-radius:var(--radius-pill); padding:8px 20px; font-size:12px; cursor:pointer; box-shadow:0 4px 14px rgba(13,9,8,0.18);">
+            <span>Re-Run Prediction</span>
+          </button>
+
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button onclick="TerminalPlatform.applyPredictionToRisk()" class="nova-quick-pill" style="background:#FFFFFF; color:var(--aiot-900); border:1px solid rgba(216,210,207,0.8); border-radius:var(--radius-pill); padding:6px 14px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              <span>Apply to Risk Manager</span>
+            </button>
+            <button onclick="TerminalPlatform.applyPredictionToPlan()" class="nova-quick-pill" style="background:#FFFFFF; color:var(--aiot-900); border:1px solid rgba(216,210,207,0.8); border-radius:var(--radius-pill); padding:6px 14px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              <span>Transfer to Trade Plan</span>
+            </button>
+            <button onclick="TerminalPlatform.setPredictionTargetAlert()" class="nova-quick-pill" style="background:#FFFFFF; color:var(--aiot-900); border:1px solid rgba(216,210,207,0.8); border-radius:var(--radius-pill); padding:6px 14px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              <span>Set TP1 Alert</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating AI Chat Launcher Pill -->
+  <button class="floating-chat-launcher" id="floatingChatLauncher" onclick="window.liveChatEngine.toggleChat()" title="Open AI Copilot [Ctrl+J]">
+    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>AI Copilot</span>
+    <span class="hotkey-pill">Ctrl+J</span>
+  </button>
+
+  <!-- AI Copilot Backdrop & Slide-Out Drawer -->
+  <div class="ai-chat-backdrop" id="aiChatBackdrop" onclick="window.liveChatEngine.closeSidebar()"></div>
+  <aside class="ai-chat-drawer" id="aiChatDrawer" aria-label="AI Quantitative Copilot">
+    <div class="ai-chat-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:32px; height:32px; border-radius:50%; background:var(--aiot-950); color:#FAFAF9; display:flex; align-items:center; justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+        </div>
+        <div>
+          <div style="font-size:14px; font-weight:800; color:var(--aiot-950);">AI Quantitative Copilot</div>
+          <div style="font-size:11px; color:var(--aiot-500); display:flex; align-items:center; gap:6px;">
+            <span class="pulse-dot"></span>
+            <span>Real-time Technical & Macro Assistant</span>
+          </div>
+        </div>
+      </div>
+      <button class="modal-close-btn" onclick="window.liveChatEngine.closeSidebar()" title="Close [Esc]">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Quick Prompt Chips -->
+    <div class="ai-prompt-chips">
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('What is the current market regime?')">Regime Audit</button>
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Predict next candle target for active symbol')">Candle Forecast</button>
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Calculate recommended position size and stop loss')">Position Size</button>
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Summarize key macro risks today')">Macro Risks</button>
+    </div>
+
+    <!-- Chat Messages Scroll Container -->
+    <div class="ai-chat-messages" id="aiDrawerFeed">
+      <!-- Populated dynamically by LiveChatEngine -->
+    </div>
+
+    <!-- Chat Input Bar -->
+    <div class="ai-chat-footer">
+      <form onsubmit="event.preventDefault(); window.liveChatEngine.sendMessage();" style="display:flex; gap:8px; width:100%; align-items:center;">
+        <input type="text" id="aiDrawerInput" class="ai-drawer-input" placeholder="Ask AI Copilot about any symbol, regime, or trade plan..." autocomplete="off">
+        <button type="submit" class="ai-drawer-send-btn" title="Send message">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Core Scripts -->
+  <script src="data.js?v=aiot_v7"></script>
+  <script src="indicators.js?v=aiot_v7"></script>
+  <script src="strategies.js?v=aiot_v7"></script>
+  <script src="prediction.js?v=aiot_v7"></script>
+  <script src="js/market-data-service.js?v=aiot_v7"></script>
+  <script src="js/chart-engine.js?v=aiot_v7"></script>
+  <script src="js/indicator-engine.js?v=aiot_v7"></script>
+  <script src="js/drawing-engine.js?v=aiot_v7"></script>
+  <script src="js/replay-engine.js?v=aiot_v7"></script>
+  <script src="js/alert-engine.js?v=aiot_v7"></script>
+  <script src="js/ai-analysis-engine.js?v=aiot_v7"></script>
+
+  <!-- Workstation Modules -->
+  <script src="js/modules/risk-manager.js?v=aiot_v7"></script>
+  <script src="js/modules/journal-service.js?v=aiot_v7"></script>
+  <script src="js/modules/global-markets.js?v=aiot_v7"></script>
+  <script src="js/modules/market-regime.js?v=aiot_v7"></script>
+  <script src="js/modules/economic-calendar.js?v=aiot_v7"></script>
+  <script src="js/modules/market-breadth.js?v=aiot_v7"></script>
+  <script src="js/modules/market-scanner.js?v=aiot_v7"></script>
+  <script src="js/modules/backtest-engine.js?v=aiot_v7"></script>
+  <script src="js/modules/ai-assistant.js?v=aiot_v7"></script>
+  <script src="js/modules/trade-planner.js?v=aiot_v7"></script>
+  <script src="js/modules/live-chat.js?v=aiot_v7"></script>
+
+  <!-- Master Platform Orchestrator -->
+  <script src="js/platform.js?v=aiot_v7"></script>
+
+  <!-- Inline Helper Routines for Workspaces -->
+  <script>
+    function openIndicatorsModal() { document.getElementById('indicatorsModalBackdrop').classList.add('open'); }
+    function closeIndicatorsModal() { document.getElementById('indicatorsModalBackdrop').classList.remove('open'); }
+    function openAlertModal() {
+      document.getElementById('alertModalBackdrop').classList.add('open');
+      const input = document.getElementById('alertTargetPriceInput');
+      const curPrice = document.getElementById('headerActivePrice').textContent.replace(/[^0-9.]/g, '');
+      if (input && curPrice) input.value = curPrice;
+    }
+    function closeAlertModal() { document.getElementById('alertModalBackdrop').classList.remove('open'); }
+    function submitNewAlert() {
+      const cond = document.getElementById('alertConditionSelect').value;
+      const target = document.getElementById('alertTargetPriceInput').value;
+      const sym = document.getElementById('headerActiveSymbol').textContent;
+      if (!target || !window.alertEngine) return;
+      alertEngine.createAlert({ symbol: sym, condition: cond, targetPrice: target });
+      closeAlertModal();
+    }
+
+    function openAddTradeModal() { document.getElementById('addTradeModalBackdrop').classList.add('open'); }
+    function closeAddTradeModal() { document.getElementById('addTradeModalBackdrop').classList.remove('open'); }
+    function submitNewTradeEntry() {
+      const sym = document.getElementById('jSymbol').value;
+      const dir = document.getElementById('jDirection').value;
+      const entry = Number(document.getElementById('jEntry').value);
+      const exit = Number(document.getElementById('jExit').value);
+      const qty = Number(document.getElementById('jQty').value);
+      const strat = document.getElementById('jStrategy').value;
+      const notes = document.getElementById('jNotes').value;
+
+      if (window.journalService) {
+        window.journalService.addTrade({
+          symbol: sym,
+          direction: dir,
+          entry,
+          exit,
+          stop: dir === 'LONG' ? entry * 0.985 : entry * 1.015,
+          target: dir === 'LONG' ? entry * 1.03 : entry * 0.97,
+          quantity: qty,
+          strategy: strat,
+          notes,
+          tags: [strat, 'Intraday']
+        });
+        TerminalPlatform.renderTradeJournalWorkspace();
+        TerminalPlatform.renderTradingLogsWorkspace();
+        TerminalPlatform.renderAnalyticsWorkspace();
+      }
+      closeAddTradeModal();
+    }
+
+    function activateRiskRewardTool() {
+      if (window.drawingEngine) {
+        drawingEngine.setTool('risk_reward');
+      }
+    }
+
+    function recalcPositionSize() {
+      if (!window.riskManager) return;
+      const balance = Number(document.getElementById('calcAccountBalance').value) || 100000;
+      const riskPct = Number(document.getElementById('calcRiskPercent').value) || 1.0;
+      const entry = Number(document.getElementById('calcEntryPrice').value) || 100;
+      const stop = Number(document.getElementById('calcStopLoss').value) || 98;
+      const target = Number(document.getElementById('calcTargetPrice').value) || 104;
+      const dir = document.getElementById('calcDirection').value;
+      const lev = Number(document.getElementById('calcLeverage').value) || 1;
+      const lotSize = Number(document.getElementById('calcLotSize').value) || 1;
+      const fees = Number(document.getElementById('calcFees').value) || 0.05;
+      const instrument = document.getElementById('calcInstrument').value;
+
+      window.riskManager.accountBalance = balance;
+      window.riskManager.riskPercent = riskPct;
+
+      const res = window.riskManager.calculatePosition({
+        entryPrice: entry,
+        stopLoss: stop,
+        targetPrice: target,
+        direction: dir,
+        leverage: lev,
+        lotSize: lotSize,
+        instrument: instrument,
+        feesPercent: fees
+      });
+
+      if (!res.valid) return;
+
+      const sym = res.currencySymbol || '₹';
+      document.querySelectorAll('.risk-curr-sym').forEach(el => el.textContent = sym);
+
+      // Handle auto-correction notice
+      const notice = document.getElementById('calcAutoCorrectNotice');
+      if (res.autoCorrected) {
+        document.getElementById('calcDirection').value = res.direction;
+        if (notice) {
+          notice.style.display = 'block';
+          notice.textContent = res.correctionNote;
+        }
+      } else if (notice) {
+        notice.style.display = 'none';
+      }
+
+      document.getElementById('calcOutQty').textContent = `${res.maximumQuantity.toLocaleString()} units`;
+      document.getElementById('calcOutLots').textContent = `${res.lots} ${res.lots === 1 ? 'lot' : 'lots'} (${res.lotSize} units/lot)`;
+      document.getElementById('calcOutCapital').textContent = `${sym}${Math.round(res.totalCapitalRequired).toLocaleString()}`;
+      document.getElementById('calcOutMargin').textContent = `Margin: ${sym}${Math.round(res.marginRequired).toLocaleString()} (${res.leverageUsed}x)`;
+      document.getElementById('calcOutLoss').textContent = `${sym}${res.maximumLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('calcOutProfit').textContent = `${sym}${res.potentialProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      const riskPerUnitEl = document.getElementById('calcOutRiskPerUnit');
+      if (riskPerUnitEl) riskPerUnitEl.textContent = `Risk per unit: ${sym}${res.riskPerShare.toFixed(2)}`;
+
+      const targetDistEl = document.getElementById('calcOutTargetDist');
+      if (targetDistEl) targetDistEl.textContent = `Target distance: ${sym}${res.targetDistance.toFixed(2)}`;
+
+      document.getElementById('calcOutRR').textContent = res.rrFormatted;
+      document.getElementById('calcOutBeRate').textContent = `${res.breakEvenWinRate.toFixed(1)}%`;
+      document.getElementById('calcFormulaDisplay').textContent = res.formula;
+
+      const badge = document.getElementById('calcRiskLevelBadge');
+      badge.textContent = res.riskLevel;
+      badge.className = `status-pill ${res.riskBadgeClass}`;
+
+      // Update daily warning and progress bars
+      const warnContainer = document.getElementById('riskWarningContainer');
+      const evalRes = window.riskManager.evaluateTradeLimits(res.maximumLoss, res.marginRequired);
+      
+      const dailyLimitValEl = document.getElementById('calcDailyLossLimitVal');
+      if (dailyLimitValEl) dailyLimitValEl.textContent = `${sym}${window.riskManager.dailyLossLimit.toLocaleString()}`;
+      const curLossValEl = document.getElementById('calcCurrentLossVal');
+      if (curLossValEl) curLossValEl.textContent = `${sym}${window.riskManager.currentDailyLoss.toLocaleString()}`;
+      const remValEl = document.getElementById('calcRemainingDailyVal');
+      if (remValEl) remValEl.textContent = `${sym}${evalRes.remainingDailyLimit.toLocaleString()}`;
+
+      const progressEl = document.getElementById('calcDailyLossProgress');
+      if (progressEl) {
+        const pct = Math.min(100, Math.round((window.riskManager.currentDailyLoss / window.riskManager.dailyLossLimit) * 100));
+        progressEl.style.width = `${pct}%`;
+      }
+
+      if (evalRes.warnings.length > 0) {
+        warnContainer.style.background = 'rgba(217,119,6,0.08)';
+        warnContainer.style.borderColor = 'rgba(217,119,6,0.25)';
+        warnContainer.style.color = '#d97706';
+        warnContainer.innerHTML = `<strong>${evalRes.status}:</strong> ${evalRes.warnings[0].message}`;
+      } else {
+        warnContainer.style.background = 'rgba(5,150,105,0.08)';
+        warnContainer.style.borderColor = 'rgba(5,150,105,0.25)';
+        warnContainer.style.color = '#059669';
+        warnContainer.innerHTML = `<strong>LOW RISK:</strong> Planned trade risk (${sym}${res.maximumLoss.toFixed(2)}) complies with institutional loss limits.`;
+      }
+    }
+
+    async function submitAiCopilotQuery() {
+      const input = document.getElementById('aiCopilotInput');
+      if (!input || !input.value.trim()) return;
+      const q = input.value.trim();
+      input.value = '';
+      await askAiCopilot(q);
+    }
+
+    async function askAiCopilot(query) {
+      const feed = document.getElementById('aiChatFeed');
+      if (!feed || !window.aiTradingAssistant) return;
+
+      // Append user bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble';
+      userBubble.style.alignSelf = 'flex-end';
+      userBubble.style.background = 'var(--aiot-950)';
+      userBubble.style.color = '#FAFAF9';
+      userBubble.style.borderRadius = '16px';
+      userBubble.style.borderTopRightRadius = '4px';
+      userBubble.style.padding = '12px 18px';
+      userBubble.style.maxWidth = '80%';
+      userBubble.style.boxShadow = '0 4px 14px rgba(13,9,8,0.15)';
+      userBubble.innerHTML = `<span class="chat-author" style="color:var(--aiot-400); font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;">You</span><div class="chat-text" style="color:#FAFAF9; font-size:13px; font-weight:500; margin-top:4px; line-height:1.5;">${query}</div>`;
+      feed.appendChild(userBubble);
+      feed.scrollTop = feed.scrollHeight;
+
+      // Ask assistant
+      const res = await window.aiTradingAssistant.ask(query);
+      const aiBubble = document.createElement('div');
+      aiBubble.className = 'chat-bubble';
+      aiBubble.style.background = 'var(--aiot-50)';
+      aiBubble.style.border = '1px solid var(--aiot-300)';
+      aiBubble.style.borderRadius = '16px';
+      aiBubble.style.borderTopLeftRadius = '4px';
+      aiBubble.style.padding = '16px 20px';
+      aiBubble.style.maxWidth = '88%';
+      aiBubble.style.boxShadow = '0 2px 8px rgba(43,35,34,0.03)';
+
+      const sourcesHtml = res.sources.map(s => `<span class="status-pill status-live" style="font-size:9.5px; font-weight:700; margin-right:4px;">[${s}]</span>`).join('');
+
+      aiBubble.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:24px; height:24px; border-radius:50%; background:var(--aiot-950); display:flex; align-items:center; justify-content:center; color:#FAFAF9; font-size:11px; font-weight:800;">AI</div>
+            <span class="chat-author" style="font-weight:800; font-size:13px; color:var(--aiot-950);">Nova AI Copilot</span>
+          </div>
+          <div>${sourcesHtml}</div>
+        </div>
+        <div class="chat-text" style="color:var(--aiot-900); font-weight:500; font-size:13px; white-space:pre-wrap; line-height:1.6;">${res.response}</div>
+      `;
+      feed.appendChild(aiBubble);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function lockCurrentTradePlan() {
+      if (!window.tradePlannerService) return;
+      const success = window.tradePlannerService.lockPlan();
+      const btn = document.getElementById('lockTradePlanBtn');
+      if (btn) {
+        btn.textContent = 'Plan Locked';
+        btn.style.background = '#089981';
+        btn.disabled = true;
+      }
+      alert('Trade Plan Locked! Any subsequent stop or size modifications will be recorded in the audit logs.');
+    }
+
+    function executeBacktest() {
+      if (!window.backtestEngine) return;
+      const strat = document.getElementById('btStrategySelect').value;
+      const capital = Number(document.getElementById('btCapital').value) || 100000;
+      const riskPct = Number(document.getElementById('btRiskPct').value) || 1.0;
+      const tp = Number(document.getElementById('btTp').value) || 2.0;
+      const sl = Number(document.getElementById('btSl').value) || 1.0;
+      const comm = Number(document.getElementById('btComm').value) || 0.03;
+      const slip = Number(document.getElementById('btSlip').value) || 0.02;
+
+      const candles = (window.chartEngine && window.chartEngine.candles) ? window.chartEngine.candles : [];
+      const res = window.backtestEngine.runBacktest(candles, {
+        strategy: strat,
+        capital,
+        riskPercent: riskPct,
+        tpMultiple: tp,
+        slMultiple: sl,
+        commission: comm,
+        slippage: slip
+      });
+
+      document.getElementById('btNetProfit').textContent = `${res.netProfit >= 0 ? '+' : ''}₹${res.netProfit.toLocaleString()} (${res.netProfitPct}%)`;
+      document.getElementById('btNetProfit').style.color = res.netProfit >= 0 ? '#089981' : '#f23645';
+      document.getElementById('btWinRate').textContent = `${res.winRate}%`;
+      document.getElementById('btProfitFactor').textContent = res.profitFactor;
+      document.getElementById('btMaxDd').textContent = `${res.maxDrawdown}%`;
+      document.getElementById('btSharpe').textContent = res.sharpeRatio;
+      document.getElementById('btSortino').textContent = res.sortinoRatio;
+      document.getElementById('btTotalTrades').textContent = res.totalTrades;
+    }
+  </script>
+</body>
+</html>
