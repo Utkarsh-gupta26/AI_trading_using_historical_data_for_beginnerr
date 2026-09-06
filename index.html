@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AIOT (All-in-One Trading App) — Institutional charting, risk management, trade journal, market regime detection, global market correlation, and AI market intelligence.">
   <title>AIOT — All-in-One Trading App</title>
-  <link rel="stylesheet" href="styles.css?v=aiot_v7">
+  <link rel="stylesheet" href="styles.css?v=aiot_v15">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="js/icons.js?v=aiot_v7"></script>
+  <script src="js/icons.js?v=aiot_v15"></script>
 </head>
 <body style="margin:0; padding:0; background:#F5F5F4; overflow:hidden;">
 
@@ -203,6 +203,30 @@
              WORKSPACE 1: MARKETS OVERVIEW (NOVA TRADE REFERENCE UI)
              ================================================================== -->
         <div class="workspace-panel" id="workspaceMarkets">
+          <!-- Global Market Trading Session Status Bar -->
+          <div class="market-sessions-bar" id="marketSessionsBar" style="background:#FFFFFF; border:1px solid rgba(216,210,207,0.8); border-radius:12px; padding:10px 16px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 1px 3px rgba(13,9,8,0.03);">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="font-weight:800; font-size:12px; color:var(--aiot-950); display:flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Market Sessions
+              </div>
+              <div id="liveClockBadge" class="mono" style="font-size:11px; font-weight:700; color:var(--aiot-600); background:rgba(13,9,8,0.04); padding:3px 8px; border-radius:6px;">
+                --:--:-- UTC
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;" id="marketSessionChipsContainer">
+              <!-- Dynamically populated session status chips -->
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button class="nova-quick-pill" onclick="TerminalPlatform.syncWatchlistQuotes()" style="padding:4px 10px; font-size:10.5px; font-weight:700; cursor:pointer;" title="Fetch latest live market quotes">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Sync Quotes
+              </button>
+            </div>
+          </div>
+
           <div class="nova-overview-grid">
 
             <!-- Left Column: Watchlist + Portfolio Value Card -->
@@ -245,6 +269,9 @@
                     <button class="hero-tf-btn" onclick="TerminalPlatform.setTimeframe('1Y')">1Y</button>
                   </div>
                 </div>
+
+                <!-- Live Market Status Callout for Active Asset -->
+                <div id="heroMarketStatusBanner" style="margin:10px 0;"></div>
 
                 <!-- Interactive Preview / Mini Candle Container -->
                 <div id="heroChartPreview" style="height:210px; position:relative; background:rgba(13,9,8,0.03); border-radius:10px; overflow:hidden; border:1px solid rgba(216,210,207,0.7); display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="TerminalPlatform.loadSymbol(TerminalPlatform.getCurrentSymbol ? TerminalPlatform.getCurrentSymbol() : 'BTCUSD'); TerminalPlatform.switchWorkspace('chart');">
@@ -1870,30 +1897,30 @@
   <script src="data.js?v=aiot_v7"></script>
   <script src="indicators.js?v=aiot_v7"></script>
   <script src="strategies.js?v=aiot_v7"></script>
-  <script src="prediction.js?v=aiot_v7"></script>
-  <script src="js/market-data-service.js?v=aiot_v7"></script>
-  <script src="js/chart-engine.js?v=aiot_v7"></script>
-  <script src="js/indicator-engine.js?v=aiot_v7"></script>
-  <script src="js/drawing-engine.js?v=aiot_v7"></script>
-  <script src="js/replay-engine.js?v=aiot_v7"></script>
-  <script src="js/alert-engine.js?v=aiot_v7"></script>
-  <script src="js/ai-analysis-engine.js?v=aiot_v7"></script>
+  <script src="prediction.js?v=aiot_v15"></script>
+  <script src="js/market-data-service.js?v=aiot_v15"></script>
+  <script src="js/chart-engine.js?v=aiot_v15"></script>
+  <script src="js/indicator-engine.js?v=aiot_v15"></script>
+  <script src="js/drawing-engine.js?v=aiot_v15"></script>
+  <script src="js/replay-engine.js?v=aiot_v15"></script>
+  <script src="js/alert-engine.js?v=aiot_v15"></script>
+  <script src="js/ai-analysis-engine.js?v=aiot_v15"></script>
 
   <!-- Workstation Modules -->
-  <script src="js/modules/risk-manager.js?v=aiot_v7"></script>
-  <script src="js/modules/journal-service.js?v=aiot_v7"></script>
-  <script src="js/modules/global-markets.js?v=aiot_v7"></script>
-  <script src="js/modules/market-regime.js?v=aiot_v7"></script>
-  <script src="js/modules/economic-calendar.js?v=aiot_v7"></script>
-  <script src="js/modules/market-breadth.js?v=aiot_v7"></script>
-  <script src="js/modules/market-scanner.js?v=aiot_v7"></script>
-  <script src="js/modules/backtest-engine.js?v=aiot_v7"></script>
-  <script src="js/modules/ai-assistant.js?v=aiot_v7"></script>
-  <script src="js/modules/trade-planner.js?v=aiot_v7"></script>
-  <script src="js/modules/live-chat.js?v=aiot_v7"></script>
+  <script src="js/modules/risk-manager.js?v=aiot_v15"></script>
+  <script src="js/modules/journal-service.js?v=aiot_v15"></script>
+  <script src="js/modules/global-markets.js?v=aiot_v15"></script>
+  <script src="js/modules/market-regime.js?v=aiot_v15"></script>
+  <script src="js/modules/economic-calendar.js?v=aiot_v15"></script>
+  <script src="js/modules/market-breadth.js?v=aiot_v15"></script>
+  <script src="js/modules/market-scanner.js?v=aiot_v15"></script>
+  <script src="js/modules/backtest-engine.js?v=aiot_v15"></script>
+  <script src="js/modules/ai-assistant.js?v=aiot_v15"></script>
+  <script src="js/modules/trade-planner.js?v=aiot_v15"></script>
+  <script src="js/modules/live-chat.js?v=aiot_v15"></script>
 
   <!-- Master Platform Orchestrator -->
-  <script src="js/platform.js?v=aiot_v7"></script>
+  <script src="js/platform.js?v=aiot_v15"></script>
 
   <!-- Inline Helper Routines for Workspaces -->
   <script>

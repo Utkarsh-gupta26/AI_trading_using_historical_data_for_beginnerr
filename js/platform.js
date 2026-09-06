@@ -185,7 +185,9 @@ const TerminalPlatform = (() => {
     renderWatchlist();
     renderDedicatedWatchlist();
 
-    // Start Live Market Quotes Synchronization
+    // Start Live Market Quotes Synchronization & Session Clock
+    renderMarketSessionChips();
+    setInterval(() => renderMarketSessionChips(), 1000);
     syncWatchlistQuotes();
     setInterval(() => syncWatchlistQuotes(), 7500);
 
@@ -1267,9 +1269,126 @@ const TerminalPlatform = (() => {
     }
   }
 
-  // ── 11B. Real-Time Quotes Synchronization Engine ─────────────────────────────
+  // ── 11B. Real-Time Quotes & Market Session Engine ───────────────────────────
   let liveQuotesData = {};
   let overviewSelectedSymbol = 'BTCUSD';
+
+  function getMarketSessionInfo() {
+    const now = new Date();
+    const utcDay = now.getUTCDay(); // 0 = Sun, 6 = Sat
+    const utcHours = now.getUTCHours();
+    const utcMinutes = now.getUTCMinutes();
+    const utcMin = utcHours * 60 + utcMinutes;
+
+    // 1. Indian Markets (NSE/BSE): Mon-Fri 09:15-15:30 IST (03:45-10:00 UTC)
+    const isIndiaWeekday = utcDay >= 1 && utcDay <= 5;
+    const isIndiaOpen = isIndiaWeekday && (utcMin >= (3 * 60 + 45) && utcMin < (10 * 60));
+    const isIndiaWeekend = utcDay === 0 || utcDay === 6;
+
+    // 2. US Markets (NYSE/NASDAQ): Mon-Fri 09:30-16:00 EDT (13:30-20:00 UTC)
+    const isUsWeekday = utcDay >= 1 && utcDay <= 5;
+    const isUsOpen = isUsWeekday && (utcMin >= (13 * 60 + 30) && utcMin < (20 * 60));
+    const isUsWeekend = utcDay === 0 || utcDay === 6;
+
+    // 3. Europe (LSE/DAX): Mon-Fri 08:00-16:30 UTC
+    const isEuropeWeekday = utcDay >= 1 && utcDay <= 5;
+    const isEuropeOpen = isEuropeWeekday && (utcMin >= (8 * 60) && utcMin < (16 * 60 + 30));
+    const isEuropeWeekend = utcDay === 0 || utcDay === 6;
+
+    // 4. Crypto: 24/7 Always Open
+    const isCryptoOpen = true;
+
+    // 5. Commodities (CME Gold/Oil): Sun 22:00 UTC - Fri 22:00 UTC
+    const isCmeOpen = (utcDay === 0 && utcMin >= 22 * 60) || (utcDay >= 1 && utcDay <= 4) || (utcDay === 5 && utcMin < 22 * 60);
+
+    return {
+      india: {
+        isOpen: isIndiaOpen,
+        isWeekend: isIndiaWeekend,
+        label: isIndiaOpen ? 'NSE: LIVE' : (isIndiaWeekend ? 'NSE: CLOSED (Weekend)' : 'NSE: CLOSED (Post-Market)'),
+        badgeClass: isIndiaOpen ? 'open' : (isIndiaWeekend ? 'weekend' : 'closed'),
+        note: isIndiaOpen ? '09:15–15:30 IST Session Active' : (isIndiaWeekend ? 'Closed for weekend. Opens Mon 09:15 IST' : 'Session closed. Resumes 09:15 IST')
+      },
+      us: {
+        isOpen: isUsOpen,
+        isWeekend: isUsWeekend,
+        label: isUsOpen ? 'US: LIVE' : (isUsWeekend ? 'US: CLOSED (Weekend)' : 'US: CLOSED (After-Hours)'),
+        badgeClass: isUsOpen ? 'open' : (isUsWeekend ? 'weekend' : 'closed'),
+        note: isUsOpen ? '09:30–16:00 EDT Active' : (isUsWeekend ? 'Closed for weekend. Opens Mon 09:30 EDT' : 'Session closed. Resumes 09:30 EDT')
+      },
+      europe: {
+        isOpen: isEuropeOpen,
+        isWeekend: isEuropeWeekend,
+        label: isEuropeOpen ? 'EU: LIVE' : (isEuropeWeekend ? 'EU: CLOSED (Weekend)' : 'EU: CLOSED'),
+        badgeClass: isEuropeOpen ? 'open' : (isEuropeWeekend ? 'weekend' : 'closed'),
+        note: isEuropeOpen ? '08:00–16:30 UTC Active' : 'Closed'
+      },
+      crypto: {
+        isOpen: true,
+        isWeekend: false,
+        label: 'CRYPTO: 24/7 LIVE STREAM',
+        badgeClass: 'open',
+        note: 'Continuous Real-Time Trading 24/7'
+      },
+      commodities: {
+        isOpen: isCmeOpen,
+        isWeekend: !isCmeOpen && isIndiaWeekend,
+        label: isCmeOpen ? 'METALS/OIL: LIVE' : 'METALS: WEEKEND CLOSE',
+        badgeClass: isCmeOpen ? 'open' : 'weekend',
+        note: isCmeOpen ? 'CME Globex Active' : 'CME Weekend Break. Reopens Sun 17:00 EST'
+      }
+    };
+  }
+
+  function getAssetMarketCategory(sym) {
+    const s = (sym || '').toUpperCase();
+    if (['NIFTY_50', 'BANKNIFTY', 'SENSEX', 'FINNIFTY', 'MIDCPNIFTY', 'RELIANCE', 'TCS', 'INFY', 'HDFCBANK', 'ICICIBANK', 'TATAMOTORS', 'SBIN', 'BHARTIARTL', 'LT', 'ITC', 'AXISBANK', 'MARUTI', 'BAJFINANCE'].includes(s) || s.endsWith('.NS') || s.endsWith('.BO')) {
+      return 'india';
+    }
+    if (['BTCUSD', 'BTC', 'ETHUSD', 'ETH', 'SOLUSD', 'SOL', 'XRPUSD', 'DOGEUSD', 'ADAUSD', 'AVAXUSD', 'LINKUSD', 'BNBUSD', 'SUIUSD', 'PEPEUSD'].includes(s)) {
+      return 'crypto';
+    }
+    if (['XAUUSD', 'GOLD', 'GC=F', 'SILVER', 'SI=F', 'USOIL', 'CL=F', 'CRUDE', 'BRENT', 'NATGAS'].includes(s)) {
+      return 'commodities';
+    }
+    if (['DAX', 'FTSE', 'CAC', '^GDAXI', '^FTSE'].includes(s)) {
+      return 'europe';
+    }
+    return 'us';
+  }
+
+  function renderMarketSessionChips() {
+    const container = document.getElementById('marketSessionChipsContainer');
+    const clockEl = document.getElementById('liveClockBadge');
+    const sessions = getMarketSessionInfo();
+
+    if (clockEl) {
+      const now = new Date();
+      const utcStr = now.toUTCString().slice(17, 25) + ' UTC';
+      clockEl.textContent = utcStr;
+    }
+
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="session-chip ${sessions.india.badgeClass}" title="${sessions.india.note}">
+        <span class="session-chip-dot"></span>
+        <span>${sessions.india.label}</span>
+      </div>
+      <div class="session-chip ${sessions.us.badgeClass}" title="${sessions.us.note}">
+        <span class="session-chip-dot"></span>
+        <span>${sessions.us.label}</span>
+      </div>
+      <div class="session-chip ${sessions.crypto.badgeClass}" title="${sessions.crypto.note}">
+        <span class="session-chip-dot"></span>
+        <span>${sessions.crypto.label}</span>
+      </div>
+      <div class="session-chip ${sessions.commodities.badgeClass}" title="${sessions.commodities.note}">
+        <span class="session-chip-dot"></span>
+        <span>${sessions.commodities.label}</span>
+      </div>
+    `;
+  }
 
   function updateHeroTickerCard(sym) {
     const targetSym = (sym || overviewSelectedSymbol || currentSymbol || 'BTCUSD').toUpperCase();
@@ -1314,6 +1433,36 @@ const TerminalPlatform = (() => {
       const vol = (q && q.volume) ? q.volume : (wItem.vol || 19700000000);
       const volStr = vol > 1e9 ? `${(vol / 1e9).toFixed(1)}B` : (vol > 1e6 ? `${(vol / 1e6).toFixed(1)}M` : `${vol.toLocaleString()}`);
       volEl.textContent = `${currPfx}${volStr}`;
+    }
+
+    // Update Market Status Banner inside Hero Card
+    const bannerEl = document.getElementById('heroMarketStatusBanner');
+    if (bannerEl) {
+      const cat = getAssetMarketCategory(targetSym);
+      const sess = getMarketSessionInfo()[cat];
+      const formattedP = priceVal > 0 ? `${currPfx}${priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '--';
+
+      if (cat === 'crypto' || sess.isOpen) {
+        bannerEl.innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.25); border-radius:8px; padding:7px 12px; font-size:11.5px; color:#059669;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#059669; box-shadow:0 0 0 2px rgba(5,150,105,0.2);"></span>
+              <span><strong>Market Status: LIVE</strong> — ${cat === 'crypto' ? 'Continuous 24/7 crypto perpetual orderbook is active.' : 'Trading session is currently live and streaming real-time prices.'}</span>
+            </div>
+            <span style="font-weight:800; font-size:10px; background:rgba(5,150,105,0.15); padding:2px 8px; border-radius:4px;">● LIVE</span>
+          </div>
+        `;
+      } else {
+        bannerEl.innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.25); border-radius:8px; padding:7px 12px; font-size:11.5px; color:#b45309;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#d97706;"></span>
+              <span><strong>Market Status: CLOSED (${sess.isWeekend ? 'Weekend' : 'After-Hours'})</strong> — Showing official Friday closing mark (${formattedP}). ${sess.note}.</span>
+            </div>
+            <span style="font-weight:800; font-size:10px; background:rgba(217,119,6,0.15); padding:2px 8px; border-radius:4px;">○ CLOSED</span>
+          </div>
+        `;
+      }
     }
 
     const previewEl = document.getElementById('heroChartPreview');
@@ -1457,12 +1606,20 @@ const TerminalPlatform = (() => {
       const formattedPrice = priceVal > 0 ? `${currPfx}${priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '--';
       const formattedChg = `${isBull ? '+' : ''}${chgPct.toFixed(2)}%`;
       const isSelected = item.sym.toUpperCase() === (overviewSelectedSymbol || 'BTCUSD').toUpperCase();
+      const cat = getAssetMarketCategory(item.sym);
+      const sess = getMarketSessionInfo()[cat];
+      const statusPillHtml = sess.isOpen ? 
+        `<span class="session-pill-tag live" title="Market is actively trading">● LIVE</span>` : 
+        `<span class="session-pill-tag ${sess.isWeekend ? 'weekend' : 'closed'}" title="Market is closed (${sess.isWeekend ? 'Weekend' : 'After-hours'})">○ ${sess.isWeekend ? 'CLOSED' : 'CLOSED'}</span>`;
 
       return `
         <div class="watchlist-row ${isSelected ? 'active-row' : ''}" style="background:${isSelected ? 'var(--aiot-100)' : 'rgba(13,9,8,0.02)'}; border:1px solid ${isSelected ? 'var(--aiot-950)' : 'rgba(216,210,207,0.6)'}; border-radius:8px; padding:7px 12px; cursor:pointer;" onclick="TerminalPlatform.selectOverviewSymbol('${item.sym}')" ondblclick="TerminalPlatform.loadSymbol('${item.sym}'); TerminalPlatform.switchWorkspace('chart');">
-          <div class="wl-left">
-            <span class="wl-symbol" style="color:var(--aiot-950); font-weight:800; font-family:'IBM Plex Mono', monospace;">${item.sym}</span>
-            <span class="wl-name" style="color:var(--aiot-600);">${item.name}</span>
+          <div class="wl-left" style="display:flex; flex-direction:column; gap:2px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="wl-symbol" style="color:var(--aiot-950); font-weight:800; font-family:'IBM Plex Mono', monospace;">${item.sym}</span>
+              ${statusPillHtml}
+            </div>
+            <span class="wl-name" style="color:var(--aiot-600); font-size:11px;">${item.name}</span>
           </div>
           <div class="wl-right" style="display:flex; align-items:center; gap:8px;">
             <div style="text-align:right;">
