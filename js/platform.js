@@ -368,14 +368,8 @@ const TerminalPlatform = (() => {
     const symEl = document.getElementById('activeAssetSymbol');
     const nameEl = document.getElementById('activeAssetName');
     const badgeEl = document.getElementById('activeAssetBadge');
-    const extBtn = document.getElementById('tvExternalLinkBtn');
-
     if (symEl) symEl.textContent = tvSymbol;
     if (nameEl) nameEl.textContent = itemMeta ? itemMeta.name : symbol;
-    if (extBtn) {
-      extBtn.href = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(officialTvSymbol)}`;
-      extBtn.title = `Open official ${officialTvSymbol} directly on TradingView.com`;
-    }
 
     if (badgeEl) {
       if (officialTvSymbol.startsWith('NSE:') || officialTvSymbol.startsWith('BSE:')) {
@@ -384,9 +378,9 @@ const TerminalPlatform = (() => {
           badgeEl.className = 'symbol-badge badge-us';
           badgeEl.title = 'Live US ADR on NYSE with direct interactive candlestick chart.';
         } else {
-          badgeEl.textContent = 'INDA · NSE (↗ TV)';
+          badgeEl.textContent = 'INDA · NSE';
           badgeEl.className = 'symbol-badge badge-nse-info';
-          badgeEl.title = 'NSE restricts direct 3rd-party widget embeds. Charting INDA benchmark. Click ↗ Open on TV for official NSE feed.';
+          badgeEl.title = 'NSE restricts direct 3rd-party widget embeds. Charting INDA benchmark.';
         }
       } else if (itemMeta && itemMeta.tab === 'us') {
         badgeEl.textContent = 'US TECH';
