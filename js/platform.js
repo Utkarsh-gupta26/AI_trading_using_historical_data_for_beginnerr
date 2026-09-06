@@ -50,7 +50,7 @@ const TerminalPlatform = (() => {
     { symbol: 'LT', name: 'Larsen & Toubro Ltd', category: 'NSE Bluechip', tab: 'indian', exchange: 'NSE', currency: 'INR', price: 3620.00, changePct: 1.05, vol: 0 },
 
     // Crypto, Commodities & Forex
-    { symbol: 'BTCUSD', name: 'Bitcoin Perpetual', category: 'Crypto Perpetual', tab: 'crypto', exchange: 'BINANCE', currency: 'USD', price: 67240.50, changePct: 2.40, vol: 0 },
+    { symbol: 'BTCUSD', name: 'Bitcoin Perpetual', category: 'Crypto Perpetual', tab: 'crypto', exchange: 'BINANCE', currency: 'USD', price: 79913.23, changePct: 0.11, vol: 0 },
     { symbol: 'ETHUSD', name: 'Ethereum Perpetual', category: 'Crypto Perpetual', tab: 'crypto', exchange: 'BINANCE', currency: 'USD', price: 3481.20, changePct: 1.10, vol: 0 },
     { symbol: 'SOLUSD', name: 'Solana Perpetual', category: 'Crypto Perpetual', tab: 'crypto', exchange: 'BINANCE', currency: 'USD', price: 178.65, changePct: 5.80, vol: 0 },
     { symbol: 'XAUUSD', name: 'Gold Spot / USD', category: 'Commodities', tab: 'crypto', exchange: 'TVC', currency: 'USD', price: 2685.40, changePct: 0.65, vol: 0 },
@@ -1240,10 +1240,64 @@ const TerminalPlatform = (() => {
 
   // ── 11B. Real-Time Quotes Synchronization Engine ─────────────────────────────
   let liveQuotesData = {};
+  let overviewSelectedSymbol = 'BTCUSD';
+
+  function updateHeroTickerCard(sym) {
+    const targetSym = (sym || overviewSelectedSymbol || currentSymbol || 'BTCUSD').toUpperCase();
+    overviewSelectedSymbol = targetSym;
+    
+    const q = liveQuotesData[targetSym];
+    const wItem = watchlist.find(w => w.symbol.toUpperCase() === targetSym) || {};
+    const priceVal = (q && q.price) ? q.price : (wItem.price || 0);
+    const chgPct = (q && q.changePct !== undefined) ? q.changePct : (wItem.changePct || 0.0);
+    const isBull = chgPct >= 0;
+    const currPfx = (q && q.currency === 'INR') || ['NIFTY_50', 'BANKNIFTY', 'SENSEX', 'RELIANCE', 'TCS', 'INFY', 'HDFCBANK', 'ICICIBANK', 'TATAMOTORS', 'SBIN', 'BHARTIARTL', 'LT'].includes(targetSym) ? '₹' : '$';
+
+    const titleEl = document.getElementById('heroSymbolTitle');
+    const priceEl = document.getElementById('heroBigPrice');
+    const pctEl = document.getElementById('heroPctBadge');
+    const highEl = document.getElementById('hero24High');
+    const lowEl = document.getElementById('hero24Low');
+    const volEl = document.getElementById('hero24Vol');
+
+    if (titleEl) {
+      const displayName = wItem.name ? `${wItem.name} (${targetSym})` : (targetSym === 'BTCUSD' ? 'Bitcoin Perpetual (BTCUSD)' : targetSym);
+      titleEl.textContent = displayName;
+    }
+    if (priceEl && priceVal > 0) {
+      priceEl.textContent = `${currPfx}${priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    if (pctEl) {
+      pctEl.textContent = `${isBull ? '+' : ''}${chgPct.toFixed(2)}%`;
+      pctEl.style.color = isBull ? '#059669' : '#DC2626';
+      pctEl.style.background = isBull ? 'rgba(5, 150, 105, 0.1)' : 'rgba(220, 38, 38, 0.1)';
+      pctEl.style.borderColor = isBull ? 'rgba(5, 150, 105, 0.25)' : 'rgba(220, 38, 38, 0.25)';
+    }
+    if (highEl) {
+      const highVal = (q && q.high) ? q.high : (wItem.high || priceVal * 1.008);
+      highEl.textContent = `${currPfx}${highVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    if (lowEl) {
+      const lowVal = (q && q.low) ? q.low : (wItem.low || priceVal * 0.992);
+      lowEl.textContent = `${currPfx}${lowVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    if (volEl) {
+      const vol = (q && q.volume) ? q.volume : (wItem.vol || 19700000000);
+      const volStr = vol > 1e9 ? `${(vol / 1e9).toFixed(1)}B` : (vol > 1e6 ? `${(vol / 1e6).toFixed(1)}M` : `${vol.toLocaleString()}`);
+      volEl.textContent = `${currPfx}${volStr}`;
+    }
+  }
+
+  function selectOverviewSymbol(sym) {
+    overviewSelectedSymbol = sym;
+    currentSymbol = sym;
+    updateHeroTickerCard(sym);
+    renderMarketsOverview();
+  }
 
   async function syncWatchlistQuotes() {
     try {
-      const syms = watchlist.map(w => w.symbol).concat(['NIFTY_50', 'SPX', 'NDX', 'DJI', 'AAPL', 'NVDA', 'MSFT', 'TSLA', 'RELIANCE', 'TCS', 'BTCUSD', 'ETHUSD', 'XAUUSD']);
+      const syms = watchlist.map(w => w.symbol).concat(['NIFTY_50', 'SPX', 'NDX', 'DJI', 'AAPL', 'NVDA', 'MSFT', 'TSLA', 'RELIANCE', 'TCS', 'BTCUSD', 'ETHUSD', 'XAUUSD', '^TNX', 'DX-Y.NYB', '^VIX']);
       const uniqueSyms = Array.from(new Set(syms)).join(',');
       const res = await fetch(`/api/quotes?symbols=${encodeURIComponent(uniqueSyms)}`);
       const data = await res.json();
@@ -1265,18 +1319,55 @@ const TerminalPlatform = (() => {
         }
       });
 
-      // Update Overview 24h stats if active symbol matches
-      const activeQ = liveQuotesData[currentSymbol.toUpperCase()];
-      if (activeQ) {
-        const highEl = document.getElementById('hero24High');
-        const lowEl = document.getElementById('hero24Low');
-        const volEl = document.getElementById('hero24Vol');
-        const currPfx = activeQ.currency === 'INR' ? '₹' : '$';
-        if (highEl && activeQ.high) highEl.textContent = `${currPfx}${activeQ.high.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-        if (lowEl && activeQ.low) lowEl.textContent = `${currPfx}${activeQ.low.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-        if (volEl && activeQ.volume) {
-          const volStr = activeQ.volume > 1e9 ? `${(activeQ.volume / 1e9).toFixed(1)}B` : (activeQ.volume > 1e6 ? `${(activeQ.volume / 1e6).toFixed(1)}M` : `${activeQ.volume.toLocaleString()}`);
-          volEl.textContent = `${currPfx}${volStr}`;
+      // Update Overview Hero Ticker Card (Price, Badge, 24h High, Low, Volume)
+      updateHeroTickerCard(overviewSelectedSymbol || currentSymbol);
+
+      // Update Macro & Yield Drivers live numbers
+      const goldQ = liveQuotesData['XAUUSD'] || liveQuotesData['GC=F'];
+      if (goldQ && goldQ.price) {
+        const gValEl = document.getElementById('macroVal_GOLD');
+        const gChgEl = document.getElementById('macroChg_GOLD');
+        if (gValEl) gValEl.textContent = `$${goldQ.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        if (gChgEl) {
+          const isBull = goldQ.changePct >= 0;
+          gChgEl.textContent = `${isBull ? '+' : ''}$${Math.abs(goldQ.change || 0).toFixed(2)} (${isBull ? '+' : ''}${goldQ.changePct.toFixed(2)}%)`;
+          gChgEl.style.color = isBull ? '#059669' : '#DC2626';
+        }
+      }
+
+      const tnxQ = liveQuotesData['^TNX'] || liveQuotesData['TNX'];
+      if (tnxQ && tnxQ.price) {
+        const valEl = document.getElementById('macroVal_TNX');
+        const chgEl = document.getElementById('macroChg_TNX');
+        if (valEl) valEl.textContent = `${tnxQ.price.toFixed(3)}%`;
+        if (chgEl) {
+          const isBull = tnxQ.changePct >= 0;
+          chgEl.textContent = `${isBull ? '+' : ''}${Math.abs(tnxQ.change || 0).toFixed(3)} (${isBull ? '+' : ''}${tnxQ.changePct.toFixed(2)}%)`;
+          chgEl.style.color = isBull ? '#059669' : '#DC2626';
+        }
+      }
+
+      const dxyQ = liveQuotesData['DX-Y.NYB'] || liveQuotesData['DXY'];
+      if (dxyQ && dxyQ.price) {
+        const valEl = document.getElementById('macroVal_DXY');
+        const chgEl = document.getElementById('macroChg_DXY');
+        if (valEl) valEl.textContent = `${dxyQ.price.toFixed(2)}`;
+        if (chgEl) {
+          const isBull = dxyQ.changePct >= 0;
+          chgEl.textContent = `${isBull ? '+' : ''}${Math.abs(dxyQ.change || 0).toFixed(2)} (${isBull ? '+' : ''}${dxyQ.changePct.toFixed(2)}%)`;
+          chgEl.style.color = isBull ? '#059669' : '#DC2626';
+        }
+      }
+
+      const vixQ = liveQuotesData['^VIX'] || liveQuotesData['VIX'];
+      if (vixQ && vixQ.price) {
+        const valEl = document.getElementById('macroVal_VIX');
+        const chgEl = document.getElementById('macroChg_VIX');
+        if (valEl) valEl.textContent = `${vixQ.price.toFixed(2)}`;
+        if (chgEl) {
+          const isBull = vixQ.changePct >= 0;
+          chgEl.textContent = `${isBull ? '+' : ''}${Math.abs(vixQ.change || 0).toFixed(2)} (${isBull ? '+' : ''}${vixQ.changePct.toFixed(2)}%)`;
+          chgEl.style.color = isBull ? '#059669' : '#DC2626';
         }
       }
 
@@ -1323,9 +1414,10 @@ const TerminalPlatform = (() => {
       const currPfx = (q && q.currency === 'INR') || ['NIFTY_50', 'RELIANCE', 'TCS'].includes(item.sym) ? '₹' : '$';
       const formattedPrice = priceVal > 0 ? `${currPfx}${priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '--';
       const formattedChg = `${isBull ? '+' : ''}${chgPct.toFixed(2)}%`;
+      const isSelected = item.sym.toUpperCase() === (overviewSelectedSymbol || 'BTCUSD').toUpperCase();
 
       return `
-        <div class="watchlist-row" style="background:rgba(13,9,8,0.02); border:1px solid rgba(216,210,207,0.6); border-radius:8px; padding:7px 12px; cursor:pointer;" onclick="TerminalPlatform.loadSymbol('${item.sym}'); TerminalPlatform.switchWorkspace('chart');">
+        <div class="watchlist-row ${isSelected ? 'active-row' : ''}" style="background:${isSelected ? 'var(--aiot-100)' : 'rgba(13,9,8,0.02)'}; border:1px solid ${isSelected ? 'var(--aiot-950)' : 'rgba(216,210,207,0.6)'}; border-radius:8px; padding:7px 12px; cursor:pointer;" onclick="TerminalPlatform.selectOverviewSymbol('${item.sym}')">
           <div class="wl-left">
             <span class="wl-symbol" style="color:var(--aiot-950); font-weight:800; font-family:'IBM Plex Mono', monospace;">${item.sym}</span>
             <span class="wl-name" style="color:var(--aiot-600);">${item.name}</span>
@@ -2292,6 +2384,8 @@ const TerminalPlatform = (() => {
     syncRiskWithActiveAsset,
     setRiskRewardPreset,
     syncWatchlistQuotes,
+    selectOverviewSymbol,
+    updateHeroTickerCard,
     getCurrentSymbol: () => currentSymbol,
     getCurrentTimeframe: () => currentTimeframe
   };
@@ -2380,7 +2474,7 @@ function closePositionMock(symbol) {
     window.journalService.logAction({
       symbol: symbol,
       action: 'Position Closed',
-      price: symbol === 'RELIANCE' ? 2984.50 : 67240.50,
+      price: (typeof liveQuotesData !== 'undefined' && liveQuotesData[symbol] && liveQuotesData[symbol].price) ? liveQuotesData[symbol].price : (symbol === 'RELIANCE' ? 1322.00 : 79913.23),
       quantity: symbol === 'RELIANCE' ? 35 : 0.15,
       orderType: 'MARKET',
       reason: 'Manual close from Open Positions workspace',

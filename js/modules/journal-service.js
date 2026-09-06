@@ -260,7 +260,7 @@ class JournalService {
         timestamp: new Date().toLocaleTimeString(),
         symbol: 'BTCUSD',
         action: 'Signal Generated',
-        price: 67240.50,
+        price: 79913.23,
         quantity: 1,
         orderType: 'ANALYSIS',
         reason: 'RSI Bullish Divergence on 15m',
