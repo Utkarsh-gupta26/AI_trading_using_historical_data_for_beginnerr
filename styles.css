@@ -3656,7 +3656,7 @@ body {
   background: rgba(13, 9, 8, 0.4);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 1100;
+  z-index: 99998 !important;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease;
@@ -3675,15 +3675,15 @@ body {
   height: 100vh;
   background: #FFFFFF;
   border-left: 1px solid rgba(216, 210, 207, 0.85);
-  box-shadow: -10px 0 40px rgba(13, 9, 8, 0.15);
-  z-index: 1110;
+  box-shadow: -10px 0 40px rgba(13, 9, 8, 0.25);
+  z-index: 99999 !important;
   display: flex;
   flex-direction: column;
   transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 .ai-chat-drawer.open {
-  right: 0;
+  right: 0 !important;
 }
 
 .ai-chat-header {
@@ -3864,7 +3864,7 @@ body {
   position: fixed;
   bottom: 24px;
   right: 28px;
-  z-index: 999;
+  z-index: 9999 !important;
   background: var(--aiot-950);
   color: #FAFAF9;
   border: 1px solid rgba(255, 255, 255, 0.15);

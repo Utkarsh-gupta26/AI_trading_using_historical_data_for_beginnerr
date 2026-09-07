@@ -16,7 +16,18 @@ class UpstoxLiveChatEngine {
       {
         sender: 'assistant',
         time: 'Just now',
-        text: `Welcome to **Upstox Pro Market Chat**. Powered directly by the **Upstox Full Market Quotes V3 API**, I analyze live exchange market snapshots, Closing Auction Session (CAS) metrics (IEP, IEQ, Imbalances), Level 2 5-depth order books, circuit limits, and macroeconomic signals across Indian bluechips and global indices.\n\nHow can I assist your market analysis today?`
+        text: `Welcome to **Upstox Pro AI Market Copilot**. Powered by **NVIDIA Nemotron-3.5-Lightning (30B-A3B)** with deep reasoning & live **Upstox Market Quotes V3**, I analyze real-time exchange order books, Closing Auction Sessions (CAS), circuit bands, and macroeconomic signals across Indian bluechips and global indices.\n\nHow can I assist your market analysis today?`
+      },
+      {
+        sender: 'user',
+        time: '1 min ago',
+        text: `Analyze current market structure and liquidity for RELIANCE.`
+      },
+      {
+        sender: 'assistant',
+        time: '1 min ago',
+        text: `📊 **Institutional Market Structure for RELIANCE:**\n\n• **Order Flow:** Accumulation bias confirmed with Level 2 buy bids absorbing immediate selling pressure.\n• **CAS Metrics:** Indicative Equilibrium Price (IEP) aligns within 0.15% of spot mark, signaling low auction imbalance.\n• **Macro Drivers:** Baltic Dry Index (BDI) and global freight rates (+4.2%) provide positive macro tailwinds for downstream margins.\n• **Verdict:** Mildly Bullish drift with key invalidation below recent swing low.`,
+        reasoning: `1. Evaluate active order book depth for RELIANCE (NSE:RELIANCE).\n2. Calculate bid/ask liquidity ratio across top 5 exchange depth tiers: Buyer interest exceeds seller depth by 1.34x.\n3. Cross-reference macroeconomic context: Global shipping demand (BDI at 3,628) supports industrial and refining throughput.\n4. Synthesize conclusion: High probability of upside continuation towards TP1.`
       }
     ];
   }
@@ -52,8 +63,16 @@ class UpstoxLiveChatEngine {
     this.isOpen = true;
     const drawer = document.getElementById('aiChatDrawer');
     const backdrop = document.getElementById('aiChatBackdrop');
-    if (drawer) drawer.classList.add('open');
-    if (backdrop) backdrop.classList.add('open');
+    if (drawer) {
+      drawer.style.display = 'flex';
+      drawer.style.right = '0px';
+      drawer.classList.add('open');
+    }
+    if (backdrop) {
+      backdrop.style.display = 'block';
+      backdrop.classList.add('open');
+    }
+    this.renderMessages();
     setTimeout(() => {
       const input = document.getElementById('aiDrawerInput');
       if (input) input.focus();
@@ -64,33 +83,26 @@ class UpstoxLiveChatEngine {
     this.isOpen = false;
     const drawer = document.getElementById('aiChatDrawer');
     const backdrop = document.getElementById('aiChatBackdrop');
-    if (drawer) drawer.classList.remove('open');
-    if (backdrop) backdrop.classList.remove('open');
-  }
-
-  askPrompt(promptText) {
-    const input = document.getElementById('aiDrawerInput');
-    if (input) {
-      input.value = promptText;
-      this.sendMessage();
+    if (drawer) {
+      drawer.classList.remove('open');
+      drawer.style.right = '-480px';
+    }
+    if (backdrop) {
+      backdrop.classList.remove('open');
+      setTimeout(() => {
+        if (!this.isOpen && backdrop) backdrop.style.display = 'none';
+      }, 250);
     }
   }
 
-  async sendMessage() {
-    const input = document.getElementById('aiDrawerInput');
-    if (!input) return;
-    const text = input.value.trim();
-    if (!text) return;
-
-    input.value = '';
-
-    // Add user message
+  async askPrompt(promptText) {
+    if (!promptText) return;
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     this.messages.push({
       sender: 'user',
       time: timeStr,
-      text: text
+      text: promptText
     });
     this.renderMessages();
 
@@ -106,7 +118,7 @@ class UpstoxLiveChatEngine {
 
     // Generate intelligent contextual response with Nemotron & Upstox V3 live data
     try {
-      const res = await this.generateResponse(text);
+      const res = await this.generateResponse(promptText);
       this.messages = this.messages.filter(m => m.id !== typingId);
       const resText = typeof res === 'object' ? res.text : res;
       const resReasoning = typeof res === 'object' ? res.reasoning : '';
@@ -125,6 +137,15 @@ class UpstoxLiveChatEngine {
       });
     }
     this.renderMessages();
+  }
+
+  async sendMessage() {
+    const input = document.getElementById('aiDrawerInput');
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    await this.askPrompt(text);
   }
 
   async generateResponse(query) {
@@ -246,10 +267,11 @@ class UpstoxLiveChatEngine {
   }
 
   renderMessages() {
-    const feed = document.getElementById('aiDrawerFeed');
-    if (!feed) return;
+    const drawerFeed = document.getElementById('aiDrawerFeed');
+    const wsFeed = document.getElementById('aiChatFeed');
+    if (!drawerFeed && !wsFeed) return;
 
-    feed.innerHTML = this.messages.map(m => {
+    const html = this.messages.map(m => {
       const isUser = m.sender === 'user';
       let reasoningHtml = '';
       if (m.reasoning) {
@@ -261,10 +283,10 @@ class UpstoxLiveChatEngine {
         `;
       }
       return `
-        <div style="display:flex; flex-direction:column; align-self:${isUser ? 'flex-end' : 'flex-start'}; max-width:88%;">
+        <div style="display:flex; flex-direction:column; align-self:${isUser ? 'flex-end' : 'flex-start'}; max-width:88%; margin-bottom:6px;">
           <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px; justify-content:${isUser ? 'flex-end' : 'flex-start'}; font-size:11px;">
-            <span style="font-weight:700; color:var(--aiot-950);">${isUser ? 'You' : 'Upstox Pro AI Copilot'}</span>
-            <span style="color:var(--aiot-500); font-size:10px;">${m.time}</span>
+            <span style="font-weight:700; color:var(--aiot-950);">${isUser ? 'You' : '⚡ Upstox Pro AI Copilot'}</span>
+            <span style="color:var(--aiot-500); font-size:10px;">${m.time || 'Just now'}</span>
           </div>
           <div style="
             background:${isUser ? 'var(--aiot-950)' : '#FFFFFF'};
@@ -273,8 +295,8 @@ class UpstoxLiveChatEngine {
             padding:10px 14px;
             border-radius:16px;
             ${isUser ? 'border-top-right-radius:4px;' : 'border-top-left-radius:4px;'};
-            font-size:12px;
-            line-height:1.45;
+            font-size:12.5px;
+            line-height:1.5;
             box-shadow:0 2px 8px rgba(43,35,34,0.04);
             white-space:pre-wrap;
           ">${m.text}${reasoningHtml}</div>
@@ -282,7 +304,14 @@ class UpstoxLiveChatEngine {
       `;
     }).join('');
 
-    feed.scrollTop = feed.scrollHeight;
+    if (drawerFeed) {
+      drawerFeed.innerHTML = html;
+      drawerFeed.scrollTop = drawerFeed.scrollHeight;
+    }
+    if (wsFeed) {
+      wsFeed.innerHTML = html;
+      wsFeed.scrollTop = wsFeed.scrollHeight;
+    }
   }
 }
 

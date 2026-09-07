@@ -1127,6 +1127,20 @@ const TerminalPlatform = (() => {
     }
   }
 
+  function findAssetMeta(sym) {
+    if (!sym) return null;
+    const s = String(sym).toUpperCase();
+    if (typeof CLIENT_SEARCH_CATALOG !== 'undefined' && Array.isArray(CLIENT_SEARCH_CATALOG)) {
+      const match = CLIENT_SEARCH_CATALOG.find(item => item.symbol && item.symbol.toUpperCase() === s);
+      if (match) return match;
+    }
+    if (Array.isArray(watchlist)) {
+      const match = watchlist.find(item => item.symbol && item.symbol.toUpperCase() === s);
+      if (match) return match;
+    }
+    return null;
+  }
+
   // ── 9. Header Status & Labels ────────────────────────────────────────────
   function updateHeaderSymbolInfo(symbol, timeframe) {
     const symEl = document.getElementById('headerActiveSymbol');

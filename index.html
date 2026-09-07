@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AIOT (All-in-One Trading App) — Institutional charting, risk management, trade journal, market regime detection, global market correlation, and AI market intelligence.">
   <title>AIOT — All-in-One Trading App</title>
-  <link rel="stylesheet" href="styles.css?v=aiot_v15">
+  <link rel="stylesheet" href="styles.css?v=aiot_v30">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -509,6 +509,11 @@
                 </button>
                 <button class="nova-quick-pill" onclick="const p = document.getElementById('upstoxSidebarPanel'); if (p) { p.style.display = p.style.display === 'none' ? 'flex' : 'none'; if(window.mainChart) setTimeout(() => window.mainChart.resize(), 100); }" style="font-size:11px; padding:4px 10px; background:#FFFFFF; border:1px solid var(--aiot-300); font-weight:700; cursor:pointer;" title="Toggle Upstox Depth & CAS Sidebar">
                   📊 Depth & CAS
+                </button>
+                <button class="nova-quick-pill" id="chartChatToggleBtn" onclick="window.liveChatEngine.toggleChat()" style="font-size:11px; padding:4px 12px; background:var(--aiot-950); color:#FAFAF9; border:none; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 6px rgba(13,9,8,0.2);" title="Open Upstox Pro AI Market Chat [Ctrl+J]">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>💬 AI Copilot Chat</span>
+                  <kbd style="font-size:9.5px; background:rgba(255,255,255,0.22); padding:1px 5px; border-radius:3px; font-family:'IBM Plex Mono', monospace;">Ctrl+J</kbd>
                 </button>
               </div>
             </div>
@@ -2198,8 +2203,8 @@ Click "Synthesize with Nemotron" to run deep institutional inference combining B
   <script src="js/modules/backtest-engine.js?v=aiot_v15"></script>
   <script src="js/modules/ai-assistant.js?v=aiot_v15"></script>
   <script src="js/modules/trade-planner.js?v=aiot_v15"></script>
-  <script src="js/modules/live-chat.js?v=aiot_v15"></script>
-  <script src="js/modules/upstox-service.js?v=aiot_v17"></script>
+  <script src="js/modules/live-chat.js?v=aiot_v30"></script>
+  <script src="js/modules/upstox-service.js?v=aiot_v30"></script>
 
   <!-- Baltic Dry Index (BDI) & Macroeconomic Signal Modules -->
   <script src="market-signals/bdi/bdiDataService.js"></script>
@@ -2213,7 +2218,7 @@ Click "Synthesize with Nemotron" to run deep institutional inference combining B
   <script src="js/modules/global-signals.js"></script>
 
   <!-- Master Platform Orchestrator -->
-  <script src="js/platform.js?v=aiot_v17"></script>
+  <script src="js/platform.js?v=aiot_v30"></script>
 
   <!-- Inline Helper Routines for Workspaces -->
   <script>
@@ -2372,77 +2377,15 @@ Click "Synthesize with Nemotron" to run deep institutional inference combining B
       if (!input || !input.value.trim()) return;
       const q = input.value.trim();
       input.value = '';
-      await askAiCopilot(q);
+      if (window.liveChatEngine) {
+        await window.liveChatEngine.askPrompt(q);
+      }
     }
 
     async function askAiCopilot(query) {
-      const feed = document.getElementById('aiChatFeed');
-      if (!feed) return;
-
-      // Append user bubble
-      const userBubble = document.createElement('div');
-      userBubble.className = 'chat-bubble';
-      userBubble.style.alignSelf = 'flex-end';
-      userBubble.style.background = 'var(--aiot-950)';
-      userBubble.style.color = '#FAFAF9';
-      userBubble.style.borderRadius = '16px';
-      userBubble.style.borderTopRightRadius = '4px';
-      userBubble.style.padding = '12px 18px';
-      userBubble.style.maxWidth = '80%';
-      userBubble.style.boxShadow = '0 4px 14px rgba(13,9,8,0.15)';
-      userBubble.innerHTML = `<span class="chat-author" style="color:var(--aiot-400); font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;">You</span><div class="chat-text" style="color:#FAFAF9; font-size:13px; font-weight:500; margin-top:4px; line-height:1.5;">${query}</div>`;
-      feed.appendChild(userBubble);
-      feed.scrollTop = feed.scrollHeight;
-
-      let answer = '';
-      let sources = ['Upstox V3 Market Quotes', 'Order Depth Engine'];
-
-      if (window.liveChatEngine && typeof window.liveChatEngine.parseUpstoxQuery === 'function') {
-        answer = await window.liveChatEngine.parseUpstoxQuery(query);
-      } else if (window.aiTradingAssistant) {
-        const res = await window.aiTradingAssistant.ask(query);
-        answer = res.response;
-        sources = res.sources;
-      } else {
-        answer = 'Upstox Pro Market Chat active with live quotes and order book depth.';
+      if (window.liveChatEngine) {
+        await window.liveChatEngine.askPrompt(query);
       }
-
-      let ansText = typeof answer === 'object' ? answer.text : answer;
-      let reasoningHtml = '';
-      if (typeof answer === 'object' && answer.reasoning) {
-        sources.push('Nemotron 30B Reasoning');
-        reasoningHtml = `
-          <details class="nemotron-thinking" style="margin-top:10px;">
-            <summary style="font-size:10px; padding:6px 10px;">💭 Nemotron Deep Reasoning (${answer.reasoning.length} chars)</summary>
-            <div class="nemotron-thinking-body" style="font-size:11px; max-height:180px;">${answer.reasoning.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
-          </details>
-        `;
-      }
-
-      const aiBubble = document.createElement('div');
-      aiBubble.className = 'chat-bubble';
-      aiBubble.style.background = 'var(--aiot-50)';
-      aiBubble.style.border = '1px solid var(--aiot-300)';
-      aiBubble.style.borderRadius = '16px';
-      aiBubble.style.borderTopLeftRadius = '4px';
-      aiBubble.style.padding = '16px 20px';
-      aiBubble.style.maxWidth = '88%';
-      aiBubble.style.boxShadow = '0 2px 8px rgba(43,35,34,0.03)';
-
-      const sourcesHtml = sources.map(s => `<span class="status-pill status-live" style="font-size:9.5px; font-weight:700; margin-right:4px;">[${s}]</span>`).join('');
-
-      aiBubble.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:24px; height:24px; border-radius:50%; background:var(--aiot-950); display:flex; align-items:center; justify-content:center; color:#FAFAF9; font-size:11px; font-weight:800;">⚡</div>
-            <span class="chat-author" style="font-weight:800; font-size:13px; color:var(--aiot-950);">Upstox Pro AI Copilot</span>
-          </div>
-          <div>${sourcesHtml}</div>
-        </div>
-        <div class="chat-text" style="color:var(--aiot-900); font-weight:500; font-size:13px; white-space:pre-wrap; line-height:1.6;">${ansText}${reasoningHtml}</div>
-      `;
-      feed.appendChild(aiBubble);
-      feed.scrollTop = feed.scrollHeight;
     }
 
     function lockCurrentTradePlan() {
