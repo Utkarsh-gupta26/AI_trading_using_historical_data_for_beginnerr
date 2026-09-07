@@ -129,6 +129,9 @@ const TerminalPlatform = (() => {
     // Load saved preferences
     loadPreferences();
 
+    // Check whether Upstox is already connected (persists across restarts)
+    refreshUpstoxStatus();
+
     // Setup main chart
     const chartContainer = document.getElementById('mainChartContainer');
     mainChart = new ChartEngine(chartContainer, {
@@ -223,14 +226,7 @@ const TerminalPlatform = (() => {
     'DJI': 'DJ:DJI', '^DJI': 'DJ:DJI'
   };
 
-  function updateTradingViewSymbol(symbol) {
-    const host = document.getElementById('tvWidgetContainerHost');
-    if (!host) return;
-
-    // Embed-Safe Exchange Mapping:
-    // Guarantees 100% embeddable widgets without the "This symbol is only available on TradingView" error.
-    // (NSE & BSE legally prohibit third-party widget embeds, so we map them to INDA/EPI benchmarks or US ADRs for embedded preview,
-    // and provide a direct 1-click 'Open on TV' button for the official exchange feed).
+  function updateAssetPillAndTvLink(symbol) {
     const tvMap = {
       // Global Indices & ETFs
       'SPX': 'AMEX:SPY',
@@ -436,59 +432,66 @@ const TerminalPlatform = (() => {
     // Update active highlight on quick pills
     renderQuickPills();
 
-    host.innerHTML = '';
-    const container = document.createElement('div');
-    container.className = 'tradingview-widget-container';
-    container.style.height = '100%';
-    container.style.width = '100%';
-
-    const widgetDiv = document.createElement('div');
-    widgetDiv.className = 'tradingview-widget-container__widget';
-    widgetDiv.style.height = 'calc(100% - 32px)';
-    widgetDiv.style.width = '100%';
-    container.appendChild(widgetDiv);
-
-    const copyrightDiv = document.createElement('div');
-    copyrightDiv.className = 'tradingview-widget-copyright';
-    copyrightDiv.innerHTML = `<a href="https://www.tradingview.com/symbols/${tvSymbol.replace(':', '-')}/" rel="noopener nofollow" target="_blank"><span class="blue-text">${symbol} stock chart</span></a><span class="trademark"> by TradingView</span>`;
-    container.appendChild(copyrightDiv);
-
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-    script.async = true;
-    script.text = JSON.stringify({
-      allow_symbol_change: true,
-      calendar: false,
-      details: false,
-      hide_side_toolbar: true,
-      hide_top_toolbar: false,
-      hide_legend: false,
-      hide_volume: false,
-      hotlist: false,
-      interval: "D",
-      locale: "en",
-      save_image: true,
-      style: "1",
-      symbol: tvSymbol,
-      theme: "light",
-      timezone: "Etc/UTC",
-      backgroundColor: "#FAFAF9",
-      gridColor: "rgba(216, 210, 207, 0.4)",
-      watchlist: [
-        "AMEX:SPY", "NASDAQ:QQQ", "AMEX:DIA", "AMEX:INDA", "NYSE:INFY", "NYSE:HDB",
-        "NASDAQ:AAPL", "NASDAQ:MSFT", "NASDAQ:NVDA", "NASDAQ:GOOGL", "NASDAQ:AMZN", "NASDAQ:META", "NASDAQ:TSLA", "NASDAQ:AMD",
-        "BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "BINANCE:SOLUSDT", "TVC:GOLD", "TVC:USOIL"
-      ],
-      withdateranges: false,
-      compareSymbols: [],
-      support_host: "https://www.tradingview.com",
-      studies: [],
-      autosize: true
-    });
-    container.appendChild(script);
-    host.appendChild(container);
+    // "Open on TradingView ↗" — a plain outbound link (not an embed), so it
+    // always points at the real instrument rather than a substitute.
+    const tvLink = document.getElementById('openOnTvLink');
+    if (tvLink) {
+      tvLink.href = `https://www.tradingview.com/symbols/${officialTvSymbol.replace(':', '-')}/`;
+      tvLink.title = `Open ${officialTvSymbol} on TradingView`;
+    }
   }
+
+  // ── Upstox Connection Banner ──────────────────────────────────────────
+  let upstoxBannerDismissed = false;
+  let upstoxConnected = false;
+
+  async function refreshUpstoxStatus() {
+    try {
+      const resp = await fetch('/api/upstox/status');
+      if (!resp.ok) return;
+      const data = await resp.json();
+      upstoxConnected = !!data.connected;
+    } catch (e) { /* server not reachable yet, ignore */ }
+  }
+
+  function refreshUpstoxBanner(feedSource) {
+    const banner = document.getElementById('upstoxConnectBanner');
+    if (!banner) return;
+    const isIndian = ['NIFTY_50', 'NIFTY', 'BANKNIFTY', 'SENSEX', 'FINNIFTY', 'MIDCPNIFTY'].includes(currentSymbol)
+      || (watchlist.find(w => w.symbol === currentSymbol) || {}).tab === 'indian_stocks'
+      || feedSource === 'yahoo_delayed' || feedSource === 'simulated_fallback';
+    const shouldShow = isIndian && !upstoxConnected && !upstoxBannerDismissed
+      && (feedSource === 'yahoo_delayed' || feedSource === 'simulated_fallback');
+    const wasVisible = banner.style.display === 'flex';
+    banner.style.display = shouldShow ? 'flex' : 'none';
+    if (shouldShow !== wasVisible && mainChart) setTimeout(() => mainChart.resize(), 0);
+  }
+
+  function connectUpstox() {
+    // Opens Upstox's OAuth login in a new tab. On success the server stores
+    // the access token; refresh status once the popup closes / user returns.
+    const win = window.open('/api/upstox/login', '_blank', 'width=480,height=680');
+    const poll = setInterval(async () => {
+      if (win && win.closed) {
+        clearInterval(poll);
+        await refreshUpstoxStatus();
+        if (upstoxConnected) {
+          document.getElementById('upstoxConnectBanner').style.display = 'none';
+          loadSymbol(currentSymbol, currentTimeframe);
+        }
+      }
+    }, 1000);
+  }
+
+  function dismissUpstoxBanner() {
+    upstoxBannerDismissed = true;
+    const banner = document.getElementById('upstoxConnectBanner');
+    if (banner) banner.style.display = 'none';
+    if (mainChart) setTimeout(() => mainChart.resize(), 0);
+  }
+
+  const updateUpstoxChartSymbol = updateAssetPillAndTvLink;
+  const updateTradingViewSymbol = updateAssetPillAndTvLink;
 
   // ── 2. Symbol & Timeframe Loader ─────────────────────────────────────────
   async function loadSymbol(symbol, timeframe = currentTimeframe) {
@@ -497,7 +500,7 @@ const TerminalPlatform = (() => {
 
     updateHeaderSymbolInfo(symbol, timeframe);
     updateStatusBadge('CONNECTING');
-    updateTradingViewSymbol(symbol);
+    updateUpstoxChartSymbol(symbol);
 
     const res = await MarketDataService.loadCandles(symbol, timeframe, 300);
     if (res.success && res.candles.length > 0) {
@@ -507,6 +510,7 @@ const TerminalPlatform = (() => {
       updateActiveSubPanes(res.candles);
       runAIAnalysis(symbol, res.candles);
       if (drawingEngine) drawingEngine.loadFromStorage(symbol);
+      refreshUpstoxBanner(res.source);
     } else {
       updateStatusBadge('DATA_UNAVAILABLE');
     }
@@ -1129,6 +1133,32 @@ const TerminalPlatform = (() => {
     const tfEl = document.getElementById('headerActiveTf');
     if (symEl) symEl.textContent = symbol;
     if (tfEl) tfEl.textContent = timeframe;
+
+    // Synchronize quick bar active asset pill
+    const pillSym = document.getElementById('activeAssetSymbol');
+    const pillName = document.getElementById('activeAssetName');
+    const pillBadge = document.getElementById('activeAssetBadge');
+    if (pillSym) pillSym.textContent = symbol;
+    if (pillName) {
+      const meta = findAssetMeta(symbol);
+      pillName.textContent = meta ? meta.name : symbol;
+    }
+    if (pillBadge) {
+      const clean = String(symbol || '').toUpperCase();
+      if (clean.includes('NIFTY') || clean.includes('SENSEX')) {
+        pillBadge.textContent = 'INDIAN BENCHMARK';
+        pillBadge.className = 'symbol-badge badge-benchmark';
+      } else if (['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','SBIN','BHARTIARTL','ITC','LT','TATAMOTORS','AXISBANK','MARUTI','SUNPHARMA','TITAN','BAJFINANCE','TATASTEEL','NHPC'].includes(clean)) {
+        pillBadge.textContent = 'NSE BLUECHIP';
+        pillBadge.className = 'symbol-badge badge-indian';
+      } else if (clean.includes('BTC') || clean.includes('ETH') || clean.includes('SOL')) {
+        pillBadge.textContent = 'CRYPTO';
+        pillBadge.className = 'symbol-badge badge-crypto';
+      } else {
+        pillBadge.textContent = 'EQUITY';
+        pillBadge.className = 'symbol-badge badge-us';
+      }
+    }
   }
 
   function updateHeaderOHLC(c) {
@@ -1202,6 +1232,7 @@ const TerminalPlatform = (() => {
       'logs': 'workspaceLogs',
       'analytics': 'workspaceAnalytics',
       'global': 'workspaceGlobal',
+      'global-signals': 'workspaceGlobalSignals',
       'regime': 'workspaceRegime',
       'calendar': 'workspaceCalendar',
       'news': 'workspaceNews',
@@ -1224,14 +1255,22 @@ const TerminalPlatform = (() => {
       }
     });
 
-    // 3. If switching to chart workspace, trigger canvas resize immediately
-    if (targetId === 'workspaceChart' && mainChart) {
-      setTimeout(() => {
-        mainChart.resize();
-        if (wsId === 'replay' && replayEngine) {
-          replayEngine.startSelection();
-        }
-      }, 50);
+    // 3. If switching to chart workspace, ensure active symbol widget is synced & trigger canvas resize
+    if (wsId === 'global-signals' && window.globalSignalsStudio) {
+      setTimeout(() => window.globalSignalsStudio.renderUI(), 50);
+    }
+
+    if (targetId === 'workspaceChart') {
+      const activeSym = currentSymbol || overviewSelectedSymbol || 'BTCUSD';
+      updateUpstoxChartSymbol(activeSym);
+      if (mainChart) {
+        setTimeout(() => {
+          mainChart.resize();
+          if (wsId === 'replay' && replayEngine) {
+            replayEngine.startSelection();
+          }
+        }, 50);
+      }
     }
 
     // 4. Remember last opened workspace
@@ -1892,10 +1931,12 @@ const TerminalPlatform = (() => {
     if (!window.economicCalendarService) return;
     const list = document.getElementById('economicCalendarList');
     if (list) {
-      list.innerHTML = window.economicCalendarService.events.map(ev => `
+      list.innerHTML = window.economicCalendarService.events.map(ev => {
+        const dateStr = ev.dateFormatted || (window.economicCalendarService.formatEventDate ? window.economicCalendarService.formatEventDate(ev.date) : ev.date);
+        return `
         <div class="nova-news-item" style="margin-bottom:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:11px; color:var(--aiot-700); font-weight:700;">${ev.country} · ${ev.time}</span>
+            <span style="font-size:11px; color:var(--aiot-700); font-weight:700;">${ev.country}${dateStr ? ` · <span style="color:var(--aiot-900); font-weight:600;">${dateStr}</span>` : ''} · ${ev.time}</span>
             <span class="status-pill ${ev.importance === 'HIGH' ? 'risk-high' : 'risk-moderate'}" style="font-size:9px;">${ev.importance} IMPACT</span>
           </div>
           <strong style="font-size:13px; color:var(--aiot-950); margin-top:4px; font-weight:700; line-height:1.4;">${ev.event}</strong>
@@ -1905,7 +1946,8 @@ const TerminalPlatform = (() => {
             <span>Actual: <strong class="mono" style="color:#059669; font-weight:700;">${ev.actual}</strong></span>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     // Historical Impact
@@ -2399,6 +2441,17 @@ const TerminalPlatform = (() => {
     if (slEl) slEl.textContent = fmt(con.stopLoss);
     if (rrBadge) rrBadge.textContent = `R:R 1:${con.riskReward1 || '2.0'}`;
 
+    // Trader Discipline Gate note
+    const disciplineEl = document.getElementById('predDisciplineNote');
+    if (disciplineEl) {
+      if (pred.disciplineNote) {
+        disciplineEl.textContent = `⚠ Discipline check: ${pred.disciplineNote}`;
+        disciplineEl.style.display = 'block';
+      } else {
+        disciplineEl.style.display = 'none';
+      }
+    }
+
     const tp1Pct = document.getElementById('predTP1Pct');
     const tp2Pct = document.getElementById('predTP2Pct');
     const tp3Pct = document.getElementById('predTP3Pct');
@@ -2478,6 +2531,137 @@ const TerminalPlatform = (() => {
         : ['Overhead volatility band resistance', 'Trailing stop recommended for risk control'];
       riskList.innerHTML = risks.map(r => `<li>${r}</li>`).join('');
     }
+
+    // 10. Multi-Factor Probabilistic Prediction UI Population (BDI & Global Macro)
+    if (pred.multiFactor) {
+      const mf = pred.multiFactor;
+      const s = mf.scores;
+
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+
+      setTxt('mfScoreTech', `${s.technicalScore >= 0 ? '+' : ''}${s.technicalScore}`);
+      setTxt('mfScoreStruct', `${s.marketStructureScore >= 0 ? '+' : ''}${s.marketStructureScore}`);
+      setTxt('mfScoreVol', `${s.volumeScore >= 0 ? '+' : ''}${s.volumeScore}`);
+      setTxt('mfScoreMom', `${s.momentumScore >= 0 ? '+' : ''}${s.momentumScore}`);
+      setTxt('mfScoreSent', `${s.sentimentScore >= 0 ? '+' : ''}${s.sentimentScore}`);
+      setTxt('mfScoreMacro', `${s.globalMacroScore >= 0 ? '+' : ''}${s.globalMacroScore} (BDI: +${s.bdiContribution})`);
+      setTxt('mfScoreFii', `${s.fiiDiiScore >= 0 ? '+' : ''}${s.fiiDiiScore}`);
+      setTxt('mfScoreOpt', `${s.optionsScore >= 0 ? '+' : ''}${s.optionsScore}`);
+
+      const suppEl = document.getElementById('mfSupportingList');
+      if (suppEl && mf.supportingFactors) {
+        suppEl.innerHTML = mf.supportingFactors.map(f => `<div>✓ ${f}</div>`).join('');
+      }
+
+      const contraEl = document.getElementById('mfContradictingList');
+      if (contraEl && mf.contradictingFactors) {
+        contraEl.innerHTML = mf.contradictingFactors.map(f => `<div>✕ ${f}</div>`).join('');
+      }
+
+      const expEl = document.getElementById('mfBdiExplanationText');
+      if (expEl && mf.bdiAttribution && mf.bdiAttribution.explanation) {
+        expEl.textContent = mf.bdiAttribution.explanation;
+      }
+
+      const mfBadge = document.getElementById('predMultiFactorBadge');
+      if (mfBadge) {
+        mfBadge.textContent = `${mf.expectedDirection.replace('_', ' ')} (Score: ${mf.finalMarketScore >= 0 ? '+' : ''}${mf.finalMarketScore})`;
+      }
+    }
+  }
+
+  async function requestNemotronSynthesis() {
+    if (!latestPredictionResult || !latestPredictionResult.pred) {
+      alert('Please run a prediction first to generate quantifiable metrics.');
+      return;
+    }
+    const btn = document.getElementById('nemotronSynthesizeBtn');
+    const thinkingDetails = document.getElementById('nemotronThinkingDetails');
+    const thinkingContent = document.getElementById('nemotronThinkingContent');
+    const thinkingLen = document.getElementById('nemotronThinkingLength');
+    const analysisEl = document.getElementById('nemotronAnalysisContent');
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>⚡ Running Nemotron-3.5 Inference...</span>';
+    }
+    if (analysisEl) {
+      analysisEl.innerHTML = '<div style="color:var(--aiot-500); display:flex; align-items:center; gap:8px;"><span class="pulse-dot"></span> NVIDIA Nemotron-3.5-Lightning is deeply reasoning over multi-factor barriers, order flow imbalances, and macro vectors...</div>';
+    }
+
+    const { sym, tf, currentPrice, pred } = latestPredictionResult;
+    const con = pred.consensus || {};
+    const mf = pred.multiFactorAnalysis || {};
+    const bdiSummary = (mf.bdiAttribution && mf.bdiAttribution.explanation) || 'Normal macroeconomic backdrop';
+
+    const payload = {
+      symbol: sym,
+      price: currentPrice,
+      timeframe: tf,
+      signal: con.direction || 'NEUTRAL',
+      confidence: (pred.probabilities && pred.probabilities.confidenceScore) || 65,
+      rsi: (pred.indicators && pred.indicators.rsi) || 50,
+      adx: (pred.indicators && pred.indicators.adx) || 25,
+      regime: pred.regime || 'UNKNOWN',
+      disciplineNote: pred.disciplineNote || '',
+      tp1: con.takeProfit1,
+      tp2: con.takeProfit2,
+      sl: con.stopLoss,
+      rr: con.riskReward1 || '2.0',
+      macroScore: (mf.scores && mf.scores.globalMacroScore !== undefined) ? mf.scores.globalMacroScore : 0,
+      bdiSummary: bdiSummary
+    };
+
+    try {
+      const resp = await fetch('/api/ai/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      if (data.success) {
+        if (analysisEl) {
+          analysisEl.innerHTML = formatMarkdownToHtml(data.analysis);
+        }
+        if (data.reasoning && thinkingContent && thinkingDetails) {
+          thinkingContent.textContent = data.reasoning;
+          if (thinkingLen) thinkingLen.textContent = `${data.reasoning.length} chars`;
+          thinkingDetails.style.display = 'block';
+          thinkingDetails.open = true;
+        }
+      } else {
+        if (analysisEl) {
+          analysisEl.innerHTML = `<span style="color:#DC2626;">Error synthesizing: ${data.error || 'Unknown error'}</span>`;
+        }
+      }
+    } catch (err) {
+      if (analysisEl) {
+        analysisEl.innerHTML = `<span style="color:#DC2626;">Inference connection failed: ${err.message}</span>`;
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🧠 Re-Synthesize with Nemotron</span>';
+      }
+    }
+  }
+
+  function formatMarkdownToHtml(md) {
+    if (!md) return '';
+    let html = md
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    html = html.replace(/^### (.*$)/gim, '<h4 style="margin:10px 0 4px; color:var(--aiot-950); font-weight:800; font-size:12.5px;">$1</h4>');
+    html = html.replace(/^## (.*$)/gim, '<h3 style="margin:12px 0 6px; color:var(--aiot-950); font-weight:800; font-size:13.5px;">$1</h3>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--aiot-950);">$1</strong>');
+    html = html.replace(/^\s*[-•]\s+(.*$)/gim, '<li style="margin-left:14px; margin-bottom:3px;">$1</li>');
+    html = html.replace(/`([^`]+)`/g, '<code style="background:var(--aiot-100); padding:1px 5px; border-radius:4px; font-family:var(--font-mono); font-size:11px;">$1</code>');
+    html = html.replace(/\n\n/g, '<br/><br/>');
+    return html;
   }
 
   function applyPredictionToRisk() {
@@ -2547,6 +2731,8 @@ const TerminalPlatform = (() => {
   return {
     init,
     loadSymbol,
+    connectUpstox,
+    dismissUpstoxBanner,
     setTimeframe,
     setChartType,
     toggleSubPane,
@@ -2582,6 +2768,7 @@ const TerminalPlatform = (() => {
     executePrediction,
     applyPredictionToRisk,
     applyPredictionToPlan,
+    requestNemotronSynthesis,
     setPredictionTargetAlert,
     syncRiskWithActiveAsset,
     setRiskRewardPreset,

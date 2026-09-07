@@ -6,3 +6,12 @@ skills-lock.json
 .vscode/
 .idea/
 *.log
+
+# Secrets & runtime state - never commit these
+.env
+upstox_token.json
+upstox_instruments_cache.json
+
+# Scratch & Archive
+scratch/
+archive/

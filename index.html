@@ -39,9 +39,9 @@
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-6"/><circle cx="7" cy="16" r="1.5"/><circle cx="11" cy="12" r="1.5"/><circle cx="15" cy="16" r="1.5"/><circle cx="20" cy="10" r="1.5"/></svg></span>
           <span class="nav-item-label">Markets</span>
         </button>
-        <button class="nova-nav-btn active" data-ws="chart" onclick="TerminalPlatform.switchWorkspace('chart')" title="Interactive Chart">
+        <button class="nova-nav-btn active" data-ws="chart" onclick="TerminalPlatform.switchWorkspace('chart')" title="Upstox Pro Chart Terminal">
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="5" width="4" height="14" rx="1"/><path d="M5 2v3m0 14v3"/><rect x="10" y="8" width="4" height="8" rx="1"/><path d="M12 4v4m0 8v4"/><rect x="17" y="3" width="4" height="12" rx="1"/><path d="M19 1v2m0 12v4"/></svg></span>
-          <span class="nav-item-label">Chart</span>
+          <span class="nav-item-label">Upstox Chart</span>
         </button>
         <button class="nova-nav-btn" data-ws="watchlist" onclick="TerminalPlatform.switchWorkspace('watchlist')" title="Watchlist">
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
@@ -81,6 +81,10 @@
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
           <span class="nav-item-label">Global Markets</span>
         </button>
+        <button class="nova-nav-btn" data-ws="global-signals" onclick="TerminalPlatform.switchWorkspace('global-signals')" title="Global Economic Signals & BDI Macro Predictor">
+          <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M2 12h5l3 7 4-14 3 7h5"/></svg></span>
+          <span class="nav-item-label">Economic Signals</span>
+        </button>
         <button class="nova-nav-btn" data-ws="regime" onclick="TerminalPlatform.switchWorkspace('regime')" title="Market Regime Detection">
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>
           <span class="nav-item-label">Market Regime</span>
@@ -115,9 +119,9 @@
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg></span>
           <span class="nav-item-label">Replay</span>
         </button>
-        <button class="nova-nav-btn" data-ws="ai" onclick="TerminalPlatform.switchWorkspace('ai')" title="AI Trading Assistant">
+        <button class="nova-nav-btn" data-ws="ai" onclick="TerminalPlatform.switchWorkspace('ai')" title="Upstox Pro AI Market Chat & Assistant">
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-          <span class="nav-item-label">AI Assistant</span>
+          <span class="nav-item-label">Upstox Chat</span>
         </button>
         <button class="nova-nav-btn" data-ws="settings" onclick="TerminalPlatform.switchWorkspace('settings')" title="Workstation Settings">
           <span class="nova-nav-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
@@ -168,16 +172,16 @@
           </button>
 
           <!-- AI Copilot Chat Trigger -->
-          <button class="nova-quick-pill" onclick="window.liveChatEngine.toggleChat()" id="headerChatBtn" title="AI Copilot Chat Assistant [Ctrl+J]" style="background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.8); border-radius:var(--radius-pill); padding:6px 14px; font-weight:700; color:var(--aiot-950); cursor:pointer; box-shadow:0 2px 6px rgba(43,35,34,0.04); display:inline-flex; align-items:center; gap:6px;">
+          <button class="nova-quick-pill" onclick="window.liveChatEngine.toggleChat()" id="headerChatBtn" title="Upstox Pro Market Chat [Ctrl+J]" style="background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.8); border-radius:var(--radius-pill); padding:6px 14px; font-weight:700; color:var(--aiot-950); cursor:pointer; box-shadow:0 2px 6px rgba(43,35,34,0.04); display:inline-flex; align-items:center; gap:6px;">
             <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <span>AI Chat</span>
+            <span>Upstox Chat</span>
             <kbd class="mono" style="font-size:9.5px; background:var(--aiot-100); padding:2px 6px; border-radius:4px; color:var(--aiot-700); margin-left:4px; border:1px solid rgba(216, 210, 207, 0.7);">Ctrl+J</kbd>
           </button>
 
           <!-- Quick Chart View Trigger -->
           <button class="nova-quick-pill" onclick="TerminalPlatform.switchWorkspace('chart')" style="background:#FFFFFF; border:1px solid rgba(216, 210, 207, 0.8); border-radius:var(--radius-pill); padding:6px 12px; font-weight:700; color:var(--aiot-950); cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
             <svg class="svg-icon sm" viewBox="0 0 24 24"><rect x="3" y="5" width="4" height="14" rx="1"/><path d="M5 2v3m0 14v3"/><rect x="10" y="8" width="4" height="8" rx="1"/><path d="M12 4v4m0 8v4"/><rect x="17" y="3" width="4" height="12" rx="1"/><path d="M19 1v2m0 12v4"/></svg>
-            <span>Chart</span>
+            <span>Upstox Chart</span>
           </button>
 
           <!-- Status badge -->
@@ -408,7 +412,7 @@
         </div>
 
         <!-- ==================================================================
-             WORKSPACE 2: FULL TRADINGVIEW-STYLE CHART TERMINAL
+             WORKSPACE 2: UPSTOX PRO CHART TERMINAL
              ================================================================== -->
         <div class="workspace-panel active" id="workspaceChart" style="height:100%; width:100%; padding:0; margin:0; overflow:hidden; background:var(--aiot-100); flex-direction:column;">
           <!-- Quick Asset Navigation Bar -->
@@ -428,6 +432,10 @@
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
                 Predict Candle & Target
               </button>
+              <a class="search-trigger-btn" id="openOnTvLink" href="https://www.tradingview.com/" target="_blank" rel="noopener nofollow" title="Open this symbol on TradingView.com">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                Open on TradingView ↗
+              </a>
             </div>
             <div class="chart-quick-tabs">
               <button class="quick-cat-btn active" data-qcat="indices" onclick="TerminalPlatform.switchQuickCategory('indices')">Indices</button>
@@ -440,49 +448,95 @@
             </div>
           </div>
 
-          <div id="tvWidgetContainerHost" style="height:calc(100% - 46px); width:100%;">
-            <!-- TradingView Widget BEGIN -->
-            <div class="tradingview-widget-container" style="height:100%;width:100%">
-              <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
-              <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/" rel="noopener nofollow" target="_blank"><span class="blue-text">AAPL stock chart</span></a><span class="trademark"> by TradingView</span></div>
-              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-              {
-              "allow_symbol_change": true,
-              "calendar": false,
-              "details": false,
-              "hide_side_toolbar": true,
-              "hide_top_toolbar": false,
-              "hide_legend": false,
-              "hide_volume": false,
-              "hotlist": false,
-              "interval": "D",
-              "locale": "en",
-              "save_image": true,
-              "style": "1",
-              "symbol": "NASDAQ:AAPL",
-              "theme": "light",
-              "timezone": "Etc/UTC",
-              "backgroundColor": "#FAFAF9",
-              "gridColor": "rgba(216, 210, 207, 0.4)",
-              "watchlist": [
-                "AMEX:SPY", "NASDAQ:QQQ", "AMEX:DIA", "AMEX:INDA", "NYSE:INFY", "NYSE:HDB",
-                "NASDAQ:AAPL", "NASDAQ:MSFT", "NASDAQ:NVDA", "NASDAQ:GOOGL", "NASDAQ:AMZN", "NASDAQ:META", "NASDAQ:TSLA", "NASDAQ:AMD",
-                "BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "BINANCE:SOLUSDT", "TVC:GOLD", "TVC:USOIL"
-              ],
-              "withdateranges": false,
-              "compareSymbols": [],
-              "support_host": "https://www.tradingview.com",
-              "studies": [],
-              "autosize": true
-            }
-              </script>
-            </div>
-            <!-- TradingView Widget END -->
+          <!-- Upstox live data connection banner (shown when viewing Indian instruments and Upstox is disconnected) -->
+          <div class="upstox-connect-banner" id="upstoxConnectBanner" style="display:none;">
+            <span class="upstox-banner-dot"></span>
+            <span class="upstox-banner-text">Viewing delayed/fallback Indian market data. Connect your Upstox account for real-time NSE/BSE quotes & candles.</span>
+            <button class="upstox-banner-btn" onclick="TerminalPlatform.connectUpstox()">Connect Upstox for live NSE/BSE data</button>
+            <button class="upstox-banner-dismiss" onclick="TerminalPlatform.dismissUpstoxBanner()" title="Dismiss">✕</button>
           </div>
 
-          <!-- Hidden fallback elements to ensure background modules continue running smoothly -->
-          <div id="mainChartContainer" style="display:none; width:0; height:0;"></div>
-          <div id="subPanesContainer" style="display:none; width:0; height:0;"></div>
+          <!-- ── Interactive Native Chart Stage & Upstox V3 Full Market Terminal ── -->
+          <div style="display:flex; flex-direction:column; flex:1; height:calc(100% - 46px); width:100%; overflow:hidden;">
+            
+            <!-- Dedicated Chart Control Toolbar -->
+            <div class="chart-control-toolbar" style="display:flex; justify-content:space-between; align-items:center; background:#FFFFFF; border-bottom:1px solid rgba(216,210,207,0.8); padding:6px 14px; gap:8px; flex-wrap:wrap; box-shadow:0 1px 3px rgba(43,35,34,0.02);">
+              <!-- Left: Timeframes & Styles -->
+              <div style="display:flex; align-items:center; gap:6px;">
+                <div class="tf-btn-group" style="display:inline-flex; gap:2px; background:var(--aiot-100); padding:2px; border-radius:6px;">
+                  <button class="hero-tf-btn active" data-tf="1m" onclick="TerminalPlatform.setTimeframe('1m')">1m</button>
+                  <button class="hero-tf-btn" data-tf="5m" onclick="TerminalPlatform.setTimeframe('5m')">5m</button>
+                  <button class="hero-tf-btn" data-tf="15m" onclick="TerminalPlatform.setTimeframe('15m')">15m</button>
+                  <button class="hero-tf-btn" data-tf="1h" onclick="TerminalPlatform.setTimeframe('1h')">1h</button>
+                  <button class="hero-tf-btn" data-tf="1D" onclick="TerminalPlatform.setTimeframe('1D')">1D</button>
+                </div>
+
+                <div style="width:1px; height:18px; background:var(--aiot-300); margin:0 4px;"></div>
+
+                <!-- Chart Style Selector -->
+                <select class="chat-input" style="padding:4px 8px; font-size:11.5px; font-weight:600; cursor:pointer;" onchange="TerminalPlatform.setChartType(this.value)">
+                  <option value="candlestick">Candles</option>
+                  <option value="hollow">Hollow</option>
+                  <option value="heikinAshi">Heikin-Ashi</option>
+                  <option value="line">Line</option>
+                  <option value="area">Area</option>
+                </select>
+
+                <!-- Indicator Dialog Trigger -->
+                <button class="nova-quick-pill" onclick="openIndicatorsModal()" style="font-size:11px; padding:4px 10px; background:#FFFFFF; border:1px solid var(--aiot-300); font-weight:700;">
+                  + Indicators
+                </button>
+
+                <!-- Drawing Tool Selector -->
+                <select class="chat-input" style="padding:4px 8px; font-size:11.5px; font-weight:600; cursor:pointer;" onchange="if(window.drawingEngine) window.drawingEngine.setTool(this.value)">
+                  <option value="cursor">Cursor (Pan)</option>
+                  <option value="trendline">Trendline</option>
+                  <option value="horizontal">Horizontal Level</option>
+                  <option value="fibonacci">Fib Retracement</option>
+                  <option value="riskReward">Risk/Reward Box</option>
+                </select>
+
+                <button class="nova-quick-pill" onclick="if(window.drawingEngine) window.drawingEngine.clearAll()" style="font-size:11px; padding:4px 8px; color:#DC2626;" title="Clear drawings">
+                  Clear
+                </button>
+              </div>
+
+              <!-- Right: Upstox V3 Live Market Snapshot Status & Token button -->
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button class="nova-quick-pill" onclick="window.upstoxService.openTokenModal()" title="Configure Upstox Access Token or view live snapshot status" style="display:inline-flex; align-items:center; gap:6px; background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.3); color:#059669; font-weight:700; font-size:11px; padding:4px 10px; cursor:pointer;">
+                  <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#059669; box-shadow:0 0 0 2px rgba(5,150,105,0.2);"></span>
+                  <span>Upstox Full Market Quotes V3</span>
+                </button>
+                <button class="nova-quick-pill" onclick="const p = document.getElementById('upstoxSidebarPanel'); if (p) { p.style.display = p.style.display === 'none' ? 'flex' : 'none'; if(window.mainChart) setTimeout(() => window.mainChart.resize(), 100); }" style="font-size:11px; padding:4px 10px; background:#FFFFFF; border:1px solid var(--aiot-300); font-weight:700; cursor:pointer;" title="Toggle Upstox Depth & CAS Sidebar">
+                  📊 Depth & CAS
+                </button>
+              </div>
+            </div>
+
+            <!-- Workspace Body: Left Chart Canvas + Right Upstox V3 Depth/CAS Panel -->
+            <div style="display:flex; flex:1; height:calc(100% - 38px); width:100%; overflow:hidden;">
+              
+              <!-- Left Chart Stage -->
+              <div style="flex:1; display:flex; flex-direction:column; height:100%; position:relative; overflow:hidden; background:#FFFFFF;">
+                <div id="mainChartContainer" style="flex:1; width:100%; height:100%; position:relative;"></div>
+                <div id="subPanesContainer" style="width:100%;"></div>
+              </div>
+
+              <!-- Right Upstox V3 Market Depth & Closing Auction Session (CAS) Sidebar -->
+              <div id="upstoxSidebarPanel" style="width:360px; max-width:38%; height:100%; border-left:1px solid rgba(216,210,207,0.8); background:var(--aiot-50); overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px; box-sizing:border-box;">
+                
+                <!-- Closing Auction Session (CAS) Live Container -->
+                <div id="upstoxCasContainer"></div>
+
+                <!-- Level 2 5-Depth Market Order Book Container -->
+                <div id="upstoxDepthContainer"></div>
+
+                <!-- Circuits & 52-Week Range Container -->
+                <div id="upstoxCircuitsContainer"></div>
+              </div>
+
+            </div>
+          </div>
         </div>
 
         <!-- ==================================================================
@@ -918,6 +972,102 @@
         </div>
 
         <!-- ==================================================================
+             WORKSPACE: GLOBAL ECONOMIC SIGNALS & BALTIC DRY INDEX (BDI)
+             ================================================================== -->
+        <div class="workspace-panel" id="workspaceGlobalSignals">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <div>
+              <div class="ws-header-title">Global Economic Signals & Macroeconomic Indicator Engine</div>
+              <div class="ws-subtitle">Multi-factor macroeconomic surveillance: Baltic Dry Index (BDI), Energy, Currencies, Institutional Liquidity & Probabilistic Prediction.</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="status-pill status-live">Live Macro Feed</span>
+              <button class="nova-quick-pill" onclick="window.globalSignalsStudio.loadAllData()" style="font-size:11px; padding:6px 12px; background:#FFF; font-weight:700;">🔄 Refresh Data</button>
+            </div>
+          </div>
+
+          <!-- Mandatory Institutional Risk Warning Banner -->
+          <div style="background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.3); border-radius:10px; padding:10px 14px; margin-bottom:18px; display:flex; align-items:center; gap:10px;">
+            <span style="font-size:18px;">⚠️</span>
+            <span style="font-size:11.5px; font-weight:700; color:#DC2626;">
+              Risk Disclosure: BDI is a macroeconomic indicator, not a standalone trading signal. BDI must NEVER directly trigger Buy, Sell, Short, or Long orders.
+            </span>
+          </div>
+
+          <!-- Section 9: 9 Macroeconomic Cards Grid -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:13px; font-weight:800; color:var(--aiot-900); margin-bottom:10px;">Institutional Macroeconomic Watch (9 Factors)</div>
+            <div id="macroCardsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;"></div>
+          </div>
+
+          <!-- Global Macro Score & BDI Attribution Header Card -->
+          <div style="background:#FFFFFF; border:1px solid rgba(216,210,207,0.8); border-radius:14px; padding:18px; margin-bottom:20px; box-shadow:0 1px 4px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <div>
+              <div style="font-size:12px; font-weight:800; color:var(--aiot-500); text-transform:uppercase; letter-spacing:0.5px;">Global Macro Composite Score (-100 to +100)</div>
+              <div style="display:flex; align-items:baseline; gap:12px; margin-top:4px;">
+                <div id="globalMacroScoreValue" style="font-size:32px; font-weight:900; font-family:var(--font-mono); color:#059669;">+16</div>
+                <div id="globalMacroBiasBadge" class="status-pill status-live">MILDLY BULLISH</div>
+                <div id="macroBdiContribution" style="font-size:12px; color:var(--aiot-600); font-weight:600;">BDI Factor Contribution: +6.5 pts (10% Weight)</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="predict-header-btn" onclick="TerminalPlatform.openPredictionModal()" style="font-size:12px; padding:8px 16px;">
+                Predict Market with Macro Confluence
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 10: Interactive BDI vs Target Asset Comparative Chart -->
+          <div style="background:#FFFFFF; border:1px solid rgba(216,210,207,0.8); border-radius:14px; padding:18px; margin-bottom:20px; box-shadow:0 1px 4px rgba(0,0,0,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+              <div>
+                <div style="font-size:14px; font-weight:800; color:var(--aiot-950);">Baltic Dry Index (BDI) vs NIFTY 50 Historical Overlay</div>
+                <div style="font-size:11px; color:var(--aiot-500);">Dual-axis normalized performance comparison (Base 100) to inspect decoupling and leading behavior.</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <div class="tf-btn-group" style="display:inline-flex; gap:2px; background:var(--aiot-100); padding:2px; border-radius:6px;">
+                  <button class="hero-tf-btn bdi-tf-btn" data-range="1D" onclick="window.globalSignalsStudio.setRange('1D')">1D</button>
+                  <button class="hero-tf-btn bdi-tf-btn" data-range="5D" onclick="window.globalSignalsStudio.setRange('5D')">5D</button>
+                  <button class="hero-tf-btn bdi-tf-btn" data-range="1M" onclick="window.globalSignalsStudio.setRange('1M')">1M</button>
+                  <button class="hero-tf-btn bdi-tf-btn" data-range="3M" onclick="window.globalSignalsStudio.setRange('3M')">3M</button>
+                  <button class="hero-tf-btn bdi-tf-btn" data-range="6M" onclick="window.globalSignalsStudio.setRange('6M')">6M</button>
+                  <button class="hero-tf-btn bdi-tf-btn active" data-range="1Y" onclick="window.globalSignalsStudio.setRange('1Y')">1Y</button>
+                  <button class="hero-tf-btn bdi-tf-btn" data-range="5Y" onclick="window.globalSignalsStudio.setRange('5Y')">5Y</button>
+                </div>
+                <select class="chat-input" onchange="window.globalSignalsStudio.setCompareSymbol(this.value)" style="padding:4px 8px; font-size:11px; font-weight:700;">
+                  <option value="NIFTY_50">vs NIFTY 50</option>
+                  <option value="SENSEX">vs SENSEX</option>
+                  <option value="SPX">vs S&P 500</option>
+                  <option value="USOIL">vs Crude Oil</option>
+                </select>
+              </div>
+            </div>
+            <div style="width:100%; height:320px; position:relative;">
+              <canvas id="bdiChartCanvas" style="width:100%; height:100%; display:block;"></canvas>
+            </div>
+          </div>
+
+          <!-- Section 3: False-Signal Filter Telemetry -->
+          <div id="bdiFalseSignalCard" style="margin-bottom:20px;"></div>
+
+          <!-- Section 11 & Section 4/5: Backtest Studio & Correlation/Lead-Lag Grid -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:16px; margin-bottom:20px;">
+            <div id="bdiBacktestContainer"></div>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <div id="bdiLeadLagContainer"></div>
+              <div id="bdiCorrelationContainer"></div>
+            </div>
+          </div>
+
+          <!-- Section 12 & 13: Data Quality & AI Explanation Panel -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-bottom:20px;">
+            <div id="bdiAiExplanationContainer"></div>
+            <div id="bdiDataQualityContainer"></div>
+          </div>
+
+        </div>
+
+        <!-- ==================================================================
              WORKSPACE 9: GLOBAL MARKETS & CORRELATION ENGINE
              ================================================================== -->
         <div class="workspace-panel" id="workspaceGlobal">
@@ -1230,8 +1380,8 @@
              WORKSPACE 17: AI TRADING ASSISTANT COPILOT
              ================================================================== -->
         <div class="workspace-panel" id="workspaceAi">
-          <div class="ws-header-title">Conversational AI Trading Assistant</div>
-          <div class="ws-subtitle">Direct platform dataset queries with institutional transparency tags: Live Data, Historical Data, User Trading Data, News, and Statistical Models.</div>
+          <div class="ws-header-title">Upstox Pro AI Market Chat & Assistant</div>
+          <div class="ws-subtitle">Direct Upstox Full Market Quotes V3 integration: Live Closing Auction Session (CAS), Level 2 5-Depth Order Book, Circuits, 52W Range, and BDI Macro Confluence.</div>
 
           <!-- Suggested Query Pills -->
           <div style="display:flex; gap:6px; flex-wrap:wrap; margin:16px 0;">
@@ -1250,7 +1400,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <div style="display:flex; align-items:center; gap:8px;">
                     <div style="width:24px; height:24px; border-radius:50%; background:var(--aiot-950); display:flex; align-items:center; justify-content:center; color:#FAFAF9; font-size:11px; font-weight:800;">AI</div>
-                    <span class="chat-author" style="font-weight:800; font-size:13px; color:var(--aiot-950);">Nova AI Assistant</span>
+                    <span class="chat-author" style="font-weight:800; font-size:13px; color:var(--aiot-950);">Upstox Pro Market Chat</span>
                   </div>
                   <span class="status-pill status-live" style="font-size:9.5px; font-weight:700;">Attributed Feeds</span>
                 </div>
@@ -1262,7 +1412,7 @@
 
             <!-- Chat Input -->
             <div class="chat-input-row" style="margin-top:16px; padding-top:14px; border-top:1px solid rgba(216, 210, 207, 0.65); display:flex; gap:10px; align-items:center;">
-              <input type="text" class="chat-input" placeholder="Ask AI Copilot (e.g. regime, risk %, strategy stats)..." id="aiCopilotInput" onkeydown="if(event.key==='Enter') submitAiCopilotQuery()" style="flex:1; background:#FFFFFF; border:1.5px solid var(--aiot-300); border-radius:9999px; padding:12px 20px; font-size:13px; color:var(--aiot-950); font-weight:500; outline:none; box-shadow:0 2px 8px rgba(43,35,34,0.04);">
+              <input type="text" class="chat-input" placeholder="Ask Upstox Chat (e.g. CAS auction, 5-depth book, circuit limits, risk %)..." id="aiCopilotInput" onkeydown="if(event.key==='Enter') submitAiCopilotQuery()" style="flex:1; background:#FFFFFF; border:1.5px solid var(--aiot-300); border-radius:9999px; padding:12px 20px; font-size:13px; color:var(--aiot-950); font-weight:500; outline:none; box-shadow:0 2px 8px rgba(43,35,34,0.04);">
               <button class="chat-send-btn" onclick="submitAiCopilotQuery()" style="width:44px; height:44px; border-radius:50%; background:var(--aiot-950); border:none; color:#FAFAF9; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 12px rgba(13,9,8,0.2);">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FAFAF9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               </button>
@@ -1386,6 +1536,41 @@
                   <label class="hero-stat-label">Workstation Theme</label>
                   <div style="font-size:12.5px; color:#00f2fe; margin-top:4px;">Nova Dark Obsidian (Neon Accent)</div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Upstox Full Market Quotes V3 Configuration Card ── -->
+          <div class="nova-card" style="margin-top:16px; background:#FFFFFF; border:1px solid rgba(216,210,207,0.9); border-radius:14px; padding:20px; box-shadow:0 2px 10px rgba(43,35,34,0.04);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div class="nova-card-title" style="font-size:15px; font-weight:800; color:var(--aiot-950); margin:0;">
+                    Upstox Full Market Quotes V3 Gateway (CAS & Level 2 Depth)
+                  </div>
+                  <span style="font-size:10.5px; font-weight:700; background:rgba(5,150,105,0.1); color:#059669; border:1px solid rgba(5,150,105,0.25); border-radius:12px; padding:2px 8px;">V3 Active</span>
+                </div>
+                <div style="font-size:12px; color:var(--aiot-600); margin-top:4px; max-width:750px; line-height:1.5;">
+                  Direct institutional market data snapshot supporting up to 500 instruments simultaneously with live Closing Auction Session (CAS), Indicative Equilibrium Price (IEP), matched quantity (IEQ), and 5-Level Market Depth.
+                </div>
+              </div>
+              <button class="nova-quick-pill" onclick="window.upstoxService.openTokenModal()" style="background:var(--aiot-950); color:#FFF; font-weight:700; font-size:12px; padding:8px 18px; border-radius:8px; border:none; cursor:pointer;">
+                Configure Upstox Token ⚙
+              </button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:10px;">
+              <div style="background:var(--aiot-50); border:1px solid var(--aiot-200); border-radius:8px; padding:10px 14px;">
+                <div style="font-size:11px; font-weight:700; color:var(--aiot-600);">CLOSING AUCTION (CAS)</div>
+                <div style="font-size:12px; color:var(--aiot-900); margin-top:3px;">Live IEP, IEQ, and Unmatched Imbalance Tracking</div>
+              </div>
+              <div style="background:var(--aiot-50); border:1px solid var(--aiot-200); border-radius:8px; padding:10px 14px;">
+                <div style="font-size:11px; font-weight:700; color:var(--aiot-600);">LEVEL 2 ORDER BOOK</div>
+                <div style="font-size:12px; color:var(--aiot-900); margin-top:3px;">Top 5 Bids vs Asks with order counts and depth ratio</div>
+              </div>
+              <div style="background:var(--aiot-50); border:1px solid var(--aiot-200); border-radius:8px; padding:10px 14px;">
+                <div style="font-size:11px; font-weight:700; color:var(--aiot-600);">CIRCUITS & 52-WEEK RANGE</div>
+                <div style="font-size:12px; color:var(--aiot-900); margin-top:3px;">Price bands, upper/lower circuit limits and trailing year stats</div>
               </div>
             </div>
           </div>
@@ -1723,6 +1908,7 @@
               <span>Consensus Profit Targets & SL</span>
               <span class="mono" id="predRRBadge" style="color:var(--aiot-700); font-size:10.5px; font-weight:700;">R:R 1:2.4</span>
             </div>
+            <div id="predDisciplineNote" style="display:none; font-size:11px; line-height:1.4; font-weight:600; color:#8A5A00; background:#FFF6E0; border:1px solid #F0DDA0; border-radius:6px; padding:6px 9px; margin-bottom:8px;"></div>
 
             <!-- Target 3 (Runner) -->
             <div class="target-step-row tp3">
@@ -1818,6 +2004,101 @@
           </div>
         </div>
 
+        <!-- Requirement 7: Multi-Factor Probabilistic Market Prediction Section -->
+        <div class="pred-subcard" style="margin-bottom:16px; background:var(--aiot-50); border:1px solid rgba(2,132,199,0.3); border-radius:12px; padding:14px;">
+          <div class="pred-card-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="color:var(--aiot-950); font-weight:800; font-size:12.5px;">Multi-Factor Probabilistic Consensus & Global Macro</span>
+            <span style="color:#0284C7; font-weight:800; font-size:10px; background:rgba(2,132,199,0.1); padding:2px 8px; border-radius:4px;" id="predMultiFactorBadge">8-Factor Architecture</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-bottom:12px;">
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">Technical (20%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono);" id="mfScoreTech">+65</div>
+            </div>
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">Market Structure (15%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono);" id="mfScoreStruct">+45</div>
+            </div>
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">Volume Force (10%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono);" id="mfScoreVol">+30</div>
+            </div>
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">Momentum (15%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono);" id="mfScoreMom">+40</div>
+            </div>
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">Sentiment NLP (10%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono);" id="mfScoreSent">+15</div>
+            </div>
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">Global Macro / BDI (15%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono); color:#0284C7;" id="mfScoreMacro">+16 (BDI: +6.5)</div>
+            </div>
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">FII / DII Flows (10%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono);" id="mfScoreFii">+25</div>
+            </div>
+            <div style="background:#FFF; padding:8px; border-radius:6px; border:1px solid var(--aiot-200); font-size:10.5px;">
+              <div style="color:var(--aiot-500);">Options PCR (5%)</div>
+              <div style="font-weight:800; font-size:12px; font-family:var(--font-mono);" id="mfScoreOpt">+10</div>
+            </div>
+          </div>
+
+          <!-- Supporting & Contradicting Factors -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:11px; margin-bottom:10px;">
+            <div>
+              <div style="color:#059669; font-weight:800; margin-bottom:4px;">Top Supporting Factors</div>
+              <div id="mfSupportingList" style="display:flex; flex-direction:column; gap:3px; color:var(--aiot-700);"></div>
+            </div>
+            <div>
+              <div style="color:#DC2626; font-weight:800; margin-bottom:4px;">Top Contradicting Factors</div>
+              <div id="mfContradictingList" style="display:flex; flex-direction:column; gap:3px; color:var(--aiot-700);"></div>
+            </div>
+          </div>
+
+          <!-- BDI AI Explanation in Modal -->
+          <div style="border-top:1px solid rgba(216,210,207,0.6); padding-top:8px; font-size:11px; color:var(--aiot-700); line-height:1.5;">
+            <div style="font-weight:700; color:var(--aiot-900); margin-bottom:2px;">Why is BDI affecting today's prediction?</div>
+            <div id="mfBdiExplanationText">Loading macroeconomic explanation...</div>
+            <div style="font-size:10px; color:#DC2626; font-weight:700; margin-top:4px;">⚠️ BDI is a macroeconomic indicator, not a standalone trading signal.</div>
+          </div>
+        </div>
+
+        <!-- NVIDIA Nemotron Deep-Reasoning AI Synthesis Card -->
+        <div class="nova-card" style="margin-top:14px; background:#FAFAF9; border:1.5px solid rgba(13,9,8,0.12); border-radius:14px; padding:16px; box-shadow:0 4px 16px rgba(43,35,34,0.04);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:#10B981; color:#FAFAF9; font-size:13px; font-weight:800;">⚡</span>
+              <div>
+                <div style="font-weight:800; font-size:13px; color:var(--aiot-950); display:flex; align-items:center; gap:6px;">
+                  NVIDIA Nemotron Deep-Reasoning AI Synthesis
+                  <span class="status-pill status-live" style="font-size:9px; padding:1px 6px;">30B-A3B</span>
+                </div>
+                <div style="font-size:10.5px; color:var(--aiot-500);">Macroeconomic, order-flow & quant-model synthesis with transparent reasoning traces</div>
+              </div>
+            </div>
+            <button id="nemotronSynthesizeBtn" onclick="TerminalPlatform.requestNemotronSynthesis()" style="background:var(--aiot-950); color:#FAFAF9; border:none; border-radius:var(--radius-pill); padding:6px 14px; font-size:11.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(13,9,8,0.15); transition:all 0.15s ease;">
+              <span>🧠 Synthesize with Nemotron</span>
+            </button>
+          </div>
+
+          <!-- Thinking Process Dropdown (Collapsible) -->
+          <details id="nemotronThinkingDetails" class="nemotron-thinking" style="display:none;">
+            <summary>
+              <span>💭 Nemotron Reasoning & Thinking Trace</span>
+              <span id="nemotronThinkingLength" style="font-size:10px; color:var(--aiot-500); font-family:var(--font-mono); margin-left:auto;"></span>
+            </summary>
+            <div id="nemotronThinkingContent" class="nemotron-thinking-body"></div>
+          </details>
+
+          <!-- Nemotron Analysis Body -->
+          <div id="nemotronAnalysisContent" style="font-size:12px; color:var(--aiot-900); line-height:1.6; margin-top:8px; white-space:pre-wrap;">
+Click "Synthesize with Nemotron" to run deep institutional inference combining Bayesian predictions, Upstox order flow, BDI macroeconomic drivers, and risk parameters.
+          </div>
+        </div>
+
         <!-- Action Buttons Bar -->
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid rgba(216,210,207,0.7); padding-top:14px;">
           <button onclick="TerminalPlatform.executePrediction()" style="background:var(--aiot-950); color:#FAFAF9; font-weight:700; border:none; border-radius:var(--radius-pill); padding:8px 20px; font-size:12px; cursor:pointer; box-shadow:0 4px 14px rgba(13,9,8,0.18);">
@@ -1842,25 +2123,25 @@
   </div>
 
   <!-- Floating AI Chat Launcher Pill -->
-  <button class="floating-chat-launcher" id="floatingChatLauncher" onclick="window.liveChatEngine.toggleChat()" title="Open AI Copilot [Ctrl+J]">
+  <button class="floating-chat-launcher" id="floatingChatLauncher" onclick="window.liveChatEngine.toggleChat()" title="Open Upstox Pro Market Chat [Ctrl+J]">
     <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>AI Copilot</span>
+    <span>Upstox Chat</span>
     <span class="hotkey-pill">Ctrl+J</span>
   </button>
 
   <!-- AI Copilot Backdrop & Slide-Out Drawer -->
   <div class="ai-chat-backdrop" id="aiChatBackdrop" onclick="window.liveChatEngine.closeSidebar()"></div>
-  <aside class="ai-chat-drawer" id="aiChatDrawer" aria-label="AI Quantitative Copilot">
+  <aside class="ai-chat-drawer" id="aiChatDrawer" aria-label="Upstox Pro AI Market Chat">
     <div class="ai-chat-header">
       <div style="display:flex; align-items:center; gap:10px;">
         <div style="width:32px; height:32px; border-radius:50%; background:var(--aiot-950); color:#FAFAF9; display:flex; align-items:center; justify-content:center;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
         </div>
         <div>
-          <div style="font-size:14px; font-weight:800; color:var(--aiot-950);">AI Quantitative Copilot</div>
+          <div style="font-size:14px; font-weight:800; color:var(--aiot-950);">Upstox Pro AI Market Chat</div>
           <div style="font-size:11px; color:var(--aiot-500); display:flex; align-items:center; gap:6px;">
             <span class="pulse-dot"></span>
-            <span>Real-time Technical & Macro Assistant</span>
+            <span>Live Upstox V3 Market Quotes & Order Flow Assistant</span>
           </div>
         </div>
       </div>
@@ -1871,10 +2152,10 @@
 
     <!-- Quick Prompt Chips -->
     <div class="ai-prompt-chips">
-      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('What is the current market regime?')">Regime Audit</button>
-      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Predict next candle target for active symbol')">Candle Forecast</button>
-      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Calculate recommended position size and stop loss')">Position Size</button>
-      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Summarize key macro risks today')">Macro Risks</button>
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Upstox V3 CAS Snapshot for RELIANCE')">📊 Upstox V3 CAS</button>
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('What is the 5-depth order book for active symbol?')">📈 5-Depth Book</button>
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('Check circuit limits and 52-week high low')">⚡ Circuits & 52W</button>
+      <button class="ai-chip-btn" onclick="window.liveChatEngine.askPrompt('BDI Macro Confluence & Baltic Dry Signal')">🌐 BDI Confluence</button>
     </div>
 
     <!-- Chat Messages Scroll Container -->
@@ -1885,7 +2166,7 @@
     <!-- Chat Input Bar -->
     <div class="ai-chat-footer">
       <form onsubmit="event.preventDefault(); window.liveChatEngine.sendMessage();" style="display:flex; gap:8px; width:100%; align-items:center;">
-        <input type="text" id="aiDrawerInput" class="ai-drawer-input" placeholder="Ask AI Copilot about any symbol, regime, or trade plan..." autocomplete="off">
+        <input type="text" id="aiDrawerInput" class="ai-drawer-input" placeholder="Ask Upstox Chat about any symbol, CAS auction, 5-depth book, or trade plan..." autocomplete="off">
         <button type="submit" class="ai-drawer-send-btn" title="Send message">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         </button>
@@ -1918,9 +2199,21 @@
   <script src="js/modules/ai-assistant.js?v=aiot_v15"></script>
   <script src="js/modules/trade-planner.js?v=aiot_v15"></script>
   <script src="js/modules/live-chat.js?v=aiot_v15"></script>
+  <script src="js/modules/upstox-service.js?v=aiot_v17"></script>
+
+  <!-- Baltic Dry Index (BDI) & Macroeconomic Signal Modules -->
+  <script src="market-signals/bdi/bdiDataService.js"></script>
+  <script src="market-signals/bdi/bdiIndicators.js"></script>
+  <script src="market-signals/bdi/bdiSignalEngine.js"></script>
+  <script src="market-signals/bdi/bdiCorrelation.js"></script>
+  <script src="market-signals/bdi/bdiLeadLag.js"></script>
+  <script src="market-signals/bdi/bdiBacktest.js"></script>
+  <script src="market-signals/bdi/bdiExplanation.js"></script>
+  <script src="market-signals/bdi/index.js"></script>
+  <script src="js/modules/global-signals.js"></script>
 
   <!-- Master Platform Orchestrator -->
-  <script src="js/platform.js?v=aiot_v15"></script>
+  <script src="js/platform.js?v=aiot_v17"></script>
 
   <!-- Inline Helper Routines for Workspaces -->
   <script>
@@ -2084,7 +2377,7 @@
 
     async function askAiCopilot(query) {
       const feed = document.getElementById('aiChatFeed');
-      if (!feed || !window.aiTradingAssistant) return;
+      if (!feed) return;
 
       // Append user bubble
       const userBubble = document.createElement('div');
@@ -2101,8 +2394,31 @@
       feed.appendChild(userBubble);
       feed.scrollTop = feed.scrollHeight;
 
-      // Ask assistant
-      const res = await window.aiTradingAssistant.ask(query);
+      let answer = '';
+      let sources = ['Upstox V3 Market Quotes', 'Order Depth Engine'];
+
+      if (window.liveChatEngine && typeof window.liveChatEngine.parseUpstoxQuery === 'function') {
+        answer = await window.liveChatEngine.parseUpstoxQuery(query);
+      } else if (window.aiTradingAssistant) {
+        const res = await window.aiTradingAssistant.ask(query);
+        answer = res.response;
+        sources = res.sources;
+      } else {
+        answer = 'Upstox Pro Market Chat active with live quotes and order book depth.';
+      }
+
+      let ansText = typeof answer === 'object' ? answer.text : answer;
+      let reasoningHtml = '';
+      if (typeof answer === 'object' && answer.reasoning) {
+        sources.push('Nemotron 30B Reasoning');
+        reasoningHtml = `
+          <details class="nemotron-thinking" style="margin-top:10px;">
+            <summary style="font-size:10px; padding:6px 10px;">💭 Nemotron Deep Reasoning (${answer.reasoning.length} chars)</summary>
+            <div class="nemotron-thinking-body" style="font-size:11px; max-height:180px;">${answer.reasoning.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+          </details>
+        `;
+      }
+
       const aiBubble = document.createElement('div');
       aiBubble.className = 'chat-bubble';
       aiBubble.style.background = 'var(--aiot-50)';
@@ -2113,17 +2429,17 @@
       aiBubble.style.maxWidth = '88%';
       aiBubble.style.boxShadow = '0 2px 8px rgba(43,35,34,0.03)';
 
-      const sourcesHtml = res.sources.map(s => `<span class="status-pill status-live" style="font-size:9.5px; font-weight:700; margin-right:4px;">[${s}]</span>`).join('');
+      const sourcesHtml = sources.map(s => `<span class="status-pill status-live" style="font-size:9.5px; font-weight:700; margin-right:4px;">[${s}]</span>`).join('');
 
       aiBubble.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:24px; height:24px; border-radius:50%; background:var(--aiot-950); display:flex; align-items:center; justify-content:center; color:#FAFAF9; font-size:11px; font-weight:800;">AI</div>
-            <span class="chat-author" style="font-weight:800; font-size:13px; color:var(--aiot-950);">Nova AI Copilot</span>
+            <div style="width:24px; height:24px; border-radius:50%; background:var(--aiot-950); display:flex; align-items:center; justify-content:center; color:#FAFAF9; font-size:11px; font-weight:800;">⚡</div>
+            <span class="chat-author" style="font-weight:800; font-size:13px; color:var(--aiot-950);">Upstox Pro AI Copilot</span>
           </div>
           <div>${sourcesHtml}</div>
         </div>
-        <div class="chat-text" style="color:var(--aiot-900); font-weight:500; font-size:13px; white-space:pre-wrap; line-height:1.6;">${res.response}</div>
+        <div class="chat-text" style="color:var(--aiot-900); font-weight:500; font-size:13px; white-space:pre-wrap; line-height:1.6;">${ansText}${reasoningHtml}</div>
       `;
       feed.appendChild(aiBubble);
       feed.scrollTop = feed.scrollHeight;

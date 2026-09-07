@@ -125,6 +125,25 @@ class EconomicCalendarService {
         affectedAssets: ['GBP/USD', 'FTSE 100']
       }
     ];
+
+    this.events.forEach(ev => {
+      ev.dateFormatted = this.formatEventDate(ev.date);
+    });
+  }
+
+  formatEventDate(dateStr) {
+    if (!dateStr) return '';
+    try {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      }
+      const d = new Date(dateStr);
+      return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    } catch (e) {
+      return dateStr;
+    }
   }
 
   initReactionDatabase() {

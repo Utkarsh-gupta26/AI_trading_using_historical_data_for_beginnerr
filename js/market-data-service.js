@@ -173,6 +173,7 @@ const MarketDataService = (() => {
 
     try {
       let candles = [];
+      let lastFeedSource = 'delta';
       if (isDeltaAsset(symbol)) {
         const deltaSym = DELTA_SYMBOL_MAP[symbol.toUpperCase()] || symbol;
         const res = tfConfig.deltaRes || '1m';
@@ -192,14 +193,15 @@ const MarketDataService = (() => {
           }
         }
       } else {
-        // Indian Stock or Index or Global Asset via Yahoo Proxy
-        const ySym = resolveYahooSymbol(symbol);
+        // Indian Stock or Index or Global Asset — server picks Upstox
+        // (real NSE/BSE data) when connected, else falls back to Yahoo.
         const yInt = tfConfig.yahooInterval || '1m';
         const yRange = tfConfig.yahooRange || '5d';
-        const url = `/api/live?symbol=${encodeURIComponent(ySym)}&interval=${yInt}&range=${yRange}&limit=${limit}`;
+        const url = `/api/live?symbol=${encodeURIComponent(symbol)}&interval=${yInt}&range=${yRange}&limit=${limit}`;
         const resp = await fetch(url);
         if (resp.ok) {
           const json = await resp.json();
+          lastFeedSource = json.source || (json.fallback ? 'simulated_fallback' : 'yahoo_delayed');
           if (json.candles && json.candles.length > 0) {
             candles = json.candles.map(c => ({
               time: Number(c.t),
@@ -218,9 +220,19 @@ const MarketDataService = (() => {
 
       if (candles.length > 0) {
         dataCache.set(key, candles);
-        notifyStatus('LIVE');
+        // Be honest about data quality: only claim LIVE when the feed is a
+        // real source (Upstox, or a working Yahoo pull). If the server had
+        // to fall back to a simulated random-walk placeholder, surface that
+        // clearly instead of implying this is a real price.
+        if (lastFeedSource === 'simulated_fallback') {
+          notifyStatus('DATA_UNAVAILABLE');
+        } else if (lastFeedSource === 'yahoo_delayed') {
+          notifyStatus('DELAYED');
+        } else {
+          notifyStatus('LIVE');
+        }
         startRealtimeStream(symbol, timeframe);
-        return { success: true, symbol, timeframe, candles };
+        return { success: true, symbol, timeframe, candles, source: lastFeedSource };
       } else {
         notifyStatus('DATA_UNAVAILABLE');
         return { success: false, error: 'No candles returned for this asset or timeframe.' };
