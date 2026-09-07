@@ -510,6 +510,9 @@
                 <button class="nova-quick-pill" onclick="const p = document.getElementById('upstoxSidebarPanel'); if (p) { p.style.display = p.style.display === 'none' ? 'flex' : 'none'; if(window.mainChart) setTimeout(() => window.mainChart.resize(), 100); }" style="font-size:11px; padding:4px 10px; background:#FFFFFF; border:1px solid var(--aiot-300); font-weight:700; cursor:pointer;" title="Toggle Upstox Depth & CAS Sidebar">
                   📊 Depth & CAS
                 </button>
+                <button class="nova-quick-pill" id="marketDataDebugToggleBtn" onclick="TerminalPlatform.toggleMarketDataDebugPanel()" style="font-size:11px; padding:4px 10px; background:#FFFFFF; border:1px solid var(--aiot-300); font-weight:700; cursor:pointer;" title="Market Data Diagnostic & Telemetry Panel">
+                  ⚙️ Diagnostics
+                </button>
                 <button class="nova-quick-pill" id="chartChatToggleBtn" onclick="window.liveChatEngine.toggleChat()" style="font-size:11px; padding:4px 12px; background:var(--aiot-950); color:#FAFAF9; border:none; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 6px rgba(13,9,8,0.2);" title="Open Upstox Pro AI Market Chat [Ctrl+J]">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   <span>💬 AI Copilot Chat</span>
@@ -2125,6 +2128,69 @@ Click "Synthesize with Nemotron" to run deep institutional inference combining B
 
       </div>
     </div>
+  <!-- Developer / Market Data Diagnostic Modal -->
+  <div class="modal-backdrop" id="marketDataDebugModalBackdrop" style="display:none; position:fixed; inset:0; background:rgba(13,9,8,0.5); z-index:99990; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
+    <div class="modal-card" style="background:#FFFFFF; border-radius:14px; width:540px; max-width:92vw; box-shadow:0 10px 40px rgba(13,9,8,0.25); border:1px solid rgba(216,210,207,0.85); overflow:hidden;">
+      <div class="modal-card-header" style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid rgba(216,210,207,0.7); background:var(--aiot-50);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:16px;">⚙️</span>
+          <span style="font-weight:800; font-size:14px; color:var(--aiot-950);">Market Data Engine Telemetry & Diagnostic</span>
+        </div>
+        <button onclick="TerminalPlatform.toggleMarketDataDebugPanel(false)" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--aiot-500); font-weight:700;">&times;</button>
+      </div>
+      <div style="padding:18px; display:flex; flex-direction:column; gap:12px; font-size:12.5px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div style="background:rgba(13,9,8,0.02); padding:10px 12px; border-radius:8px; border:1px solid rgba(216,210,207,0.6);">
+            <div style="font-size:10.5px; color:var(--aiot-500); text-transform:uppercase; font-weight:700;">Active Provider</div>
+            <div id="dbgProvider" style="font-weight:800; font-size:13px; color:var(--aiot-950); margin-top:2px;">RealtimeExchange</div>
+          </div>
+          <div style="background:rgba(13,9,8,0.02); padding:10px 12px; border-radius:8px; border:1px solid rgba(216,210,207,0.6);">
+            <div style="font-size:10.5px; color:var(--aiot-500); text-transform:uppercase; font-weight:700;">WebSocket Status</div>
+            <div id="dbgWsStatus" style="font-weight:800; font-size:13px; color:#059669; margin-top:2px;">CONNECTED (ws://:3001)</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(13,9,8,0.02); padding:12px; border-radius:8px; border:1px solid rgba(216,210,207,0.6); display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--aiot-600);">Instrument:</span>
+            <strong id="dbgInstrument" style="color:var(--aiot-950);">NIFTY 50 (NIFTY_50)</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--aiot-600);">Provider Instrument Key:</span>
+            <code id="dbgProviderInst" style="background:#FFFFFF; padding:2px 6px; border-radius:4px; font-weight:700; border:1px solid rgba(216,210,207,0.6);">^NSEI</code>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--aiot-600);">Historical API Status:</span>
+            <strong id="dbgHistoricalStatus" style="color:#059669;">SUCCESS (200 OK)</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--aiot-600);">Exchange Session:</span>
+            <strong id="dbgExchangeSession" style="color:#f59e0b;">MARKET CLOSED</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--aiot-600);">Last Tick / Price:</span>
+            <strong id="dbgLastPrice" style="color:var(--aiot-950);">23,779.15</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--aiot-600);">Active Interval / Candles Count:</span>
+            <strong id="dbgCandleCount" style="color:var(--aiot-950);">1m · 300 candles</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--aiot-600);">Last Error:</span>
+            <span id="dbgLastError" style="color:#059669; font-weight:600;">None</span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:6px;">
+          <button onclick="TerminalPlatform.loadSymbol(TerminalPlatform.getCurrentSymbol())" class="nova-quick-pill" style="background:var(--aiot-950); color:#FFFFFF; font-weight:700; padding:6px 14px; border:none; border-radius:6px; cursor:pointer;">
+            Force Reload Symbol
+          </button>
+          <button onclick="TerminalPlatform.toggleMarketDataDebugPanel(false)" class="nova-quick-pill" style="background:#FFFFFF; border:1px solid var(--aiot-300); font-weight:700; padding:6px 14px; border-radius:6px; cursor:pointer;">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Floating AI Chat Launcher Pill -->
@@ -2184,8 +2250,8 @@ Click "Synthesize with Nemotron" to run deep institutional inference combining B
   <script src="indicators.js?v=aiot_v7"></script>
   <script src="strategies.js?v=aiot_v7"></script>
   <script src="prediction.js?v=aiot_v15"></script>
-  <script src="js/market-data-service.js?v=aiot_v15"></script>
-  <script src="js/chart-engine.js?v=aiot_v15"></script>
+  <script src="js/market-data-service.js?v=aiot_v40"></script>
+  <script src="js/chart-engine.js?v=aiot_v40"></script>
   <script src="js/indicator-engine.js?v=aiot_v15"></script>
   <script src="js/drawing-engine.js?v=aiot_v15"></script>
   <script src="js/replay-engine.js?v=aiot_v15"></script>
@@ -2203,8 +2269,8 @@ Click "Synthesize with Nemotron" to run deep institutional inference combining B
   <script src="js/modules/backtest-engine.js?v=aiot_v15"></script>
   <script src="js/modules/ai-assistant.js?v=aiot_v15"></script>
   <script src="js/modules/trade-planner.js?v=aiot_v15"></script>
-  <script src="js/modules/live-chat.js?v=aiot_v30"></script>
-  <script src="js/modules/upstox-service.js?v=aiot_v30"></script>
+  <script src="js/modules/live-chat.js?v=aiot_v40"></script>
+  <script src="js/modules/upstox-service.js?v=aiot_v40"></script>
 
   <!-- Baltic Dry Index (BDI) & Macroeconomic Signal Modules -->
   <script src="market-signals/bdi/bdiDataService.js"></script>
@@ -2218,7 +2284,7 @@ Click "Synthesize with Nemotron" to run deep institutional inference combining B
   <script src="js/modules/global-signals.js"></script>
 
   <!-- Master Platform Orchestrator -->
-  <script src="js/platform.js?v=aiot_v30"></script>
+  <script src="js/platform.js?v=aiot_v40"></script>
 
   <!-- Inline Helper Routines for Workspaces -->
   <script>

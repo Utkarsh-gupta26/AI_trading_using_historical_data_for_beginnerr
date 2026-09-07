@@ -832,13 +832,70 @@ class ChartEngine {
     }
   }
 
+  setChartState(state, message) {
+    this.chartState = state;
+    this.statusMessage = message;
+    if (!this.displayCandles || this.displayCandles.length === 0) {
+      this.render();
+    }
+  }
+
+  updateActiveCandle(tick) {
+    if (!this.displayCandles || this.displayCandles.length === 0) return;
+    const ltp = Number(tick.ltp || tick.close);
+    if (isNaN(ltp) || ltp <= 0) return;
+
+    const last = this.displayCandles[this.displayCandles.length - 1];
+    last.high = Math.max(last.high, ltp);
+    last.low = Math.min(last.low, ltp);
+    last.close = ltp;
+    if (tick.volume) last.volume += (tick.volume || 0);
+
+    this.render();
+  }
+
   _renderEmptyState() {
     const ctx = this.ctx;
-    ctx.fillStyle = '#787b86';
-    ctx.font = '14px -apple-system, BlinkMacSystemFont, "Trebuchet MS", Roboto, sans-serif';
+    ctx.save();
+    ctx.fillStyle = '#131722';
+    ctx.fillRect(0, 0, this.width, this.height);
+
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('No market data loaded for this asset', this.chartWidth / 2, this.chartHeight / 2);
+
+    const state = this.chartState || 'LOADING';
+    let title = this.statusMessage || 'Loading authentic market data...';
+    let subtitle = '';
+
+    if (state === 'LOADING') {
+      title = 'Loading authentic market data...';
+      subtitle = 'Connecting to real-time market data engine';
+      ctx.fillStyle = '#2962ff';
+    } else if (state === 'MARKET_CLOSED') {
+      title = 'Market Closed';
+      subtitle = this.statusMessage || 'Showing last authentic trading session close';
+      ctx.fillStyle = '#f59e0b';
+    } else if (state === 'DISCONNECTED' || state === 'RECONNECTING') {
+      title = 'Market Data Feed Reconnecting...';
+      subtitle = 'Attempting connection to local real-time WebSocket server';
+      ctx.fillStyle = '#ef4444';
+    } else if (state === 'NO_DATA') {
+      title = 'No Market Data Available';
+      subtitle = this.statusMessage || 'The selected instrument returned no trading history';
+      ctx.fillStyle = '#787b86';
+    } else {
+      ctx.fillStyle = '#787b86';
+    }
+
+    ctx.font = 'bold 14.5px -apple-system, BlinkMacSystemFont, "Trebuchet MS", Roboto, sans-serif';
+    ctx.fillText(title, this.chartWidth / 2, this.chartHeight / 2 - 10);
+
+    if (subtitle) {
+      ctx.fillStyle = '#787b86';
+      ctx.font = '12px -apple-system, BlinkMacSystemFont, "Trebuchet MS", Roboto, sans-serif';
+      ctx.fillText(subtitle, this.chartWidth / 2, this.chartHeight / 2 + 14);
+    }
+    ctx.restore();
   }
 
   // ── Formatters ───────────────────────────────────────────────────────────

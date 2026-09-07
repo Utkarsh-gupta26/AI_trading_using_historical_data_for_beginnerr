@@ -2166,209 +2166,67 @@ class LiveTradingHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps({'success': True, 'total': len(quotes), 'quotes': quotes}).encode('utf-8'))
             return
 
-        # API endpoint for live quotes / candles with flexible historical ranges
+        # API endpoint for live quotes / candles with authentic market data engine
         if parsed.path == '/api/live':
             query = urllib.parse.parse_qs(parsed.query)
             sym = query.get('symbol', ['NIFTY_50'])[0].strip()
             interval = query.get('interval', ['1m'])[0]
-            range_val = query.get('range', [None])[0]
-            period1 = query.get('period1', [None])[0]
-            period2 = query.get('period2', [None])[0]
-            limit_val = query.get('limit', [None])[0]
-
-            # ── Prefer Upstox for Indian instruments when connected ──────
-            upstox_token = upstox_load_token()
-            if upstox_token:
-                ikey = upstox_instrument_key_for(sym)
-                if ikey:
-                    try:
-                        lim = int(limit_val) if limit_val else 300
-                        candles = fetch_upstox_candles(ikey, interval, limit=lim)
-                        if candles:
-                            quote = fetch_upstox_quote(ikey, upstox_token) or {}
-                            ohlc = quote.get('ohlc', {}) or {}
-                            response_obj = {
-                                'symbol': sym,
-                                'resolvedSymbol': ikey,
-                                'price': quote.get('last_price', candles[-1]['c']),
-                                'prevClose': ohlc.get('close', candles[-1]['c']),
-                                'currency': 'INR',
-                                'marketState': 'REGULAR',
-                                'candles': candles,
-                                'source': 'upstox',
-                            }
-                            self.send_response(200)
-                            self.send_header('Content-Type', 'application/json')
-                            self.end_headers()
-                            self.wfile.write(json.dumps(response_obj).encode('utf-8'))
-                            return
-                    except Exception as e:
-                        print(f"[upstox] candle fetch failed for {sym}, falling back to Yahoo: {e}")
-                        # fall through to Yahoo path below
-
-            # Map intervals for Yahoo
-            valid_intervals = ['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo']
-            if interval not in valid_intervals:
-                interval = '1m'
-            
-            if not range_val and not (period1 and period2):
-                if interval in ['1m', '2m', '5m']:
-                    range_val = '2d'
-                elif interval in ['15m', '30m']:
-                    range_val = '5d'
-                elif interval in ['60m', '90m', '1h']:
-                    range_val = '1mo'
-                elif interval == '1d':
-                    range_val = '2y'
-                elif interval in ['1wk', '1mo']:
-                    range_val = '5y'
-                else:
-                    range_val = '1mo'
-
-            yahoo_sym = resolve_symbol_for_yahoo(sym)
-            
-            if period1 and period2:
-                url = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(yahoo_sym)}?interval={interval}&period1={period1}&period2={period2}"
-            else:
-                url = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(yahoo_sym)}?interval={interval}&range={range_val}"
-            
+            limit_val = query.get('limit', ['300'])[0]
             try:
-                req = urllib.request.Request(url, headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                })
-                with urllib.request.urlopen(req, timeout=6) as res:
-                    raw_data = json.loads(res.read().decode('utf-8'))
-                    result = raw_data['chart']['result'][0]
-                    meta = result['meta']
-                    timestamps = result.get('timestamp', [])
-                    quote = result['indicators']['quote'][0]
-                    
-                    candles = []
-                    for i in range(len(timestamps)):
-                        o = quote['open'][i]
-                        h = quote['high'][i]
-                        l = quote['low'][i]
-                        c = quote['close'][i]
-                        v = quote['volume'][i] or 0
-                        if c is not None and o is not None and h is not None and l is not None:
-                            candles.append({
-                                't': timestamps[i] * 1000,
-                                'o': round(o, 2),
-                                'h': round(h, 2),
-                                'l': round(l, 2),
-                                'c': round(c, 2),
-                                'v': int(v)
-                            })
-                    
-                    if limit_val:
-                        try:
-                            l_int = int(limit_val)
-                            candles = candles[-l_int:]
-                        except Exception:
-                            pass
-                            
-                    response_obj = {
-                        'symbol': sym,
-                        'resolvedSymbol': yahoo_sym,
-                        'price': meta.get('regularMarketPrice') or (candles[-1]['c'] if candles else 0),
-                        'prevClose': meta.get('previousClose') or meta.get('chartPreviousClose') or 0,
-                        'currency': meta.get('currency', 'USD' if not sym.endswith('.NS') else 'INR'),
-                        'marketState': meta.get('marketState', 'REGULAR'),
-                        'candles': candles
-                    }
-                    
-                    self.send_response(200)
-                    self.send_header('Content-Type', 'application/json')
-                    self.end_headers()
-                    self.wfile.write(json.dumps(response_obj).encode('utf-8'))
-                    return
-            except Exception as e:
-                # Calibrated baseline prices for all tracked equities & indices
-                KNOWN_BASE_PRICES = {
-                    'NIFTY_50': 23897.70, '^NSEI': 23897.70,
-                    'BANKNIFTY': 51450.20, '^NSEBANK': 51450.20,
-                    'SENSEX': 78920.40, '^BSESN': 78920.40,
-                    'NDX': 29540.00, '^NDX': 29540.00,
-                    'SPX': 5740.00, '^GSPC': 5740.00,
-                    'DJI': 42350.00, '^DJI': 42350.00,
-                    'DAX': 19450.00, '^GDAXI': 19450.00,
-                    'AAPL': 228.00,
-                    'NVDA': 138.00,
-                    'MSFT': 428.00,
-                    'TSLA': 256.00,
-                    'AMZN': 186.00,
-                    'GOOGL': 165.00,
-                    'META': 582.00,
-                    'AMD': 154.00,
-                    'PLTR': 42.00,
-                    'QQQ': 718.00,
-                    'SPY': 770.00,
-                    'RELIANCE': 1328.00, 'RELIANCE.NS': 1328.00,
-                    'TCS': 3950.00, 'TCS.NS': 3950.00,
-                    'HDFCBANK': 1680.00, 'HDFCBANK.NS': 1680.00,
-                    'INFY': 1750.00, 'INFY.NS': 1750.00,
-                    'ICICIBANK': 1250.00, 'ICICIBANK.NS': 1250.00,
-                    'SBIN': 810.00, 'SBIN.NS': 810.00,
-                    'BHARTIARTL': 1540.00, 'BHARTIARTL.NS': 1540.00,
-                    'ITC': 485.00, 'ITC.NS': 485.00,
-                    'LT': 3550.00, 'LT.NS': 3550.00,
-                    'TATAMOTORS': 980.00, 'TATAMOTORS.NS': 980.00,
-                    'MARUTI': 12450.00, 'MARUTI.NS': 12450.00,
-                    'SUNPHARMA': 1850.00, 'SUNPHARMA.NS': 1850.00,
-                    'TITAN': 3450.00, 'TITAN.NS': 3450.00,
-                    'AXISBANK': 1180.00, 'AXISBANK.NS': 1180.00,
-                    'BAJFINANCE': 6850.00, 'BAJFINANCE.NS': 6850.00,
-                    'ADANIENT': 2950.00, 'ADANIENT.NS': 2950.00,
-                    'XAUTUSD': 2750.00, 'XAUUSD': 2750.00, 'GOLD': 2750.00,
-                    'BTCUSD': 79650.00, 'BTC': 79650.00, 'BTC-USD': 79650.00,
-                    'ETHUSD': 3480.00, 'ETH': 3480.00, 'ETH-USD': 3480.00,
-                    'SOLUSD': 178.50, 'SOL': 178.50, 'SOL-USD': 178.50
-                }
-                info = GLOBAL_SYMBOL_LOOKUP.get(sym.upper()) or GLOBAL_SYMBOL_LOOKUP.get(yahoo_sym.upper()) or {}
-                base_price = KNOWN_BASE_PRICES.get(sym.upper()) or KNOWN_BASE_PRICES.get(yahoo_sym.upper()) or info.get('defaultPrice', 500.0)
-                curr = info.get('currency', 'INR' if (sym.endswith('.NS') or sym in ['NIFTY_50', 'BANKNIFTY', 'SENSEX', 'RELIANCE', 'TCS']) else 'USD')
-                
-                # Generate 60 synthetic candles backwards from now
-                now_ts = int(time.time() * 1000)
-                step_ms = 60000 if interval == '1m' else (300000 if interval == '5m' else 86400000)
-                candles = []
-                cur_p = base_price
-                for i in range(60, 0, -1):
-                    t = now_ts - (i * step_ms)
-                    delta = (hash(f"{sym}_{i}") % 100 - 48) * 0.001 * base_price
-                    o = round(cur_p, 2)
-                    c = round(cur_p + delta, 2)
-                    h = round(max(o, c) + abs(delta) * 0.5, 2)
-                    l = round(min(o, c) - abs(delta) * 0.5, 2)
-                    v = int(abs(delta) * 10000 + 50000)
-                    candles.append({'t': t, 'o': o, 'h': h, 'l': l, 'c': c, 'v': v})
-                    cur_p = c
-                
-                prev_close = base_price
-                price = candles[-1]['c']
-                # HONESTY NOTE: this branch only runs when both Upstox (if connected)
-                # and Yahoo Finance failed. These candles are SIMULATED from a
-                # hardcoded baseline price and a random walk — they are NOT real
-                # market data. marketState/source below are set so the frontend
-                # can (and should) show a clear "simulated / data unavailable"
-                # badge instead of presenting this as a live price.
-                response_obj = {
-                    'symbol': sym,
-                    'resolvedSymbol': yahoo_sym,
-                    'price': price,
-                    'prevClose': prev_close,
-                    'currency': curr,
-                    'marketState': 'DATA_UNAVAILABLE',
-                    'candles': candles,
-                    'fallback': True,
-                    'source': 'simulated_fallback',
-                    'note': f"Live data feed unavailable — showing a simulated placeholder, not a real price ({str(e)})"
-                }
+                limit_int = int(limit_val)
+            except Exception:
+                limit_int = 300
+
+            import market_data_engine
+            res = market_data_engine.market_data_engine.get_historical_candles(sym, interval=interval, limit=limit_int)
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(res).encode('utf-8'))
+            return
+
+        # API endpoint for canonical instruments catalog
+        if parsed.path == '/api/market/instruments':
+            import market_data_engine
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'success': True,
+                'total': len(market_data_engine.CANONICAL_INSTRUMENTS),
+                'instruments': market_data_engine.CANONICAL_INSTRUMENTS
+            }).encode('utf-8'))
+            return
+
+        # API endpoint for exchange session status (Asia/Kolkata aware)
+        if parsed.path == '/api/market/session':
+            query = urllib.parse.parse_qs(parsed.query)
+            ex = query.get('exchange', ['NSE'])[0].strip()
+            import market_data_engine
+            sess = market_data_engine.get_exchange_session(ex)
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'success': True, 'session': sess}).encode('utf-8'))
+            return
+
+        # API endpoint for authentic real-time quote
+        if parsed.path == '/api/market/quote':
+            query = urllib.parse.parse_qs(parsed.query)
+            sym = query.get('symbol', ['NIFTY_50'])[0].strip()
+            import market_data_engine
+            q = market_data_engine.market_data_engine.get_latest_quote(sym)
+            if q:
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps(response_obj).encode('utf-8'))
-                return
+                self.wfile.write(json.dumps({'success': True, 'quote': q}).encode('utf-8'))
+            else:
+                self.send_response(404)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': False, 'error': f'Quote not found for {sym}'}).encode('utf-8'))
+            return
                 
         # Default static file serving
         return super().do_GET()
@@ -2563,6 +2421,13 @@ Provide your synthesis in clean, structured Markdown:
 
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    # Start Real-Time Market Data WebSocket Server on port 3001
+    try:
+        import market_data_engine
+        market_data_engine.market_data_engine.start_websocket_server(host="0.0.0.0", port=3001)
+    except Exception as e:
+        print(f"[server] Could not start market WebSocket server: {e}", flush=True)
+
     socketserver.ThreadingTCPServer.allow_reuse_address = True
     with socketserver.ThreadingTCPServer(("", PORT), LiveTradingHandler) as httpd:
         print(f"Server started on http://localhost:{PORT}", flush=True)

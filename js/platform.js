@@ -171,8 +171,8 @@ const TerminalPlatform = (() => {
       updateWatchlistRow(symbol, candle.close);
     });
 
-    MarketDataService.on('status', ({ status }) => {
-      updateStatusBadge(status);
+    MarketDataService.on('status', ({ status, session }) => {
+      updateStatusBadge(status, session);
     });
 
     // Bind UI controls
@@ -502,17 +502,31 @@ const TerminalPlatform = (() => {
     updateStatusBadge('CONNECTING');
     updateUpstoxChartSymbol(symbol);
 
+    if (mainChart) {
+      mainChart.setChartState('LOADING', `Loading authentic market data for ${symbol}...`);
+    }
+
     const res = await MarketDataService.loadCandles(symbol, timeframe, 300);
-    if (res.success && res.candles.length > 0) {
+    if (res.success && res.candles && res.candles.length > 0) {
       if (mainChart) mainChart.setData(res.candles, true);
       updateHeaderOHLC(res.candles[res.candles.length - 1]);
       updateHeaderPrice(res.candles[res.candles.length - 1]);
       updateActiveSubPanes(res.candles);
       runAIAnalysis(symbol, res.candles);
       if (drawingEngine) drawingEngine.loadFromStorage(symbol);
-      refreshUpstoxBanner(res.source);
+      refreshUpstoxBanner(res.provider || res.source);
+      if (res.marketSession) {
+        updateStatusBadge(res.marketState || 'LIVE', res.marketSession);
+      }
     } else {
-      updateStatusBadge('DATA_UNAVAILABLE');
+      if (mainChart) {
+        if (res.marketSession && res.marketSession.session === 'MARKET_CLOSED') {
+          mainChart.setChartState('MARKET_CLOSED', res.marketSession.statusText);
+        } else {
+          mainChart.setChartState('NO_DATA', res.error || 'No market data available');
+        }
+      }
+      updateStatusBadge(res.marketState || 'MARKET_CLOSED', res.marketSession);
     }
   }
 
@@ -1196,11 +1210,34 @@ const TerminalPlatform = (() => {
     }
   }
 
-  function updateStatusBadge(status) {
+  function updateStatusBadge(status, session) {
     const badge = document.getElementById('headerStatusBadge');
     if (!badge) return;
-    badge.className = `status-pill status-${status.toLowerCase()}`;
-    badge.textContent = status;
+
+    if (status === 'LIVE') {
+      badge.className = 'status-pill status-live';
+      badge.textContent = '● LIVE';
+      badge.title = 'Real-time exchange tick feed connected via WebSocket';
+    } else if (status === 'MARKET_CLOSED') {
+      badge.className = 'status-pill status-closed';
+      badge.textContent = '● MARKET CLOSED';
+      badge.title = session?.statusText || 'Exchange session closed • Displaying last authentic session close';
+    } else if (status === 'PRE_OPEN') {
+      badge.className = 'status-pill status-delayed';
+      badge.textContent = '● PRE-OPEN';
+      badge.title = 'Pre-market order matching session (09:00 - 09:15 IST)';
+    } else if (status === 'CONNECTING') {
+      badge.className = 'status-pill status-connecting';
+      badge.textContent = '● Connecting...';
+      badge.title = 'Connecting to real-time market data engine';
+    } else if (status === 'RECONNECTING') {
+      badge.className = 'status-pill status-connecting';
+      badge.textContent = '● Reconnecting...';
+      badge.title = 'WebSocket reconnecting with exponential backoff';
+    } else {
+      badge.className = 'status-pill status-delayed';
+      badge.textContent = status || '● DELAYED';
+    }
   }
 
   // ── 10. Delta Account Summary ────────────────────────────────────────────
@@ -2299,37 +2336,15 @@ const TerminalPlatform = (() => {
       }
     }
 
-    if ((!rawCandles || rawCandles.length < 20) && typeof MARKET_DATA !== 'undefined') {
-      const entry = MARKET_DATA[sym] || MARKET_DATA['NIFTY_50'] || Object.values(MARKET_DATA)[0];
-      if (entry && entry.data) {
-        rawCandles = entry.data.map((d, i) => ({
-          time: Date.now() - (entry.data.length - i) * 60000,
-          open: d.o,
-          high: d.h,
-          low: d.l,
-          close: d.c,
-          volume: d.v
-        }));
+    // Never use fake/dummy/synthetic data for AI predictions per strict architectural requirement
+    if (!rawCandles || rawCandles.length < 20) {
+      if (studiedCountEl) studiedCountEl.textContent = 'Insufficient authentic market data from provider.';
+      if (badgeText) badgeText.textContent = 'DATA UNAVAILABLE';
+      const contentEl = document.getElementById('nemotronAnalysisContent');
+      if (contentEl) {
+        contentEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">⚠️ Cannot generate prediction:</span> Provider returned insufficient authentic candles for ${sym} (${tf}). The platform strictly refuses to calculate AI predictions on dummy or simulated data.`;
       }
-    }
-
-    if (!rawCandles || rawCandles.length === 0) {
-      const base = 25000;
-      rawCandles = [];
-      let p = base;
-      for (let i = 60; i >= 0; i--) {
-        const o = p;
-        const c = p + (Math.sin(i / 3) * 20);
-        rawCandles.push({
-          time: Date.now() - i * 60000,
-          open: o,
-          high: Math.max(o, c) + 10,
-          low: Math.min(o, c) - 10,
-          close: c,
-          volume: 50000
-        });
-        p = c;
-      }
+      return;
     }
 
     const normalized = rawCandles.map(c => ({
@@ -2742,9 +2757,66 @@ const TerminalPlatform = (() => {
     }
   }
 
+  function toggleMarketDataDebugPanel(show) {
+    const modal = document.getElementById('marketDataDebugModalBackdrop');
+    if (!modal) return;
+    const isVisible = modal.style.display === 'flex';
+    const nextState = show !== undefined ? show : !isVisible;
+    modal.style.display = nextState ? 'flex' : 'none';
+    if (nextState) {
+      refreshMarketDataDebugPanel();
+    }
+  }
+
+  function refreshMarketDataDebugPanel() {
+    if (!window.MarketDataService) return;
+    const info = window.MarketDataService.getDiagnosticInfo();
+    const pEl = document.getElementById('dbgProvider');
+    if (pEl) pEl.textContent = info.provider || 'RealtimeExchange';
+
+    const wsEl = document.getElementById('dbgWsStatus');
+    if (wsEl) {
+      wsEl.textContent = info.wsStatus || 'CONNECTING';
+      wsEl.style.color = info.wsStatus === 'CONNECTED' ? '#059669' : (info.wsStatus === 'ERROR' ? '#ef4444' : '#f59e0b');
+    }
+
+    const instEl = document.getElementById('dbgInstrument');
+    if (instEl) instEl.textContent = `${info.displaySymbol || currentSymbol} (${info.symbol || currentSymbol})`;
+
+    const provInstEl = document.getElementById('dbgProviderInst');
+    if (provInstEl) provInstEl.textContent = info.providerSymbol || info.symbol || '^NSEI';
+
+    const histEl = document.getElementById('dbgHistoricalStatus');
+    if (histEl) {
+      histEl.textContent = info.historicalApiStatus || 'SUCCESS';
+      histEl.style.color = info.historicalApiStatus === 'SUCCESS' ? '#059669' : '#ef4444';
+    }
+
+    const sessEl = document.getElementById('dbgExchangeSession');
+    if (sessEl) {
+      const sess = info.activeSession;
+      sessEl.textContent = sess ? (sess.statusText || sess.session) : 'MARKET CLOSED';
+      sessEl.style.color = (sess && sess.session === 'MARKET_OPEN') ? '#059669' : '#f59e0b';
+    }
+
+    const priceEl = document.getElementById('dbgLastPrice');
+    if (priceEl) priceEl.textContent = info.lastTickPrice ? (formatPrice(info.lastTickPrice) + (info.lastTickTime ? ` (@ ${info.lastTickTime})` : '')) : '--';
+
+    const cntEl = document.getElementById('dbgCandleCount');
+    if (cntEl) cntEl.textContent = `${info.currentInterval || currentTimeframe} · ${info.candleCount || 0} valid candles`;
+
+    const errEl = document.getElementById('dbgLastError');
+    if (errEl) {
+      errEl.textContent = info.lastError || 'None';
+      errEl.style.color = info.lastError ? '#ef4444' : '#059669';
+    }
+  }
+
   return {
     init,
     loadSymbol,
+    toggleMarketDataDebugPanel,
+    refreshMarketDataDebugPanel,
     connectUpstox,
     dismissUpstoxBanner,
     setTimeframe,
